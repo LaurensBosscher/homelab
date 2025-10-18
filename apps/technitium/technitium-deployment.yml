@@ -33,7 +33,7 @@ spec:
                       - europe
       containers:
         - name: technitium
-          image: technitium/dns-server:latest
+          image: technitium/dns-server:13.6.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: dns-tcp

@@ -33,7 +33,7 @@ spec:
                       - europe
       containers:
         - name: stremio
-          image: tsaridas/stremio-docker:latest
+          image: tsaridas/stremio-docker:v1.2.4
           ports:
             - containerPort: 8080
           env:
