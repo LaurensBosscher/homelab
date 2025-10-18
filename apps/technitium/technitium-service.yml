@@ -5,7 +5,7 @@ metadata:
   labels:
     app: technitium
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: technitium
   ports:
@@ -17,7 +17,3 @@ spec:
       port: 53
       targetPort: 53
       protocol: UDP
-    - name: web
-      port: 5380
-      targetPort: 5380
-      protocol: TCP
