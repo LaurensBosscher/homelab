@@ -15,14 +15,17 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100 # Prefer deployments in Europe to reduce latency
-              preference:
-                matchExpressions:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
                   - key: region
                     operator: In
                     values:
                       - europe
+                  - key: city
+                    operator: NotIn
+                    values:
+                      - zurich
       securityContext:
         sysctls:
           # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
