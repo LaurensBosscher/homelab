@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stremio
+  labels:
+    app: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stremio
+  template:
+    metadata:
+      labels:
+        app: stremio
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: city
+                    operator: In
+                    values:
+                      - zurich
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: stremio
+          image: tsaridas/stremio-docker:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NO_CORS
+              value: "1"
+            - name: AUTO_SERVER_URL
+              value: "1"
+          volumeMounts:
+            - name: data
+              mountPath: /root/.stremio-server
+            - name: dri
+              mountPath: /dev/dri
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 60
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: stremio-data
+        - name: dri
+          hostPath:
+            path: /dev/dri/card0
+            type: CharDevice
