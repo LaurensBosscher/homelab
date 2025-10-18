@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fusion-data
+  labels:
+    app: fusion
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi # Adjust size as needed
+  storageClassName: longhorn-2replicas-compressed

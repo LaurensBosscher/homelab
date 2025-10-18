@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: homelab-apps-from-folders
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/LaurensBosscher/homelab.git # Your repo URL
+        revision: main # Branch to scan
+        directories:
+          - path: apps/* # Matches top-level folders under /apps
+  template:
+    metadata:
+      name: "{{path.basename}}" # App name: e.g., "guestbook"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/LaurensBosscher/homelab.git
+        targetRevision: main
+        path: "{{path}}" # Source path: e.g., "apps/guestbook"
+      destination:
+        server: https://kubernetes.default.svc # In-cluster
+        namespace: "{{path.basename}}" # Namespace: e.g., "guestbook"
+      syncPolicy:
+        automated: {}
+        syncOptions:
+          - CreateNamespace=true # Auto-creates the namespace if missing

@@ -1,0 +1,21 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-2replicas-compressed
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"
+  # If possible, store the data locally on the node where the pod is scheduled
+  dataLocality: "best-effort"
+  nodeDownPodDeletionPolicy: "Delete"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  # Compress data on replicas, slight CPU impact, significant storage savings
+  dataCompression: "true"
+  dataCompressionMethod: "lz4"
+  # Compress backups
+  backup.compression: "lz4"
+  backup.deduplication: "true"
