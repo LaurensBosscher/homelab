@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostreams
+  labels:
+    app: aiostreams
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiostreams
+  template:
+    metadata:
+      labels:
+        app: aiostreams
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: aiostreams
+          image: ghcr.io/viren070/aiostreams:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: BASE_URL
+              value: https://aiostreams.bosscher.ch
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiostreams-secret
+                  key: secret-key
+            - name: ADDON_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aiostreams-secret
+                  key: addon-password
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: aiostreams-data
