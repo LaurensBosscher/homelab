@@ -17,6 +17,7 @@ The cluster is configured with production like settings such as:
 - Alle nodes have 0 open, internet facing, ports
 - Joining new nodes to the cluster is a ~5 minute job
 - Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
+- [Mend Renovate](https://www.mend.io/renovate/) monitors this repo and automatically creates PRs for any software updates
 
 # Hardware
 
