@@ -39,9 +39,9 @@ data:
         style: column
     providers:
       longhorn:
-        url: https://longhorn.bosscher.ch
+        url: http://longhorn-frontend.longhorn-system.svc.cluster.local
       argocd:
-        url: https://argocd.bosscher.ch
+        url: https://argocd-server.argocd.svc.cluster.local
     experimental:
       showProductivity: true
   custom.css: |
@@ -239,6 +239,8 @@ data:
         cache: 5 # Time in minutes to cache API responses, to stay within limits
         format: # optional, Intl.NumberFormat options
           maximumFractionDigits: 1
+    - longhorn:
+        fields: [total, used, replicas, volumes]
     - search:
         provider: google
         target: _blank
