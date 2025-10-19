@@ -19,6 +19,10 @@ The cluster is configured with production like settings such as:
 - Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
 - [Mend Renovate](https://www.mend.io/renovate/) monitors this repo and automatically creates PRs for any software updates
 
+# Screenshots
+
+![](docs/homepage-screenshot.png)
+
 # Hardware
 
 | location   | ram  | cpu                            | role          | note                   | cost/y |
@@ -42,3 +46,4 @@ I'm currently running the following apps:
 - cloudflare
 - fusion
 - stremio-web
+- sabnzbd
