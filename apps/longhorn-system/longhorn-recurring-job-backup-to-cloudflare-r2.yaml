@@ -1,0 +1,13 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-to-cloudflare-r2
+  namespace: longhorn-system
+spec:
+  concurrency: 1
+  cron: 0 3 * * *
+  groups:
+    - default
+  name: backup-to-cloudflare-r2
+  retain: 3
+  task: backup

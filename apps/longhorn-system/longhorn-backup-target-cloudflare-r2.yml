@@ -1,0 +1,9 @@
+apiVersion: longhorn.io/v1beta2
+kind: BackupTarget
+metadata:
+  name: default
+  namespace: longhorn-system
+spec:
+  backupTargetURL: s3://k3s-longhorn@auto/
+  credentialSecret: k3s-longhorn-backup-cloudflare-r2
+  pollInterval: 5m0s
