@@ -55,5 +55,6 @@ spec:
           persistentVolumeClaim:
             claimName: sabnzbd-config
         - name: downloads
-          persistentVolumeClaim:
-            claimName: sabnzbd-downloads
+          hostPath:
+            path: /mnt/containers/sabnzbd
+            type: DirectoryOrCreate

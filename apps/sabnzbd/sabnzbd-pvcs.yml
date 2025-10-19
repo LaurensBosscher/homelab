@@ -14,16 +14,3 @@ items:
         requests:
           storage: 1Gi
       storageClassName: longhorn-2replicas-compressed
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: sabnzbd-downloads
-      labels:
-        app: sabnzbd
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 400Gi
-      storageClassName: local-path
