@@ -16,5 +16,3 @@ parameters:
   # Compress backups
   backup.compression: "lz4"
   backup.deduplication: "true"
-
-  backupTarget: "cloudflare-r2"
