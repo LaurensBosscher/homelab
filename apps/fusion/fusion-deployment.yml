@@ -33,7 +33,7 @@ spec:
                       - europe
       containers:
         - name: fusion
-          image: ghcr.io/0x2e/fusion:latest
+          image: ghcr.io/0x2e/fusion:0.9.8
           ports:
             - containerPort: 8080
           env:
