@@ -1,5 +1,36 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "argocd": { "managerFilePatterns": ["/apps/.+\\.yaml$/"] }
+
+  /*
+    Enable managers that can process our manifest types. Docker manager is not
+    needed because we don't keep Dockerfiles here for image updates; container
+    images inside YAML will be handled by the kubernetes/argocd/kustomize managers
+    using the docker datasource automatically.
+  */
+  "enabledManagers": ["argocd", "kustomize", "kubernetes"],
+
+  /* Limit scanning to YAML files under apps/ (both .yml and .yaml) */
+  "argocd": {
+    "fileMatch": ["(^|/)apps/.+\\.ya?ml$"]
+  },
+  "kustomize": {
+    "fileMatch": ["(^|/)apps/.+\\.ya?ml$"]
+  },
+  "kubernetes": {
+    "fileMatch": ["(^|/)apps/.+\\.ya?ml$"]
+  },
+  /* Package rules to ensure PRs get created for image tag updates in deployments */
+  "packageRules": [
+    {
+      "matchManagers": ["kubernetes", "argocd", "kustomize"],
+      "matchDatasources": ["docker"],
+      /* Ensure we always open a PR (don't automerge silently) */
+      "automerge": false,
+      /* Create PRs as soon as updates are detected */
+      "prCreation": "immediate",
+      /* Optional grouping; remove if you prefer one PR per image */
+      "groupName": "container image updates"
+    }
+  ]
 }
