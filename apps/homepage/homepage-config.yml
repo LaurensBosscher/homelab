@@ -39,7 +39,7 @@ data:
         style: column
     providers:
       longhorn:
-        url: http://longhorn-frontend.longhorn-system.svc.cluster.local
+        url: https://longhorn.bosscher.ch
       argocd:
         url: https://argocd-server.argocd.svc.cluster.local
     experimental:
@@ -185,6 +185,10 @@ data:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
+        - Paperless:
+            href: https://paperless.bosscher.ch/
+            description: Document management
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
     - Cluster:
         - Kubernetes Dashboard:
             href: https://kubernetes-dashboard.bosscher.ch
