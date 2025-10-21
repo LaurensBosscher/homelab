@@ -7,11 +7,15 @@
   roles:
     - { role: security_updates }
     - { role: dotfiles }
-    # - { role: tailscale, when: configure_tailscale }
+    - { role: tools }
+    - { role: k9s }
+    - { role: optimizations }
+    - { role: network-optimizations }
+    - { role: tailscale }
     - { role: kubecolor }
     - { role: zram }
     - { role: ssh }
-    - { role: firewall }
+    # - { role: firewall }
 
 - name: Kubernetes control plane configuration
   hosts: kubernetes-control-plane

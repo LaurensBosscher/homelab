@@ -1,0 +1,64 @@
+---
+- name: Get primary network interface
+  ansible.builtin.shell: ip -o route get 8.8.8.8 | cut -f5 -d' '
+  register: primary_network_interface
+  changed_when: false
+  tags: [network-optimizations]
+
+- name: Apply network interface optimizations
+  ansible.builtin.shell: |
+    ethtool -K "{{ primary_network_interface.stdout }}" \
+      tx-udp-segmentation on \
+      rx-udp-gro-forwarding on \
+      rx-gro-list off \
+      tx-checksum-ip-generic on \
+      rx-checksum on
+  become: true
+  when: primary_network_interface.stdout != ""
+  tags: [network-optimizations]
+
+- name: Apply network kernel parameters for 1Gbps optimization
+  ansible.builtin.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-network-optimizations.conf
+    reload: true
+  become: true
+  loop:
+    - { name: "net.core.rmem_max", value: "16777216" }
+    - { name: "net.core.wmem_max", value: "16777216" }
+    - { name: "net.core.rmem_default", value: "8388608" }
+    - { name: "net.ipv4.udp_rmem_min", value: "16384" }
+    - { name: "net.core.netdev_budget", value: "1200" }
+    - { name: "net.ipv4.tcp_congestion_control", value: "bbr" }
+  tags: [network-optimizations]
+
+- name: Create systemd service to persist network interface optimizations
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Apply network interface optimizations after boot
+      After=network.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/bash -c 'ethtool -K {{ primary_network_interface.stdout }} tx-udp-segmentation on rx-udp-gro-forwarding on rx-gro-list off tx-checksum-ip-generic on rx-checksum on'
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/network-interface-optimizations.service
+    mode: "0644"
+  become: true
+  when: primary_network_interface.stdout != ""
+  tags: [network-optimizations]
+
+- name: Enable network interface optimizations service
+  ansible.builtin.systemd:
+    name: network-interface-optimizations
+    enabled: true
+    daemon_reload: true
+  become: true
+  when: primary_network_interface.stdout != ""
+  tags: [network-optimizations]

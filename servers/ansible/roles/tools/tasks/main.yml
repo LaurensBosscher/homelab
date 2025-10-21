@@ -1,0 +1,90 @@
+---
+- name: Clean DNF cache
+  ansible.builtin.command: dnf clean all
+  become: true
+  tags: [tools]
+
+- name: Enable EPEL repository
+  ansible.builtin.dnf:
+    name: epel-release
+    state: present
+  become: true
+  ignore_errors: true
+  tags: [tools]
+
+- name: Enable EPEL repository (AlmaLinux alternative)
+  ansible.builtin.dnf:
+    name: epel-release-almalinux-altarch
+    state: present
+  become: true
+  when: ansible_distribution == "AlmaLinux"
+  tags: [tools]
+
+- name: Ensure monitoring and network tools are installed
+  ansible.builtin.dnf:
+    name:
+      - bat
+      - btop
+      - htop
+      - nmap
+      - iscsi-initiator-utils
+    state: present
+  become: true
+  tags: [tools]
+  retries: 3
+  delay: 10
+
+- name: Check if grc is available in repos
+  ansible.builtin.command: dnf info grc
+  register: grc_repo_check
+  failed_when: false
+  changed_when: false
+  tags: [tools]
+
+- name: Install grc from repo if available
+  ansible.builtin.dnf:
+    name: grc
+    state: present
+  when: grc_repo_check.rc == 0
+  become: true
+  tags: [tools]
+
+- name: Install grc from custom RPM if repo unavailable and URL provided
+  block:
+    - name: Check if grc is already installed
+      ansible.builtin.command: rpm -q grc
+      register: grc_installed_check
+      failed_when: false
+      changed_when: false
+
+    - name: Download grc RPM
+      ansible.builtin.get_url:
+        url: "{{ grc_rpm_url }}"
+        dest: "/tmp/{{ grc_rpm_url | basename }}"
+        mode: "0644"
+      when: grc_installed_check.rc != 0
+      become: true
+
+    - name: Install grc from downloaded RPM
+      ansible.builtin.dnf:
+        name: "/tmp/{{ grc_rpm_url | basename }}"
+        state: present
+        disable_gpg_check: true
+      when: grc_installed_check.rc != 0
+      become: true
+  when: grc_repo_check.rc != 0 and grc_rpm_url is defined
+  tags: [tools]
+
+- name: Install ELRepo repository
+  ansible.builtin.dnf:
+    name: https://www.elrepo.org/elrepo-release-10.el10.elrepo.noarch.rpm
+    state: present
+  become: true
+  tags: [tools]
+
+- name: Install latest mainline kernel
+  ansible.builtin.dnf:
+    name: kernel-ml
+    state: present
+  become: true
+  tags: [tools]

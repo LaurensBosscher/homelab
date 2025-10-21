@@ -9,7 +9,7 @@
   ansible.builtin.file:
     path: /etc/rancher/k3s
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: Create /etc/rancher/k3s/config.yaml with Tailscale configuration
   ansible.builtin.copy:
@@ -18,7 +18,7 @@
       bind-address: {{ tailscale_ip.stdout }}
       node-external-ip: {{ tailscale_ip.stdout }}  # Advertises Tailscale IP for external access
       node-ip: {{ tailscale_ip.stdout }}  # Sets internal node IP to Tailscale address
-      advertise-address: {{ tailscale_ip.stdout }}  # Kubelet advertises this IP for node communication
+      # advertise-address: {{ tailscale_ip.stdout }}  # Kubelet advertises this IP for node communication
 
       # Flannel CNI binding
       flannel-iface: tailscale0  # Binds Flannel to Tailscale interface for pod networking
@@ -49,4 +49,4 @@
         - "node-status-update-frequency=10s"
         - "max-pods=200"  # Increase pod density for large clusters
     dest: /etc/rancher/k3s/config.yaml
-    mode: '0644'
+    mode: "0644"

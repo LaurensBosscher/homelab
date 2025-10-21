@@ -1,0 +1,132 @@
+---
+- name: Get total system memory in GB
+  ansible.builtin.shell: 'awk ''/MemTotal/ {printf "%.0f", $2/1024/1024}'' /proc/meminfo'
+  register: system_memory_gb
+  changed_when: false
+  tags: [optimizations]
+
+- name: Set memory optimization variables for low RAM systems (< 12GB)
+  ansible.builtin.set_fact:
+    vm_swappiness: "100"
+    vm_dirty_ratio: "10"
+    vm_dirty_background_ratio: "3"
+    vm_min_free_kbytes: "262144"
+    queue_depth: "32"
+  when: system_memory_gb.stdout | int < 12
+  tags: [optimizations]
+
+- name: Set memory optimization variables for high RAM systems (>= 12GB)
+  ansible.builtin.set_fact:
+    vm_swappiness: "10"
+    vm_dirty_ratio: "15"
+    vm_dirty_background_ratio: "5"
+    vm_min_free_kbytes: "1048576"
+    queue_depth: "256"
+  when: system_memory_gb.stdout | int >= 12
+  tags: [optimizations]
+
+- name: Install tuned for performance profiles
+  ansible.builtin.dnf:
+    name: tuned
+    state: present
+  become: true
+  tags: [optimizations]
+
+- name: Enable and start tuned service
+  ansible.builtin.systemd:
+    name: tuned
+    enabled: true
+    state: started
+  become: true
+  tags: [optimizations]
+
+- name: Apply throughput-performance profile
+  ansible.builtin.shell: tuned-adm profile throughput-performance
+  become: true
+  tags: [optimizations]
+
+- name: Apply memory optimization parameters
+  ansible.builtin.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-kubernetes-optimizations.conf
+    reload: true
+  become: true
+  loop:
+    - { name: "vm.swappiness", value: "{{ vm_swappiness }}" }
+    - { name: "vm.dirty_ratio", value: "{{ vm_dirty_ratio }}" }
+    - {
+        name: "vm.dirty_background_ratio",
+        value: "{{ vm_dirty_background_ratio }}",
+      }
+    - { name: "vm.vfs_cache_pressure", value: "50" }
+    - { name: "vm.min_free_kbytes", value: "{{ vm_min_free_kbytes }}" }
+    - { name: "vm.dirty_writeback_centisecs", value: "5000" }
+    - { name: "vm.dirty_expire_centisecs", value: "30000" }
+  tags: [optimizations]
+
+- name: Get primary block device
+  ansible.builtin.shell: "lsblk -no NAME,RO | grep '^sd' | grep '0$' | head -1 | awk '{print $1}'"
+  register: primary_block_device
+  changed_when: false
+  tags: [optimizations]
+
+- name: Apply I/O scheduler optimization (mq-deadline)
+  ansible.builtin.shell: "echo mq-deadline > /sys/block/{{ primary_block_device.stdout }}/queue/scheduler"
+  become: true
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Set read-ahead buffer to 4MB for better container image performance
+  ansible.builtin.shell: "echo 4096 > /sys/block/{{ primary_block_device.stdout }}/queue/read_ahead_kb"
+  become: true
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Optimize queue depth based on system memory
+  ansible.builtin.shell: "echo {{ queue_depth }} > /sys/block/{{ primary_block_device.stdout }}/queue/nr_requests"
+  become: true
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Remount root filesystem with noatime for better I/O performance
+  ansible.builtin.mount:
+    path: /
+    src: "{{ ansible_mounts[0].device }}"
+    fstype: "{{ ansible_mounts[0].fstype }}"
+    opts: defaults,noatime
+    state: mounted
+  become: true
+  tags: [optimizations]
+
+- name: Create systemd service to persist I/O optimizations
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Apply I/O optimizations after boot
+      After=local-fs.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/bash -c 'echo mq-deadline > /sys/block/{{ primary_block_device.stdout }}/queue/scheduler'
+      ExecStart=/bin/bash -c 'echo 4096 > /sys/block/{{ primary_block_device.stdout }}/queue/read_ahead_kb'
+      ExecStart=/bin/bash -c 'echo {{ queue_depth }} > /sys/block/{{ primary_block_device.stdout }}/queue/nr_requests'
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/io-optimizations.service
+    mode: "0644"
+  become: true
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Enable I/O optimizations service
+  ansible.builtin.systemd:
+    name: io-optimizations
+    enabled: true
+    daemon_reload: true
+  become: true
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]

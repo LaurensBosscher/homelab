@@ -28,17 +28,14 @@
   when: not tailscale_binary.stat.exists
   tags: [tailscale]
 
-- name: Check Tailscale status
-  ansible.builtin.command: tailscale status
-  register: tailscale_status
-  failed_when: false
-  changed_when: false
-  tags: [tailscale]
-
-- name: Bring up Tailscale if not connected
-  ansible.builtin.command: tailscale up
-  when: "'Tailscale is stopped' in tailscale_status.stdout or 'Logged out' in tailscale_status.stdout"
-  register: tailscale_up
+- name: Configure Tailscale MTU for optimal performance
+  ansible.builtin.copy:
+    content: |
+      TS_DEBUG_MTU=1420
+    dest: /etc/default/tailscaled
+    mode: "0644"
+  become: true
+  notify: restart tailscaled
   tags: [tailscale]
 
 - name: Enable and start Tailscale service
