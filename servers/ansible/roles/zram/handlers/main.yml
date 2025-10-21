@@ -1,0 +1,5 @@
+---
+- name: restart zram
+  ansible.builtin.systemd:
+    name: systemd-zram-setup@zram0.service
+    state: restarted

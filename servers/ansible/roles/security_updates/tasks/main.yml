@@ -1,0 +1,98 @@
+---
+# Enable automatic security updates via dnf-automatic
+- name: Ensure dnf-automatic installed
+  ansible.builtin.dnf:
+    name: dnf-automatic
+    state: present
+  tags: [security, updates]
+
+- name: Check if dnf-automatic config exists
+  ansible.builtin.stat:
+    path: /etc/dnf/automatic.conf
+  register: dnf_automatic_config
+  tags: [security, updates]
+
+- name: Configure dnf-automatic apply_updates=yes
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: "^apply_updates"
+    line: "apply_updates = yes"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Configure dnf-automatic download_updates=yes
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: "^download_updates"
+    line: "download_updates = yes"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Configure dnf-automatic reboot=no
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: "^reboot"
+    line: "reboot = no"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Configure dnf-automatic upgrade_type=security
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: "^upgrade_type"
+    line: "upgrade_type = security"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Configure dnf-automatic to restart services
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: "^emit_via"
+    line: "emit_via = motd"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Add service restart configuration to dnf-automatic
+  ansible.builtin.blockinfile:
+    path: /etc/dnf/automatic.conf
+    block: |
+      [commands]
+      # What kind of upgrade to perform:
+      # default                            = all available upgrades
+      # security                           = security upgrades only
+      upgrade_type = security
+      
+      # Whether to apply updates
+      apply_updates = yes
+      
+      # Whether to automatically download updates
+      download_updates = yes
+      
+      # Whether to reboot the machine after kernel updates
+      reboot = no
+      
+      # Restart services after package updates
+      restart_services = yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - dnf-automatic service restart config"
+    backup: yes
+  notify: restart dnf-automatic
+  when: dnf_automatic_config.stat.exists
+  tags: [security, updates]
+
+- name: Enable and start dnf-automatic timer
+  ansible.builtin.systemd:
+    name: dnf-automatic.timer
+    enabled: "{{ apply_security_updates | default(true) }}"
+    state: started
+  when: apply_security_updates | default(true)
+  tags: [security, updates]

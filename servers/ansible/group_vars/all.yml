@@ -1,0 +1,11 @@
+---
+# Global variables
+apply_security_updates: true
+configure_tailscale: true
+kubecolor_install: true
+zram_enable: true
+
+# Firewall configuration
+firewall_enable: false
+firewall_default_zone: internal
+firewall_block_interface: eth0

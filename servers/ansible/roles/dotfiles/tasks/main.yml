@@ -1,0 +1,212 @@
+---
+- name: Set dotfiles_home fact when user provided
+  ansible.builtin.set_fact:
+    dotfiles_home: "{{ (dotfiles_user is defined and dotfiles_user != lookup('env','USER')) | ternary('/home/' + dotfiles_user, lookup('env','HOME')) }}"
+  when: dotfiles_user is defined
+  tags: [dotfiles]
+
+- name: Default dotfiles_home to HOME if not set
+  ansible.builtin.set_fact:
+    dotfiles_home: "{{ lookup('env','HOME') if dotfiles_home is not defined else dotfiles_home }}"
+  tags: [dotfiles]
+
+- name: Clean DNF cache
+  ansible.builtin.command: dnf clean all
+  become: true
+  tags: [dotfiles]
+
+- name: Enable EPEL repository
+  ansible.builtin.dnf:
+    name: epel-release
+    state: present
+  become: true
+  ignore_errors: true
+  tags: [dotfiles]
+
+- name: Enable EPEL repository (AlmaLinux alternative)
+  ansible.builtin.dnf:
+    name: epel-release-almalinux-altarch
+    state: present
+  become: true
+  when: ansible_distribution == "AlmaLinux"
+  tags: [dotfiles]
+
+- name: Ensure monitoring and network tools are installed
+  ansible.builtin.dnf:
+    name:
+      - bat
+      - btop
+      - htop
+      - nmap
+      - iscsi-initiator-utils
+    state: present
+  become: true
+  tags: [dotfiles]
+  retries: 3
+  delay: 10
+
+- name: Check if k9s is already installed
+  ansible.builtin.command: k9s version
+  register: k9s_check
+  failed_when: false
+  changed_when: false
+  tags: [dotfiles]
+
+- name: Download and install k9s
+  block:
+    - name: Download k9s
+      ansible.builtin.get_url:
+        url: https://github.com/derailed/k9s/releases/download/v0.30.0/k9s_Linux_amd64.tar.gz
+        dest: /tmp/k9s_Linux_amd64.tar.gz
+        mode: "0644"
+      become: true
+
+    - name: Extract k9s
+      ansible.builtin.unarchive:
+        src: /tmp/k9s_Linux_amd64.tar.gz
+        dest: /tmp
+        remote_src: true
+      become: true
+
+    - name: Move k9s to /usr/local/bin
+      ansible.builtin.copy:
+        src: /tmp/k9s
+        dest: /usr/local/bin/k9s
+        mode: "0755"
+        remote_src: true
+      become: true
+
+    - name: Clean up k9s files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/k9s_Linux_amd64.tar.gz
+        - /tmp/k9s
+        - /tmp/LICENSE
+        - /tmp/README.md
+      become: true
+  when: k9s_check.rc != 0
+  tags: [dotfiles]
+
+- name: Check if grc is available in repos
+  ansible.builtin.command: dnf info grc
+  register: grc_repo_check
+  failed_when: false
+  changed_when: false
+  tags: [dotfiles]
+
+- name: Install grc from repo if available
+  ansible.builtin.dnf:
+    name: grc
+    state: present
+  when: grc_repo_check.rc == 0
+  become: true
+  tags: [dotfiles]
+
+- name: Install grc from custom RPM if repo unavailable and URL provided
+  block:
+    - name: Check if grc is already installed
+      ansible.builtin.command: rpm -q grc
+      register: grc_installed_check
+      failed_when: false
+      changed_when: false
+
+    - name: Download grc RPM
+      ansible.builtin.get_url:
+        url: "{{ grc_rpm_url }}"
+        dest: "/tmp/{{ grc_rpm_url | basename }}"
+        mode: "0644"
+      when: grc_installed_check.rc != 0
+      become: true
+
+    - name: Install grc from downloaded RPM
+      ansible.builtin.dnf:
+        name: "/tmp/{{ grc_rpm_url | basename }}"
+        state: present
+        disable_gpg_check: true
+      when: grc_installed_check.rc != 0
+      become: true
+  when: grc_repo_check.rc != 0 and grc_rpm_url is defined
+  tags: [dotfiles]
+
+- name: Deploy .bashrc
+  ansible.builtin.copy:
+    dest: "/root/.bashrc"
+    content: |
+      # .bashrc
+
+      # Source global definitions
+      if [ -f /etc/bashrc ]; then
+          . /etc/bashrc
+      fi
+
+      # User specific environment
+      if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+      then
+          PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+      fi
+      export PATH
+
+      # Uncomment the following line if you don't like systemctl's auto-paging feature:
+      # export SYSTEMD_PAGER=
+
+      # User specific aliases and functions
+
+      # Kubernetes autocompletion for kubectl
+      if command -v kubectl &> /dev/null; then
+          source <(kubectl completion bash)
+      fi
+
+      # Make "kubecolor" borrow the same completion logic as "kubectl"
+      complete -o default -F __start_kubectl kubecolor
+      complete -o default -F __start_kubectl k
+
+      # Default editor is nano
+      export EDITOR=nano
+      export VISUAL=nano
+
+      # Aliases
+      alias k='kubecolor'
+      alias cat='bat'  # Assuming bat is installed; provides syntax highlighting for cat
+      alias k9s='k9s --kubeconfig /etc/rancher/k3s/k3s.yaml'
+
+      # Enable color support for ls and grep (common tweak for better readability)
+      if [ -x /usr/bin/dircolors ]; then
+          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+          alias ls='ls --color=auto'
+          alias grep='grep --color=auto'
+          alias fgrep='fgrep --color=auto'
+          alias egrep='egrep --color=auto'
+      fi
+      GRC_ALIASES=true
+      source /etc/profile.d/grc.sh 2>/dev/null || true
+
+      # History settings for better session management
+      HISTSIZE=10000
+      HISTFILESIZE=20000
+      HISTCONTROL=ignoreboth  # Ignore duplicates and lines starting with space
+      shopt -s histappend    # Append to history instead of overwriting
+
+      # Colored prompt (adjust PS1 as needed)
+      if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+          PS1='\[\e[32m\]\u@\h \[\e[34m\]\w \[\e[0m\]\$ '
+      else
+          PS1='\u@\h:\w\$ '
+      fi
+
+      # Safety aliases to prevent accidental overwrites
+      alias rm='rm -i'
+      alias cp='cp -i'
+      alias mv='mv -i'
+
+      # Function to quickly update system (AlmaLinux/RHEL-based)
+      update() {
+          sudo dnf update -y && sudo dnf autoremove -y
+      }
+
+    owner: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
+    group: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
+    mode: "0644"
+    backup: yes
+  tags: [dotfiles]

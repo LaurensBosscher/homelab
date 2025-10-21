@@ -1,0 +1,23 @@
+---
+- name: Get Tailscale IP address
+  ansible.builtin.shell: ip -4 addr show tailscale0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+  register: tailscale_ip
+  changed_when: false
+  failed_when: tailscale_ip.stdout == ""
+
+- name: Ensure /etc/rancher/k3s directory exists
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: "0755"
+
+- name: Create /etc/rancher/k3s/config.yaml with Tailscale configuration
+  ansible.builtin.copy:
+    content: |
+      bind-address: {{ tailscale_ip.stdout }}
+      node-external-ip: {{ tailscale_ip.stdout }}  # Advertises Tailscale IP for external access
+      node-ip: {{ tailscale_ip.stdout }}  # Sets internal node IP to Tailscale address
+
+      flannel-iface: tailscale0  # Binds Flannel CNI to Tailscale interface for pod networking
+    dest: /etc/rancher/k3s/config.yaml
+    mode: "0644"

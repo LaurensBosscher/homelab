@@ -1,0 +1,49 @@
+---
+- name: Check if Tailscale is already installed
+  ansible.builtin.stat:
+    path: /usr/bin/tailscale
+  register: tailscale_binary
+  tags: [tailscale]
+
+- name: Download Tailscale install script
+  ansible.builtin.get_url:
+    url: https://tailscale.com/install.sh
+    dest: /tmp/tailscale-install.sh
+    mode: "0755"
+  when: not tailscale_binary.stat.exists
+  become: true
+  tags: [tailscale]
+
+- name: Install Tailscale
+  ansible.builtin.command: /tmp/tailscale-install.sh
+  when: not tailscale_binary.stat.exists
+  become: true
+  register: tailscale_install
+  tags: [tailscale]
+
+- name: Clean up install script
+  ansible.builtin.file:
+    path: /tmp/tailscale-install.sh
+    state: absent
+  when: not tailscale_binary.stat.exists
+  tags: [tailscale]
+
+- name: Check Tailscale status
+  ansible.builtin.command: tailscale status
+  register: tailscale_status
+  failed_when: false
+  changed_when: false
+  tags: [tailscale]
+
+- name: Bring up Tailscale if not connected
+  ansible.builtin.command: tailscale up
+  when: "'Tailscale is stopped' in tailscale_status.stdout or 'Logged out' in tailscale_status.stdout"
+  register: tailscale_up
+  tags: [tailscale]
+
+- name: Enable and start Tailscale service
+  ansible.builtin.systemd:
+    name: tailscaled
+    state: started
+    enabled: true
+  tags: [tailscale]

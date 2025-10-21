@@ -47,3 +47,33 @@ I'm currently running the following apps:
 - fusion
 - stremio-web
 - sabnzbd
+
+# Adding new nodes
+
+## Preparation
+
+1. Copy your ssh key:
+
+```bash
+ssh-copy-id root@<IP_ADDRESS> -i ~/.ssh/id_rsa_kubernetes
+```
+
+2. Install Tailscale
+
+```
+```
+
+## Ansible
+
+Deploy:
+
+```bash
+ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
+```
+
+Ansible configures the nodes with the following:
+
+- Automatic updates enabled
+- SSH secured and only listening on the tailscale interface
+- Firewall pre-configured (not yet enabled due to issues with K8s egress)
+- ZRAM activated

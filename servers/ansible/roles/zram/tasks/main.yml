@@ -1,0 +1,35 @@
+---
+- name: Install zram-generator
+  ansible.builtin.dnf:
+    name: zram-generator
+    state: present
+  when: zram_enable | default(true)
+  tags: [zram]
+
+- name: Configure zram-generator
+  ansible.builtin.copy:
+    dest: /etc/systemd/zram-generator.conf
+    content: |-
+      [zram0]
+      zram-size = ram / 2
+      compression-algorithm = zstd
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart zram
+  when: zram_enable | default(true)
+  tags: [zram]
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: zram_enable | default(true)
+  tags: [zram]
+
+- name: Ensure zram service started
+  ansible.builtin.systemd:
+    name: systemd-zram-setup@zram0.service
+    state: started
+    enabled: true
+  when: zram_enable | default(true)
+  tags: [zram]

@@ -1,0 +1,30 @@
+---
+- name: Apply shared roles to all nodes
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - { role: security_updates }
+    - { role: dotfiles }
+    # - { role: tailscale, when: configure_tailscale }
+    - { role: kubecolor }
+    - { role: zram }
+    - { role: ssh }
+    - { role: firewall }
+
+- name: Kubernetes control plane configuration
+  hosts: kubernetes-control-plane
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - { role: kubernetes-control-plane }
+
+- name: Kubernetes agent node configuration
+  hosts: kubernetes-agent
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - { role: kubernetes-agent }

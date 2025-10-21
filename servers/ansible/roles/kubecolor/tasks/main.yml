@@ -1,0 +1,21 @@
+---
+- name: Ensure dnf config-manager plugin present
+  ansible.builtin.dnf:
+    name: dnf-plugins-core
+    state: present
+  tags: [kubecolor]
+
+- name: Add kubecolor repo
+  ansible.builtin.get_url:
+    url: https://kubecolor.github.io/packages/rpm/kubecolor.repo
+    dest: /etc/yum.repos.d/kubecolor.repo
+    mode: "0644"
+  when: kubecolor_install | default(true)
+  tags: [kubecolor]
+
+- name: Install kubecolor
+  ansible.builtin.dnf:
+    name: kubecolor
+    state: present
+  when: kubecolor_install | default(true)
+  tags: [kubecolor]

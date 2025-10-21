@@ -1,0 +1,4 @@
+---
+# Default user to deploy dotfiles to. If not set, uses the connecting ansible user.
+dotfiles_user: "{{ ansible_user_id | default('root') }}"
+grc_rpm_url: "https://fr2.rpmfind.net/linux/fedora/linux/releases/42/Everything/x86_64/os/Packages/g/grc-1.13-9.fc42.noarch.rpm"
