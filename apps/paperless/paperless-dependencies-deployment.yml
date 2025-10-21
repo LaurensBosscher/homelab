@@ -103,7 +103,7 @@ items:
         spec:
           containers:
             - name: gotenberg
-              image: docker.io/gotenberg/gotenberg:8.22
+              image: docker.io/gotenberg/gotenberg:8.24
               ports:
                 - containerPort: 3000
               command:
