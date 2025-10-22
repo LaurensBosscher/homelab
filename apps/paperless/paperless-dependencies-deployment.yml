@@ -60,7 +60,7 @@ items:
         spec:
           containers:
             - name: postgres
-              image: docker.io/library/postgres:17
+              image: docker.io/library/postgres:18
               ports:
                 - containerPort: 5432
               envFrom:
