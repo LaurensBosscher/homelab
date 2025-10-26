@@ -1,6 +1,120 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: wanderer-search
+  labels:
+    app: wanderer-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wanderer-search
+  template:
+    metadata:
+      labels:
+        app: wanderer-search
+    spec:
+      containers:
+        - name: search
+          image: getmeili/meilisearch:v1.11.3
+          ports:
+            - containerPort: 7700
+          env:
+            - name: MEILI_URL
+              value: http://localhost:7700
+            - name: MEILI_MASTER_KEY
+              value: vODkljPcfFANYNepCHyDyGjzAMPcdHnrb6X5KyXQPWo
+            - name: MEILI_NO_ANALYTICS
+              value: "true"
+          volumeMounts:
+            - name: search-data
+              mountPath: /meili_data/data.ms
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7700
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7700
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 10
+      volumes:
+        - name: search-data
+          persistentVolumeClaim:
+            claimName: wanderer-search-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wanderer-db
+  labels:
+    app: wanderer-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wanderer-db
+  template:
+    metadata:
+      labels:
+        app: wanderer-db
+    spec:
+      containers:
+        - name: db
+          image: flomp/wanderer-db
+          ports:
+            - containerPort: 8090
+          env:
+            - name: MEILI_URL
+              value: http://wanderer-search:7700
+            - name: MEILI_MASTER_KEY
+              value: vODkljPcfFANYNepCHyDyGjzAMPcdHnrb6X5KyXQPWo
+            - name: POCKETBASE_ENCRYPTION_KEY
+              value: fde406459dc1f6ca6f348e1f44a9a2af
+            - name: ORIGIN
+              value: http://localhost:3000
+          volumeMounts:
+            - name: db-data
+              mountPath: /pb_data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8090
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8090
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 10
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: wanderer-db-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: wanderer
   labels:
     app: wanderer
@@ -26,15 +140,37 @@ spec:
                       - us
       containers:
         - name: wanderer
-          image: ghcr.io/flomp/wanderer:latest
+          image: flomp/wanderer-web
           ports:
             - containerPort: 3000
           env:
-            - name: TZ
-              value: Europe/Zurich
+            - name: MEILI_URL
+              value: http://wanderer-search:7700
+            - name: MEILI_MASTER_KEY
+              value: vODkljPcfFANYNepCHyDyGjzAMPcdHnrb6X5KyXQPWo
+            - name: ORIGIN
+              value: http://localhost:3000
+            - name: BODY_SIZE_LIMIT
+              value: Infinity
+            - name: PUBLIC_POCKETBASE_URL
+              value: http://wanderer-db:8090
+            - name: PUBLIC_DISABLE_SIGNUP
+              value: "false"
+            - name: UPLOAD_FOLDER
+              value: /app/uploads
+            - name: UPLOAD_USER
+              value: ""
+            - name: UPLOAD_PASSWORD
+              value: ""
+            - name: PUBLIC_OVERPASS_API_URL
+              value: https://overpass-api.de
+            - name: PUBLIC_VALHALLA_URL
+              value: https://valhalla1.openstreetmap.de
+            - name: PUBLIC_NOMINATIM_URL
+              value: https://nominatim.openstreetmap.org
           volumeMounts:
-            - name: data
-              mountPath: /app/data
+            - name: uploads
+              mountPath: /app/uploads
           resources:
             requests:
               cpu: 100m
@@ -45,9 +181,17 @@ spec:
             httpGet:
               path: /
               port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 60
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 10
       volumes:
-        - name: data
+        - name: uploads
           persistentVolumeClaim:
             claimName: wanderer-data

@@ -1,6 +1,30 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: wanderer-search
+spec:
+  selector:
+    app: wanderer-search
+  ports:
+    - protocol: TCP
+      port: 7700
+      targetPort: 7700
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wanderer-db
+spec:
+  selector:
+    app: wanderer-db
+  ports:
+    - protocol: TCP
+      port: 8090
+      targetPort: 8090
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: wanderer
 spec:
   selector:
