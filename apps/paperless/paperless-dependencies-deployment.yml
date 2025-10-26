@@ -19,8 +19,18 @@ items:
           labels:
             app: paperless
             component: redis
-        spec:
-          containers:
+         spec:
+           affinity:
+             nodeAffinity:
+               preferredDuringSchedulingIgnoredDuringExecution:
+                 - weight: 100
+                   preference:
+                     matchExpressions:
+                       - key: region
+                         operator: In
+                         values:
+                           - us
+           containers:
             - name: redis
               image: docker.io/library/redis:8
               ports:
@@ -57,8 +67,18 @@ items:
           labels:
             app: paperless
             component: postgres
-        spec:
-          containers:
+         spec:
+           affinity:
+             nodeAffinity:
+               preferredDuringSchedulingIgnoredDuringExecution:
+                 - weight: 100
+                   preference:
+                     matchExpressions:
+                       - key: region
+                         operator: In
+                         values:
+                           - us
+           containers:
             - name: postgres
               image: docker.io/library/postgres:18
               ports:
@@ -100,8 +120,18 @@ items:
           labels:
             app: paperless
             component: gotenberg
-        spec:
-          containers:
+         spec:
+           affinity:
+             nodeAffinity:
+               preferredDuringSchedulingIgnoredDuringExecution:
+                 - weight: 100
+                   preference:
+                     matchExpressions:
+                       - key: region
+                         operator: In
+                         values:
+                           - us
+           containers:
             - name: gotenberg
               image: docker.io/gotenberg/gotenberg:8.24
               ports:
@@ -134,8 +164,18 @@ items:
           labels:
             app: paperless
             component: tika
-        spec:
-          containers:
+         spec:
+           affinity:
+             nodeAffinity:
+               preferredDuringSchedulingIgnoredDuringExecution:
+                 - weight: 100
+                   preference:
+                     matchExpressions:
+                       - key: region
+                         operator: In
+                         values:
+                           - us
+           containers:
             - name: tika
               image: docker.io/apache/tika:latest
               ports:

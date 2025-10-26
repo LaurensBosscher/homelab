@@ -13,8 +13,18 @@ spec:
     metadata:
       labels:
         app: paperless
-    spec:
-      containers:
+     spec:
+       affinity:
+         nodeAffinity:
+           preferredDuringSchedulingIgnoredDuringExecution:
+             - weight: 100
+               preference:
+                 matchExpressions:
+                   - key: region
+                     operator: In
+                     values:
+                       - us
+       containers:
         - name: paperless
           image: ghcr.io/paperless-ngx/paperless-ngx:latest
           ports:
