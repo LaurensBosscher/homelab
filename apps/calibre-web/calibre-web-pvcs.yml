@@ -25,5 +25,5 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 5Gi
       storageClassName: longhorn-2replicas-compressed
