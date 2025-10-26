@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kite
+  labels:
+    app: kite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kite
+  template:
+    metadata:
+      labels:
+        app: kite
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: kite
+          image: daocloud.io/zxh326/kite:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: TZ
+              value: Europe/Zurich
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 60
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: kite-data
