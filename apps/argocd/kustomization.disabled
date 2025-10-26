@@ -5,11 +5,8 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/ha/install.yaml
+  - https://github.com/argoproj/argo-cd/blob/v3.1.9/manifests/ha/install.yaml
   - appset.yml
-
-components:
-  - https://github.com/argoproj-labs/argocd-extensions/manifests
 # images:
 #   - name: quay.io/argoproj/argocd
 #     newName: ghcr.io/argoproj/argo-cd/argocd
