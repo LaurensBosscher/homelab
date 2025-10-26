@@ -25,15 +25,16 @@ The cluster is configured with production like settings such as:
 
 # Hardware
 
-| location   | ram  | cpu                            | role          | note                   | cost/y |
-| ---------- | ---- | ------------------------------ | ------------- | ---------------------- | ------ |
-| California | 30GB | 3c (Xeon Silver 4214)          | control plane | High-latency workhorse | $35    |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |                        | $20    |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |                        | $20    |
-| Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | control plane |                        | $20    |
-| Zurich     | 32GB | 4c (Intel N97)                 | control plane | Home Server            | $0     |
+| location   | ram  | cpu                            | role          | note        | cost/y |
+| ---------- | ---- | ------------------------------ | ------------- | ----------- | ------ |
+| California | 30GB | 3c (Xeon Silver 4214)          | worker        |             | $35    |
+| California | 30GB | 3c (Xeon Silver 4214)          | worker        |             | $35    |
+| London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |             | $20    |
+| London     | 5GB  | 2c (Xeon Gold 6148)            | control plane |             | $20    |
+| Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | control plane |             | $20    |
+| Zurich     | 32GB | 4c (Intel N97)                 | control plane | Home Server | $0     |
 
-Total of 80 GB RAM and 13 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
+Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
 
 # Apps
 
@@ -55,25 +56,56 @@ I'm currently running the following apps:
 1. Copy your ssh key:
 
 ```bash
-ssh-copy-id root@<IP_ADDRESS> -i ~/.ssh/id_rsa_kubernetes
+ssh-copy-id -i ~/.ssh/id_rsa_kubernetes root@<IP_ADDRESS>
 ```
 
 2. Install Tailscale
 
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
 ```
-```
+3. Add new node to servers/ansible/hosts.ini
 
-## Ansible
-
-Deploy:
+4. Deploy:
 
 ```bash
 ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
 ```
 
+5. Reboot (to ensure that the new mainline kernel is loaded)
+
+6. Connect to cluster:
+
+### Control-plane-node
+```bash
+sudo systemctl enable --now iscsid
+
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_TOKEN=<TOKEN> sh -s - server \
+    --server https://<IP_ADDRESS_OF_NODE>:6443```
+
+### Agent
+```bash
+
+```
+
 Ansible configures the nodes with the following:
 
-- Automatic updates enabled
-- SSH secured and only listening on the tailscale interface
+- Automatic security updates enabled and services are automatically restarted (if needed) 
+- SSH secured by only listening on the tailscale interface
 - Firewall pre-configured (not yet enabled due to issues with K8s egress)
 - ZRAM activated
+- Network and other tweaks applied to optimize for Kubernetes usage
+- K9S, Kubecolor and useful aliases automatically applied
+
+# Tips & Tricks
+
+## ETCDL
+
+```bash
+export ETCDCTL_ENDPOINTS="https://100.81.190.71:2379,https://100.79.162.75:2379"
+export ETCDCTL_CACERT="/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt"
+export ETCDCTL_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
+export ETCDCTL_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
+etcdctl member list
+```
