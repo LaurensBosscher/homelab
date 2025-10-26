@@ -34,6 +34,8 @@ data:
         style: column
       News:
         style: column
+      Productivity:
+        style: column
       Cluster:
         style: column
       Infrastructure:
@@ -167,6 +169,17 @@ data:
           href: https://nzz.ch
           description: Neue Zürcher Zeitung
           icon: https://play-lh.googleusercontent.com/l1VnOQVE44hK4cZ4aXecuOMjXwnT9RSyhSfgG_BuNAmsaTzSuZ6sKWXeWHWc4A18cyM
+    - Productivity:
+        - Wanderer:
+            href: https://wanderer.bosscher.ch
+            description: Self-hosted trail database
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
+            ping: http://wanderer.default.svc.cluster.local:3000
+        - n8n:
+            href: https://n8n.bosscher.ch
+            description: Workflow automation
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
+            ping: http://n8n.default.svc.cluster.local:5678
     - AI:
         - Grok:
             href: https://grok.com/
