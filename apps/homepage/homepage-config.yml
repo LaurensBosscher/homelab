@@ -40,7 +40,7 @@ data:
         style: column
     providers:
       longhorn:
-        url: http://longhorn-frontend.longhorn-system.svc.cluster.local
+        url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
       argocd:
         url: http://argocd-server.argocd.svc.cluster.local
     experimental:
@@ -144,96 +144,115 @@ data:
           href: https://fusion.bosscher.ch
           description: Self-hosted RSS reader
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
-          ping: https://fusion.bosscher.ch
+          ping: http://fusion.default.svc.cluster.local:8080
+      - Wallabag:
+          href: https://wallabag.bosscher.ch
+          description: Read-it-later service
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wallabag.png
+          ping: http://wallabag.default.svc.cluster.local:80
+      - Shiori:
+          href: https://shiori.bosscher.ch
+          description: Bookmark manager
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
+          ping: http://shiori.default.svc.cluster.local:8080
       - X:
           href: https://x.com
           description: X (Formerly Twitter)
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
-          ping: https://x.com
       - HackersNews:
           href: https://news.ycombinator.com/
           description: Hacker News
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/hacker-news.svg
-          ping: https://news.ycombinator.com
       - NZZ:
           href: https://nzz.ch
           description: Neue Zürcher Zeitung
           icon: https://play-lh.googleusercontent.com/l1VnOQVE44hK4cZ4aXecuOMjXwnT9RSyhSfgG_BuNAmsaTzSuZ6sKWXeWHWc4A18cyM
-          ping: https://nzz.ch
     - AI:
         - Grok:
             href: https://grok.com/
             description: Truth seeker
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grok-dark.svg
-            ping: https://grok.com
         - OpenRouter:
             href: https://openrouter.ai/chat
             description: OpenRouter AI Chat
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-router-dark.svg
-            ping: https://openrouter.ai
     - Media:
         - Calibre-Web:
             href: https://calibre-web.bosscher.ch
             description: E-book library
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
-            ping: https://calibre-web.bosscher.ch
+            ping: http://calibre-web.default.svc.cluster.local:8083
         - Audiobookshelf:
             href: https://audiobookshelf.bosscher.ch
             description: Audiobook server
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
-            ping: https://audiobookshelf.bosscher.ch
+            ping: http://audiobookshelf.default.svc.cluster.local:80
         - Stremio:
             href: https://stremio.bosscher.ch
             description: Media center
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
-            ping: https://stremio.bosscher.ch
+            ping: http://stremio.default.svc.cluster.local:8080
         - Aiostreams:
             href: https://aiostreams.bosscher.ch/
             description: Media streaming service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
-            ping: https://aiostreams.bosscher.ch
+            ping: http://aiostreams.default.svc.cluster.local:3000
         - sabnzbd:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-            ping: https://sabnzbd.bosscher.ch
+            ping: http://sabnzbd.default.svc.cluster.local:8080
         - Paperless:
             href: https://paperless.bosscher.ch/
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
-            ping: https://paperless.bosscher.ch
+            ping: http://paperless-web.default.svc.cluster.local:8000
+        - RDT-Client:
+            href: https://rdt-client.bosscher.ch/
+            description: Real-Debrid torrent client
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
+            ping: http://rdt-client.default.svc.cluster.local:6500
     - Cluster:
         - Kubernetes Dashboard:
             href: https://kubernetes-dashboard.bosscher.ch
             description: Kubernetes cluster management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/kubernetes.png
-            ping: https://kubernetes-dashboard.bosscher.ch
+            ping: http://kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local:443
         - ArgoCD:
             href: https://argocd.bosscher.ch
             description: GitOps continuous delivery
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            ping: https://argocd.bosscher.ch
+            ping: http://argocd-server.argocd.svc.cluster.local:443
         - Longhorn:
             href: https://longhorn.bosscher.ch
             description: Storage management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
-            ping: https://longhorn.bosscher.ch
+            ping: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
         - Technitium DNS:
             href: https://technitium-web.bosscher.ch
             description: DNS server management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/technitium.webp
-            ping: https://technitium-web.bosscher.ch
+            ping: http://technitium-web.default.svc.cluster.local:5380
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab
             description: Infrastructure as Code
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github-light.svg
-            ping: https://github.com
         - Cloudflare Tunnels:
             href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
             description: Cloudflare Zero Trust & Tunnels
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
             ping: https://one.dash.cloudflare.com
+        - NetAlertX:
+            href: https://netalertx.bosscher.ch
+            description: Network monitoring & alerts
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
+            ping: http://netalertx.default.svc.cluster.local:20211
+        - Kite:
+            href: https://kite.bosscher.ch
+            description: File transfer service
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/firefox-send.png
+            ping: http://kite.default.svc.cluster.local:3000
   widgets.yaml: |
     - greeting:
         text_size: xl
