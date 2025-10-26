@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netalertx
+  labels:
+    app: netalertx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netalertx
+  template:
+    metadata:
+      labels:
+        app: netalertx
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      hostNetwork: true
+      containers:
+        - name: netalertx
+          image: jokobsk/netalertx:latest
+          ports:
+            - containerPort: 20211
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: PORT
+              value: "20211"
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: db
+              mountPath: /app/db
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 20211
+            initialDelaySeconds: 30
+            periodSeconds: 60
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: netalertx-config
+        - name: db
+          persistentVolumeClaim:
+            claimName: netalertx-db
