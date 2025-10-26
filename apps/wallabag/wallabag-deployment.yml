@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallabag
+  labels:
+    app: wallabag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallabag
+  template:
+    metadata:
+      labels:
+        app: wallabag
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: wallabag
+          image: wallabag/wallabag:2.6.9
+          ports:
+            - containerPort: 80
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: SYMFONY__ENV__DOMAIN_NAME
+              value: "http://wallabag.local"
+            - name: SYMFONY__ENV__DATABASE_DRIVER
+              value: pdo_pgsql
+            - name: SYMFONY__ENV__DATABASE_HOST
+              value: wallabag-db
+            - name: SYMFONY__ENV__DATABASE_PORT
+              value: "5432"
+            - name: SYMFONY__ENV__DATABASE_NAME
+              value: wallabag
+            - name: SYMFONY__ENV__DATABASE_USER
+              value: wallabag
+            - name: SYMFONY__ENV__DATABASE_PASSWORD
+              value: wallabag
+            - name: SYMFONY__ENV__REDIS_HOST
+              value: wallabag-redis
+            - name: SYMFONY__ENV__REDIS_PORT
+              value: "6379"
+          volumeMounts:
+            - name: images
+              mountPath: /var/www/wallabag/web/assets/images
+            - name: data
+              mountPath: /var/www/wallabag/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: wallabag-images
+        - name: data
+          persistentVolumeClaim:
+            claimName: wallabag-data

@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: wallabag-db
+      labels:
+        app: wallabag
+        component: db
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: longhorn-2replicas-compressed
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: wallabag-images
+      labels:
+        app: wallabag
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: longhorn-2replicas-compressed
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: wallabag-data
+      labels:
+        app: wallabag
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: longhorn-2replicas-compressed
