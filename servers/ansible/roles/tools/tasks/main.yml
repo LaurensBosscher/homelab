@@ -1,23 +1,10 @@
 ---
-- name: Clean DNF cache
-  ansible.builtin.command: dnf clean all
-  become: true
-  tags: [tools]
-
 - name: Enable EPEL repository
   ansible.builtin.dnf:
     name: epel-release
     state: present
   become: true
   ignore_errors: true
-  tags: [tools]
-
-- name: Enable EPEL repository (AlmaLinux alternative)
-  ansible.builtin.dnf:
-    name: epel-release-almalinux-altarch
-    state: present
-  become: true
-  when: ansible_distribution == "AlmaLinux"
   tags: [tools]
 
 - name: Ensure monitoring and network tools are installed
@@ -79,6 +66,7 @@
   ansible.builtin.dnf:
     name: https://www.elrepo.org/elrepo-release-10.el10.elrepo.noarch.rpm
     state: present
+    disable_gpg_check: true
   become: true
   tags: [tools]
 
@@ -86,5 +74,6 @@
   ansible.builtin.dnf:
     name: kernel-ml
     state: present
+    enablerepo: elrepo-kernel
   become: true
   tags: [tools]
