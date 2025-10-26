@@ -14,6 +14,7 @@ data:
     theme: dark
     favicon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/home-assistant.png
     headerStyle: clean
+    statusStyle: dot
     colorScheme:
       primary: indigo       # Tailwind primary hue
       accent: emerald       # Accent hue
@@ -39,9 +40,9 @@ data:
         style: column
     providers:
       longhorn:
-        url: https://longhorn.bosscher.ch
+        url: http://longhorn-frontend.longhorn-system.svc.cluster.local
       argocd:
-        url: https://argocd-server.argocd.svc.cluster.local
+        url: http://argocd-server.argocd.svc.cluster.local
     experimental:
       showProductivity: true
   custom.css: |
@@ -218,13 +219,6 @@ data:
   widgets.yaml: |
     - greeting:
         text_size: xl
-    - datetime:
-        format:
-          dateStyle: medium
-          timeStyle: short
-          hourCycle: h23
-        locale: de-CH
-        greeting: false
     - kubernetes:
         cluster:
           show: true
