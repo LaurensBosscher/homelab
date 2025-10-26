@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiori
+  labels:
+    app: shiori
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shiori
+  template:
+    metadata:
+      labels:
+        app: shiori
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: shiori
+          image: ghcr.io/go-shiori/shiori:v1.7.1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: SHIORI_DIR
+              value: /data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 60
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: shiori-data
