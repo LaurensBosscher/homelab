@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: rdt-client-data
+      labels:
+        app: rdt-client
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: longhorn-2replicas-compressed
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: rdt-client-downloads
+      labels:
+        app: rdt-client
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: longhorn-2replicas
