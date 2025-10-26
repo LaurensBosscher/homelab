@@ -117,46 +117,23 @@ data:
     @media (max-width: 900px) {
       .service { backdrop-filter: blur(10px) saturate(130%); }
     }
-  custom.js: |
-    // Placeholder for future interactive enhancements
-    (function(){
-      console.log("Homepage custom enhancements loaded ✅");
-    })();
-  bookmarks.yaml: |
-    - Developer:
-        - GitHub:
-            - abbr: GH
-              href: https://github.com/
-        - Homelab Repo:
-            - abbr: LAB
-              href: https://github.com/LaurensBosscher/homelab
-    - Documentation:
-        - Kubernetes Docs:
-            - abbr: K8S
-              href: https://kubernetes.io/docs/home/
-        - Argo CD Docs:
-            - abbr: ACD
-              href: https://argo-cd.readthedocs.io/
-        - Longhorn Docs:
-            - abbr: LH
-              href: https://longhorn.io/docs/
   services.yaml: |
     - News:
       - Fusion:
           href: https://fusion.bosscher.ch
           description: Self-hosted RSS reader
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
-          ping: http://fusion.default.svc.cluster.local:8080
+          siteMonitor: http://fusion.fusion.svc.cluster.local:8080
       - Wallabag:
           href: https://wallabag.bosscher.ch
           description: Read-it-later service
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wallabag.png
-          ping: http://wallabag.default.svc.cluster.local:80
+          siteMonitor: http://wallabag.wallabag.svc.cluster.local:80
       - Shiori:
           href: https://shiori.bosscher.ch
           description: Bookmark manager
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
-          ping: http://shiori.default.svc.cluster.local:8080
+          siteMonitor: http://shiori.shiori.svc.cluster.local:8080
       - X:
           href: https://x.com
           description: X (Formerly Twitter)
@@ -174,12 +151,12 @@ data:
             href: https://wanderer.bosscher.ch
             description: Self-hosted trail database
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
-            ping: http://wanderer.default.svc.cluster.local:3000
+            siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
         - n8n:
             href: https://n8n.bosscher.ch
             description: Workflow automation
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
-            ping: http://n8n.default.svc.cluster.local:5678
+            siteMonitor: http://n8n.n8n.svc.cluster.local:5678
     - AI:
         - Grok:
             href: https://grok.com/
@@ -194,58 +171,58 @@ data:
             href: https://calibre-web.bosscher.ch
             description: E-book library
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
-            ping: http://calibre-web.default.svc.cluster.local:8083
+            siteMonitor: http://calibre-web.calibre-web.svc.cluster.local:8083
         - Audiobookshelf:
             href: https://audiobookshelf.bosscher.ch
             description: Audiobook server
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
-            ping: http://audiobookshelf.default.svc.cluster.local:80
+            siteMonitor: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
         - Stremio:
             href: https://stremio.bosscher.ch
             description: Media center
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
-            ping: http://stremio.default.svc.cluster.local:8080
+            siteMonitor: http://stremio.stremio.svc.cluster.local:8080
         - Aiostreams:
             href: https://aiostreams.bosscher.ch/
             description: Media streaming service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
-            ping: http://aiostreams.default.svc.cluster.local:3000
+            siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
         - sabnzbd:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-            ping: http://sabnzbd.default.svc.cluster.local:8080
+            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8080
         - Paperless:
             href: https://paperless.bosscher.ch/
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
-            ping: http://paperless-web.default.svc.cluster.local:8000
+            siteMonitor: http://paperless-web.paperless.svc.cluster.local:8000
         - RDT-Client:
             href: https://rdt-client.bosscher.ch/
             description: Real-Debrid torrent client
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
-            ping: http://rdt-client.default.svc.cluster.local:6500
+            siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
     - Cluster:
         - Kubernetes Dashboard:
             href: https://kubernetes-dashboard.bosscher.ch
             description: Kubernetes cluster management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/kubernetes.png
-            ping: http://kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local:443
+            siteMonitor: http://kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local:443
         - ArgoCD:
             href: https://argocd.bosscher.ch
             description: GitOps continuous delivery
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            ping: http://argocd-server.argocd.svc.cluster.local:443
+            siteMonitor: http://argocd-server.argocd.svc.cluster.local:443
         - Longhorn:
             href: https://longhorn.bosscher.ch
             description: Storage management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
-            ping: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
+            siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
         - Technitium DNS:
             href: https://technitium-web.bosscher.ch
             description: DNS server management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/technitium.webp
-            ping: http://technitium-web.default.svc.cluster.local:5380
+            siteMonitor: http://technitium-web.default.svc.cluster.local:5380
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab
@@ -255,17 +232,17 @@ data:
             href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
             description: Cloudflare Zero Trust & Tunnels
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
-            ping: https://one.dash.cloudflare.com
+            siteMonitor: https://one.dash.cloudflare.com
         - NetAlertX:
             href: https://netalertx.bosscher.ch
             description: Network monitoring & alerts
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
-            ping: http://netalertx.default.svc.cluster.local:20211
+            siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
         - Kite:
             href: https://kite.bosscher.ch
             description: File transfer service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/firefox-send.png
-            ping: http://kite.default.svc.cluster.local:3000
+            siteMonitor: http://kite.kite.svc.cluster.local:3000
   widgets.yaml: |
     - greeting:
         text_size: xl
