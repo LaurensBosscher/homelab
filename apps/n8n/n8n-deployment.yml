@@ -14,6 +14,16 @@ spec:
       labels:
         app: n8n-postgres
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
       containers:
         - name: postgres
           image: postgres:16
@@ -30,6 +40,8 @@ spec:
               value: "n8n"
             - name: POSTGRES_NON_ROOT_PASSWORD
               value: "n8n_password"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
@@ -38,6 +50,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
+              cpu: 1000m
               memory: 1Gi
           livenessProbe:
             exec:
@@ -86,6 +99,16 @@ spec:
       labels:
         app: n8n-redis
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
       containers:
         - name: redis
           image: redis:6-alpine
@@ -99,6 +122,7 @@ spec:
               cpu: 50m
               memory: 128Mi
             limits:
+              cpu: 500m
               memory: 256Mi
           livenessProbe:
             exec:
@@ -187,6 +211,7 @@ spec:
               cpu: 200m
               memory: 512Mi
             limits:
+              cpu: 2000m
               memory: 2Gi
           livenessProbe:
             httpGet:
@@ -260,6 +285,7 @@ spec:
               cpu: 200m
               memory: 512Mi
             limits:
+              cpu: 2000m
               memory: 2Gi
       volumes:
         - name: n8n-data

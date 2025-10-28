@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn-2replicas-compressed-europe
   resources:
     requests:
       storage: 5Gi
@@ -16,6 +17,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn-2replicas-europe
   resources:
     requests:
       storage: 2Gi
@@ -27,6 +29,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn-2replicas-europe
   resources:
     requests:
       storage: 2Gi

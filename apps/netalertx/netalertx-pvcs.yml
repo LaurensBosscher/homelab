@@ -13,7 +13,7 @@ items:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: longhorn-2replicas-compressed
+      storageClassName: longhorn-2replicas-compressed-us
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -26,4 +26,4 @@ items:
       resources:
         requests:
           storage: 2Gi
-      storageClassName: longhorn-2replicas-compressed
+      storageClassName: longhorn-2replicas-us

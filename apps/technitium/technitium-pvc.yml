@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: longhorn-2replicas-compressed
+  storageClassName: longhorn-2replicas-europe

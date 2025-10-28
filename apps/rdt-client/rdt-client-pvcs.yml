@@ -12,8 +12,8 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 2Gi
-      storageClassName: longhorn-2replicas-compressed
+          storage: 1Gi
+      storageClassName: longhorn-2replicas-compressed-us
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -25,5 +25,5 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
-      storageClassName: longhorn-2replicas
+          storage: 10Gi
+      storageClassName: longhorn-2replicas-us
