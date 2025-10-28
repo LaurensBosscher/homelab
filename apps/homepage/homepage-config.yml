@@ -124,11 +124,6 @@ data:
           description: Self-hosted RSS reader
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
           siteMonitor: http://fusion.fusion.svc.cluster.local:8080
-      - Wallabag:
-          href: https://wallabag.bosscher.ch
-          description: Read-it-later service
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wallabag.png
-          siteMonitor: http://wallabag.wallabag.svc.cluster.local:80
       - Shiori:
           href: https://shiori.bosscher.ch
           description: Bookmark manager

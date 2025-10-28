@@ -9,5 +9,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 2Gi # Adjust size as needed
-  storageClassName: longhorn-2replicas-compressed
+      storage: 2Gi
+  storageClassName: longhorn-2replicas-europe

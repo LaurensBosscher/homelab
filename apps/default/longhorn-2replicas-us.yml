@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: longhorn-2replicas
+  name: longhorn-2replicas-us
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 reclaimPolicy: Delete
@@ -16,3 +16,4 @@ parameters:
   # Compress backups
   backup.compression: "lz4"
   backup.deduplication: "true"
+nodeSelector: "us"
