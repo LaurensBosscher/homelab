@@ -16,4 +16,4 @@ parameters:
   # Compress backups
   backup.compression: "lz4"
   backup.deduplication: "true"
-nodeSelector: "europe"
+  nodeSelector: "europe"
