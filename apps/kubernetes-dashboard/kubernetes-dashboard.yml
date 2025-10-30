@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://kubernetes.github.io/dashboard/
     chart: kubernetes-dashboard
-    targetRevision: 7.13.0
+    targetRevision: 7.14.0
   destination:
     server: https://kubernetes.default.svc
     namespace: kubernetes-dashboard
