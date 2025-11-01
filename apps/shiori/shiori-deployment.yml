@@ -26,7 +26,7 @@ spec:
                       - us
       containers:
         - name: shiori
-          image: ghcr.io/go-shiori/shiori:v1.7.1
+          image: ghcr.io/go-shiori/shiori:v1.8.0
           ports:
             - containerPort: 8080
           env:
