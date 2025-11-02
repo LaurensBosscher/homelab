@@ -6,6 +6,15 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: region
+                operator: In
+                values:
+                  - europe
   revisionHistoryLimit: 3
   replicas: 1
   strategy:

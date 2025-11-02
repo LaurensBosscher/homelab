@@ -43,8 +43,8 @@ spec:
             - cloudflared
             - tunnel
             - --no-autoupdate
-            - --protocol
-            - http2
+            # - --protocol
+            # - http2
             - --loglevel
             - info
             - --metrics
