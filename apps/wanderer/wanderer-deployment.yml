@@ -109,9 +109,9 @@ spec:
                   key: meili_master_key
             - name: POCKETBASE_ENCRYPTION_KEY
               valueFrom:
-              secretKeyRef:
-                name: wanderer-secret
-                key: pocketbase_encryption_key
+                secretKeyRef:
+                  name: wanderer-secret
+                  key: pocketbase_encryption_key
             - name: ORIGIN
               value: https://wanderer.bosscher.ch
           volumeMounts:
