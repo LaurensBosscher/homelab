@@ -26,7 +26,7 @@ spec:
                       - us
       containers:
         - name: rdt-client
-          image: rogerfar/rdtclient:latest
+          image: rogerfar/rdtclient:2.0.119
           ports:
             - containerPort: 6500
           env:

@@ -10,7 +10,7 @@
     - { role: tools }
     - { role: k9s }
     - { role: optimizations }
-    - { role: network-optimizations }
+    # - { role: network-optimizations }
     - { role: tailscale }
     - { role: kubecolor }
     - { role: zram }

@@ -27,7 +27,7 @@ spec:
       hostNetwork: true
       containers:
         - name: netalertx
-          image: jokobsk/netalertx:latest
+          image: jokobsk/netalertx:25.10.1
           ports:
             - containerPort: 20211
           env:
