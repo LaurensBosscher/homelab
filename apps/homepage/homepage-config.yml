@@ -200,8 +200,8 @@ data:
     - Cluster:
         - Kite:
             href: https://kite.bosscher.ch
-            description: File transfer service
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/firefox-send.png
+            description: Modern Kubernetes dashboard
+            icon: https://raw.githubusercontent.com/zxh326/kite/refs/heads/main/docs/assets/logo.svg
             siteMonitor: http://kite.kube-system.svc.cluster.local:8080
         - ArgoCD:
             href: https://argocd.bosscher.ch
