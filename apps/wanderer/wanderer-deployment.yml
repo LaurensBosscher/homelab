@@ -38,7 +38,7 @@ spec:
               value: "true"
           volumeMounts:
             - name: search-data
-              mountPath: /meili_data/data.ms
+              mountPath: /meili_data/
           resources:
             requests:
               cpu: 100m
