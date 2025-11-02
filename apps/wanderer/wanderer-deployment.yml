@@ -112,8 +112,6 @@ spec:
                 secretKeyRef:
                   name: wanderer-secret
                   key: pocketbase_encryption_key
-            - name: ORIGIN
-              value: https://wanderer.bosscher.ch
           volumeMounts:
             - name: db-data
               mountPath: /pb_data
@@ -183,13 +181,13 @@ spec:
                   name: wanderer-secret
                   key: meili_master_key
             - name: ORIGIN
-              value: http://localhost:3000
+              value: https://wanderer.bosscher.ch
             - name: BODY_SIZE_LIMIT
               value: Infinity
             - name: PUBLIC_POCKETBASE_URL
               value: http://wanderer-db:8090
             - name: PUBLIC_DISABLE_SIGNUP
-              value: "true"
+              value: "false"
             - name: UPLOAD_FOLDER
               value: /app/uploads
             - name: UPLOAD_USER
