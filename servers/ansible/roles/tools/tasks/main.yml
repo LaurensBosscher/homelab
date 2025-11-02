@@ -12,6 +12,7 @@
     name:
       - bat
       - btop
+      - wireguard-tools
       - htop
       - nmap
       - iscsi-initiator-utils

@@ -26,7 +26,7 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: postgres:16
+          image: postgres:18
           ports:
             - containerPort: 5432
           env:
@@ -51,7 +51,7 @@ spec:
               memory: 256Mi
             limits:
               cpu: 1000m
-              memory: 1Gi
+              memory: 4Gi
           livenessProbe:
             exec:
               command:
@@ -109,9 +109,11 @@ spec:
                     operator: In
                     values:
                       - us
+      securityContext:
+        fsGroup: 999
       containers:
         - name: redis
-          image: redis:6-alpine
+          image: redis:8-alpine
           ports:
             - containerPort: 6379
           volumeMounts:
@@ -171,6 +173,8 @@ spec:
                     operator: In
                     values:
                       - us
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: n8n
           image: docker.n8n.io/n8nio/n8n
@@ -210,83 +214,12 @@ spec:
             requests:
               cpu: 200m
               memory: 512Mi
-            limits:
-              cpu: 2000m
-              memory: 2Gi
           livenessProbe:
             httpGet:
               path: /healthz
               port: 5678
             initialDelaySeconds: 30
             periodSeconds: 60
-      volumes:
-        - name: n8n-data
-          persistentVolumeClaim:
-            claimName: n8n-data
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: n8n-worker
-  labels:
-    app: n8n-worker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: n8n-worker
-  template:
-    metadata:
-      labels:
-        app: n8n-worker
-    spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
-                    operator: In
-                    values:
-                      - us
-      containers:
-        - name: n8n-worker
-          image: docker.n8n.io/n8nio/n8n
-          command: ["worker"]
-          env:
-            - name: TZ
-              value: Europe/Zurich
-            - name: DB_TYPE
-              value: postgresdb
-            - name: DB_POSTGRESDB_HOST
-              value: n8n-postgres
-            - name: DB_POSTGRESDB_PORT
-              value: "5432"
-            - name: DB_POSTGRESDB_DATABASE
-              value: n8n
-            - name: DB_POSTGRESDB_USER
-              value: n8n
-            - name: DB_POSTGRESDB_PASSWORD
-              value: n8n_password
-            - name: EXECUTIONS_MODE
-              value: queue
-            - name: QUEUE_BULL_REDIS_HOST
-              value: n8n-redis
-            - name: QUEUE_HEALTH_CHECK_ACTIVE
-              value: "true"
-            - name: N8N_ENCRYPTION_KEY
-              value: "your_encryption_key_here"
-          volumeMounts:
-            - name: n8n-data
-              mountPath: /home/node/.n8n
-          resources:
-            requests:
-              cpu: 200m
-              memory: 512Mi
-            limits:
-              cpu: 2000m
-              memory: 2Gi
       volumes:
         - name: n8n-data
           persistentVolumeClaim:

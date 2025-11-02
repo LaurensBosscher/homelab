@@ -1,14 +1,35 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kite
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kite
+    namespace: kube-system
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: kite
+  namespace: kube-system
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kite
   labels:
     app: kite
+  name: kite
+  namespace: kube-system
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: kite
+  strategy: {}
   template:
     metadata:
       labels:
@@ -24,31 +45,29 @@ spec:
                     operator: In
                     values:
                       - us
+      serviceAccountName: kite
       containers:
-        - name: kite
-          image: daocloud.io/zxh326/kite:latest
-          ports:
-            - containerPort: 3000
-          env:
-            - name: TZ
-              value: Europe/Zurich
-          volumeMounts:
-            - name: data
-              mountPath: /app/data
+        - image: ghcr.io/zxh326/kite:v0.7.1
+          name: kite
           resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
           livenessProbe:
             httpGet:
-              path: /
-              port: 3000
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 10
-            periodSeconds: 60
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: kite-data
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          ports:
+            - containerPort: 8080
+              protocol: TCP

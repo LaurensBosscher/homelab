@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/LaurensBosscher/homelab.git
         revision: main
         directories:
-          - path: apps/* # Matches top-level folders under /apps
+          - path: apps/*
   template:
     metadata:
       name: "{{path.basename}}"

@@ -5,10 +5,10 @@
     state: present
   tags: [firewall]
 
-- name: Start and enable firewalld
+- name: Stop and disable firewalld
   ansible.builtin.systemd:
     name: firewalld
-    state: started
+    state: stopped
     enabled: false
   tags: [firewall]
 

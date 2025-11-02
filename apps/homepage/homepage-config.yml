@@ -198,16 +198,16 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
             siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
     - Cluster:
-        - Kubernetes Dashboard:
-            href: https://kubernetes-dashboard.bosscher.ch
-            description: Kubernetes cluster management
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/kubernetes.png
-            siteMonitor: http://kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local:443
+        - Kite:
+            href: https://kite.bosscher.ch
+            description: File transfer service
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/firefox-send.png
+            siteMonitor: http://kite.kube-system.svc.cluster.local:8080
         - ArgoCD:
             href: https://argocd.bosscher.ch
             description: GitOps continuous delivery
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            siteMonitor: http://argocd-server.argocd.svc.cluster.local:443
+            siteMonitor: https://argocdserver.argocd.svc.cluster.local
         - Longhorn:
             href: https://longhorn.bosscher.ch
             description: Storage management
@@ -217,7 +217,7 @@ data:
             href: https://technitium-web.bosscher.ch
             description: DNS server management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/technitium.webp
-            siteMonitor: http://technitium-web.default.svc.cluster.local:5380
+            siteMonitor: http://technitium-web.technitium.svc.cluster.local:5380
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab
@@ -227,25 +227,13 @@ data:
             href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
             description: Cloudflare Zero Trust & Tunnels
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
-            siteMonitor: https://one.dash.cloudflare.com
         - NetAlertX:
             href: https://netalertx.bosscher.ch
             description: Network monitoring & alerts
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
             siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
-        - Kite:
-            href: https://kite.bosscher.ch
-            description: File transfer service
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/firefox-send.png
-            siteMonitor: http://kite.kite.svc.cluster.local:3000
-  bookmarks.yaml: |
-    - Documentation:
-      - Kubernetes:
-          href: https://kubernetes.io/docs/home/
-      - ArgoCD:
-          href: https://argo-cd.readthedocs.io/en/stable/
-      - Longhorn:
-          href: https://longhorn.io/docs/1.4.0/
+
+  bookmarks.yaml:
   widgets.yaml: |
     - greeting:
         text_size: xl
@@ -272,4 +260,3 @@ data:
     - search:
         provider: google
         target: _blank
-  docker.yaml: ""

@@ -5,25 +5,34 @@
   changed_when: false
   failed_when: tailscale_ip.stdout == ""
 
+- name: Get eth0 IP address
+  ansible.builtin.shell: ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+  register: eth0_ip
+  changed_when: false
+  failed_when: eth0_ip.stdout == ""
+
 - name: Ensure /etc/rancher/k3s directory exists
   ansible.builtin.file:
     path: /etc/rancher/k3s
     state: directory
     mode: "0755"
 
-- name: Create /etc/rancher/k3s/config.yaml with Tailscale configuration
+- name: Create /etc/rancher/k3s/config.yaml with built-in Tailscale configuration
   ansible.builtin.copy:
     content: |
-      # Node networking (Tailscale)
-      bind-address: {{ tailscale_ip.stdout }}
-      node-external-ip: {{ tailscale_ip.stdout }}  # Advertises Tailscale IP for external access
-      node-ip: {{ tailscale_ip.stdout }}  # Sets internal node IP to Tailscale address
-      # advertise-address: {{ tailscale_ip.stdout }}  # Kubelet advertises this IP for node communication
+      flannel-backend: wireguard-native
+      flannel-external-ip: true
+      flannel-iface: eth0
 
-      # Flannel CNI binding
-      flannel-iface: tailscale0  # Binds Flannel to Tailscale interface for pod networking
+      flannel-mtu: 1320
 
-      # Swap support for ZRAM
+      prefer-bundled-bin: true
+
+      node-external-ip: {{ eth0_ip.stdout }}  # Advertises eth0 IP for external access
+
+      # Swap support for ZRAM, this allows containers to spike above the configured memory limits safely
+      # Since we're using ZRAM the performance impact is negligible for spikes. 
+      # We should monitor the pods and ensure that they're not constantly swapping.
       failSwapOn: false
       memorySwap:
         swapBehavior: LimitedSwap
@@ -38,13 +47,18 @@
       etcd-arg:
         - "heartbeat-interval=500"  # 500ms
         - "election-timeout=5000"   # 5 seconds = 5000ms
+        - 'log-level=error' # Since etcd logs end-up mixed with the K3S logs make it less verbose
+        - 'warning-apply-duration:1000ms'
 
       # Wide cluster optimizations
       kube-apiserver-arg:
         - "default-not-ready-toleration-seconds=30"
         - "default-unreachable-toleration-seconds=30"
-        - "node-monitor-grace-period=30s"
+
+      kube-controller-manager-arg:
         - "node-monitor-period=10s"
+        - "node-monitor-grace-period=30s"
+
       kubelet-arg:
         - "node-status-update-frequency=10s"
         - "max-pods=200"  # Increase pod density for large clusters
