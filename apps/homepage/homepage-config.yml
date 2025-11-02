@@ -232,8 +232,24 @@ data:
             description: Network monitoring & alerts
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
             siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
-
-  bookmarks.yaml:
+  bookmarks.yaml: |
+    - Developer:
+        - GitHub:
+            - abbr: GH
+              href: https://github.com/
+        - Homelab Repo:
+            - abbr: LAB
+              href: https://github.com/LaurensBosscher/homelab
+    - Documentation:
+        - Kubernetes Docs:
+            - abbr: K8S
+              href: https://kubernetes.io/docs/home/
+        - Argo CD Docs:
+            - abbr: ACD
+              href: https://argo-cd.readthedocs.io/
+        - Longhorn Docs:
+            - abbr: LH
+              href: https://longhorn.io/docs/
   widgets.yaml: |
     - greeting:
         text_size: xl
@@ -260,3 +276,4 @@ data:
     - search:
         provider: google
         target: _blank
+  docker.yaml: ""

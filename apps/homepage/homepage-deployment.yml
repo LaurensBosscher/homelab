@@ -34,9 +34,6 @@ spec:
               containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - mountPath: /app/config/custom.js
-              name: homepage-config
-              subPath: custom.js
             - mountPath: /app/config/custom.css
               name: homepage-config
               subPath: custom.css
