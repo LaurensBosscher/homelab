@@ -5,16 +5,15 @@ This repo contains backups, scripts, and documentationfor my hobby and education
 The cluster is configured with production like settings such as:
 
 - Automatic fail-over for all deployments and nodes, deployed on: 
-    - 5 nodes
+    - 6 nodes
     - Across 4 regions
     - Across 2 different providers + my home server
 - Ability to target deployment to a geographical location to optimize for latency with automatic fallback or do multi-region deployment
-- All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Cloudflare R2](https://developers.cloudflare.com/r2/)
+- All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
 - CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
 - [Etcd](https://etcd.io/docs/v3.6/) (the state and configuration of the cluster) is automatically backed-up to [Cloudflare R2](https://developers.cloudflare.com/r2/)
 - Ingress is taking care of by [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) with one instance per geographical region
-- Communication between the nodes is done through [Tailscale](https://tailscale.com/)
-- Alle nodes have 0 open, internet facing, ports
+- Communication between the nodes is done through the wireguard native backed (Running over Tailscale caused double encapsulation and hard to debug issues)
 - Joining new nodes to the cluster is a ~5 minute job
 - Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
 - [Mend Renovate](https://www.mend.io/renovate/) monitors this repo and automatically creates PRs for any software updates
@@ -22,6 +21,8 @@ The cluster is configured with production like settings such as:
 # Screenshots
 
 ![](docs/homepage-screenshot.png)
+![](docs/kite-screenshot.png)
+
 
 # Hardware
 
@@ -79,14 +80,12 @@ ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kuber
 
 ### Control-plane-node
 ```bash
-sudo systemctl enable --now iscsid
-
-curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_TOKEN=<TOKEN> sh -s - server \
-    --server https://<IP_ADDRESS_OF_NODE>:6443```
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_TOKEN=<TOKEN> sh -s - server --server https://<IP_ADDRESS_OF_NODE>:6443
+```
 
 ### Agent
 ```bash
-
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_URL=<IP_ADDRESS_OF_NODE> K3S_TOKEN=<TOKEN> sh -
 ```
 
 Ansible configures the nodes with the following:
