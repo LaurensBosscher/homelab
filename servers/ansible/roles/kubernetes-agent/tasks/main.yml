@@ -20,7 +20,7 @@
 - name: Create /etc/rancher/k3s/config.yaml with Tailscale configuration
   ansible.builtin.copy:
     content: |
-      # bind-address: {{ tailscale_ip.stdout }}
+      bind-address: {{ eth0_ip.stdout }}
       node-external-ip: {{ eth0_ip.stdout }}  # Advertises eth0 IP for external access
       # node-ip: {{ tailscale_ip.stdout }}  # Sets internal node IP to Tailscale address
 

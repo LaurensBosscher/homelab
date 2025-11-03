@@ -1,41 +1,16 @@
 ---
-- name: Ensure interface facts available for tailscale0
-  ansible.builtin.setup:
-  when: "not (ansible_facts is defined and ('tailscale0' in ansible_facts.interfaces))"
-  tags: [ssh]
+- name: Get Tailscale IP address
+  ansible.builtin.shell: ip -4 addr show tailscale0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+  register: tailscale_ip
+  changed_when: false
+  failed_when: tailscale_ip.stdout == ""
 
-- name: Set tailscale0 IPv4 fact if present
-  ansible.builtin.set_fact:
-    tailscale_ipv4: "{{ ansible_facts['ansible_tailscale0'].ipv4.address }}"
-  when:
-    - ansible_facts is defined
-    - '"tailscale0" in ansible_facts.interfaces'
-    - ansible_facts['ansible_tailscale0'] is defined
-    - ansible_facts['ansible_tailscale0'].ipv4 is defined
-  tags: [ssh]
-
-- name: Set tailscale0 IPv6 fact if present
-  ansible.builtin.set_fact:
-    tailscale_ipv6: "{{ ansible_facts['ansible_tailscale0'].ipv6.address }}"
-  when:
-    - ansible_facts is defined
-    - '"tailscale0" in ansible_facts.interfaces'
-    - ansible_facts['ansible_tailscale0'] is defined
-    - ansible_facts['ansible_tailscale0'].ipv6 is defined
-  tags: [ssh]
-
-- name: Auto-set ssh_listen_address from tailscale0 when not provided
-  ansible.builtin.set_fact:
-    ssh_listen_address: "{{ tailscale_ipv4 | default(tailscale_ipv6 | default('')) }}"
-  when: "ssh_listen_address is not defined or ssh_listen_address | length == 0"
-  tags: [ssh]
 - name: Restrict SSH ListenAddress if ssh_listen_address specified
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
-    line: "ListenAddress {{ ssh_listen_address }}"
+    line: "ListenAddress {{ tailscale_ip.stdout }}"
     create: no
-  when: "ssh_listen_address | length > 0"
   notify: restart sshd
   tags: [ssh]
 

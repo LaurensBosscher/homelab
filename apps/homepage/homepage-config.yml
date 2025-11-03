@@ -207,7 +207,7 @@ data:
             href: https://argocd.bosscher.ch
             description: GitOps continuous delivery
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            siteMonitor: https://argocdserver.argocd.svc.cluster.local
+            siteMonitor: https://argocdserver.argocd.svc.cluster.local/healthz
         - Longhorn:
             href: https://longhorn.bosscher.ch
             description: Storage management
