@@ -28,7 +28,7 @@ The cluster is configured with production like settings such as:
 
 | location   | ram  | cpu                            | role          | note        | cost/y |
 | ---------- | ---- | ------------------------------ | ------------- | ----------- | ------ |
-| California | 30GB | 3c (Xeon Silver 4214)          | worker        |             | $35    |
+| California | 30GB | 3c (Xeon Gold 6248)            | worker        |             | $35    |
 | California | 30GB | 3c (Xeon Silver 4214)          | worker        |             | $35    |
 | London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |             | $20    |
 | London     | 5GB  | 2c (Xeon Gold 6148)            | control plane |             | $20    |
@@ -41,14 +41,24 @@ Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful se
 
 I'm currently running the following apps:
 
-- aiostreams
-- argocd
-- audiobookshelf
-- calibre-web
-- cloudflare
-- fusion
-- stremio-web
-- sabnzbd
+- [AIOStreams](https://github.com/laster13/aiostreams) - Streaming content aggregator
+- [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
+- [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
+- [Calibre-Web](https://github.com/janw/calibre-web) - Web app for browsing, reading and downloading eBooks
+- [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
+- [Fusion](https://github.com/fusion-app/fusion) - Lightweight RSS Reader
+- [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
+- [Kite](https://github.com/kite-js/kite) - Kubernetes dashboard
+- [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
+- [n8n](https://n8n.io/) - Workflow automation tool
+- [NetAlertX](https://github.com/jokob-sk/NetAlertX) - Network device monitoring and alerting
+- [Paperless-ngx](https://docs.paperless-ngx.com/) - Document management system
+- [RDT-Client](https://github.com/rogerfar/rdt-client) - Real-Debrid torrent client
+- [SABnzbd](https://sabnzbd.org/) - Usenet downloader
+- [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager
+- [Stremio](https://www.stremio.com/) - Media streaming platform
+- [Technitium](https://technitium.com/dns/) - DNS server
+- [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
 
 # Adding new nodes
 

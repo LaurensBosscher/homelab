@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-default-resource
+  namespace: longhorn-system
+data:
+  default-resource.yaml: |
+    "backup-target": "s3://longhorn-backups-ay76@s3.eu-central-003/"
+    "backup-target-credential-secret": "k3s-longhorn-backup-backblaze"
+    "backupstore-poll-interval": "0"
