@@ -1,0 +1,7 @@
+---
+- name: Ensure iscsid service is enabled and started
+  ansible.builtin.systemd:
+    name: iscsid
+    state: started
+    enabled: true
+  tags: [iscsid]

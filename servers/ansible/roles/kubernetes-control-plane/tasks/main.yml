@@ -24,8 +24,6 @@
       flannel-external-ip: true
       flannel-iface: eth0
 
-      flannel-mtu: 1320
-
       prefer-bundled-bin: true
 
       node-external-ip: {{ eth0_ip.stdout }}  # Advertises eth0 IP for external access
