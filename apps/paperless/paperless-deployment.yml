@@ -76,9 +76,6 @@ spec:
             requests:
               cpu: 100m
               memory: 256Mi
-            limits:
-              cpu: 1000m
-              memory: 2Gi
           #livenessProbe:
           #  httpGet:
           #    path: /
@@ -139,9 +136,6 @@ spec:
             requests:
               cpu: 25m
               memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 256Mi
           volumeMounts:
             - name: redisdata
               mountPath: /data
@@ -198,9 +192,6 @@ spec:
             requests:
               cpu: 50m
               memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
       volumes:
         - name: pgdata
           persistentVolumeClaim:
@@ -248,9 +239,6 @@ spec:
             requests:
               cpu: 50m
               memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
 ---
 apiVersion: apps/v1
 kind: Deployment

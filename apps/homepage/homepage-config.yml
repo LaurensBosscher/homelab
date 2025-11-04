@@ -186,7 +186,7 @@ data:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8080
+            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
         - Paperless:
             href: https://paperless.bosscher.ch/
             description: Document management
