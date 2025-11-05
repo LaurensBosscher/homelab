@@ -43,7 +43,16 @@ spec:
             - name: GRANIAN_HOST
               value: "0.0.0.0"
             - name: PAPERLESS_URL
-              value: https://paperless.bosscher.ch,*
+              value: https://paperless.bosscher.ch
+            - name: PAPERLESS_ALLOWED_HOSTS
+              value: paperless.bosscher.ch
+            - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
+              value: https://paperless.bosscher.ch
+            - name: PAPERLESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: SECRET_KEY
             - name: PAPERLESS_DBNAME
               valueFrom:
                 secretKeyRef:
@@ -77,13 +86,15 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 256Mi
-          #livenessProbe:
-          #  httpGet:
-          #    path: /
-          #    port: 8000
-          #  initialDelaySeconds: 30
-          #  periodSeconds: 60
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -96,7 +107,7 @@ spec:
             claimName: paperless-export
         - name: consume
           persistentVolumeClaim:
-          claimName: paperless-consume
+            claimName: paperless-consume
 ---
 apiVersion: apps/v1
 kind: Deployment
