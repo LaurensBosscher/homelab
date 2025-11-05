@@ -34,19 +34,15 @@ spec:
           env:
             - name: TZ
               value: Europe/Zurich
+            - name: PAPERLESS_TIME_ZONE
+              value: Europe/Zurich
+            - name: PAPERLESS_OCR_LANGUAGE
+              value: eng+deu
             - name: PAPERLESS_REDIS
               value: redis://paperless-redis:6379
             - name: PAPERLESS_DBHOST
               value: paperless-postgres
-            - name: GRANIAN_PORT
-              value: "8000"
-            - name: GRANIAN_HOST
-              value: "0.0.0.0"
             - name: PAPERLESS_URL
-              value: https://paperless.bosscher.ch
-            - name: PAPERLESS_ALLOWED_HOSTS
-              value: paperless.bosscher.ch
-            - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
               value: https://paperless.bosscher.ch
             - name: PAPERLESS_SECRET_KEY
               valueFrom:
