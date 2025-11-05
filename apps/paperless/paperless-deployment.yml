@@ -43,7 +43,7 @@ spec:
             - name: GRANIAN_HOST
               value: "0.0.0.0"
             - name: PAPERLESS_URL
-              value: https://paperless.bosscher.ch
+              value: https://paperless.bosscher.ch,*
             - name: PAPERLESS_DBNAME
               valueFrom:
                 secretKeyRef:
