@@ -6,6 +6,8 @@ metadata:
     app: paperless
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless
@@ -105,6 +107,8 @@ metadata:
     component: redis
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless
@@ -154,6 +158,8 @@ metadata:
     component: postgres
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless
@@ -206,6 +212,8 @@ metadata:
     component: gotenberg
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless
@@ -249,6 +257,8 @@ metadata:
     component: tika
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless
