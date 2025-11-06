@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-spotify-server
+  labels:
+    app.kubernetes.io/name: your-spotify-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: your-spotify-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-spotify-web
+  labels:
+    app.kubernetes.io/name: your-spotify-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: your-spotify-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-spotify-mongo
+  labels:
+    app.kubernetes.io/name: your-spotify-mongo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: mongo
+      protocol: TCP
+      name: mongo
+  selector:
+    app.kubernetes.io/name: your-spotify-mongo

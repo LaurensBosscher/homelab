@@ -200,7 +200,7 @@ spec:
                       - us
       containers:
         - name: consumedir
-          image: docspell/dsc:v0.43.0
+          image: docspell/dsc:v0.11.0
           env:
             - name: INTEGRATION_SECRET
               valueFrom:

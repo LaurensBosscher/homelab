@@ -14,6 +14,8 @@ spec:
       labels:
         app: wanderer-search
     spec:
+      strategy:
+        type: Recreate
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -75,7 +77,8 @@ metadata:
   labels:
     app: wanderer-db
 spec:
-  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: wanderer-db
@@ -150,7 +153,8 @@ metadata:
   labels:
     app: wanderer
 spec:
-  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: wanderer
@@ -187,7 +191,7 @@ spec:
             - name: BODY_SIZE_LIMIT
               value: Infinity
             - name: PUBLIC_POCKETBASE_URL
-              value: http://wanderer-db:8090
+              value: https://wanderer-db.bosscher.ch
             - name: PUBLIC_DISABLE_SIGNUP
               value: "false"
             - name: UPLOAD_FOLDER
@@ -209,9 +213,6 @@ spec:
             requests:
               cpu: 100m
               memory: 256Mi
-            limits:
-              cpu: 1000m
-              memory: 1Gi
           livenessProbe:
             httpGet:
               path: /

@@ -192,11 +192,21 @@ data:
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
             siteMonitor: http://paperless-web.paperless.svc.cluster.local:8000
+        - Docspell:
+            href: https://docspell.bosscher.ch/
+            description: Document management
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
+            siteMonitor: http://docspell-rest.docspell.svc.cluster.local:7880/api/info/version
         - RDT-Client:
             href: https://rdt-client.bosscher.ch/
             description: Real-Debrid torrent client
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
             siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
+        - Your-Spotify:
+            href: https://your-spotify.bosscher.ch/
+            description: Your Spotify client
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
+            siteMonitor: http://your-spotify-web.your-spotify.svc.cluster.local:3000
     - Cluster:
         - Kite:
             href: https://kite.bosscher.ch
@@ -213,6 +223,11 @@ data:
             description: Storage management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
             siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
+        - NetAlertX:
+            href: https://netalertx.bosscher.ch
+            description: Network monitoring & alerts
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
+            siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
         - Technitium DNS:
             href: https://technitium-web.bosscher.ch
             description: DNS server management
@@ -227,11 +242,6 @@ data:
             href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
             description: Cloudflare Zero Trust & Tunnels
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
-        - NetAlertX:
-            href: https://netalertx.bosscher.ch
-            description: Network monitoring & alerts
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
-            siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
   bookmarks.yaml: |
     - Developer:
         - GitHub:
