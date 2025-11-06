@@ -1,0 +1,351 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docspell-restserver
+  labels:
+    app: docspell
+    component: restserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: docspell
+      component: restserver
+  template:
+    metadata:
+      labels:
+        app: docspell
+        component: restserver
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: restserver
+          image: ghcr.io/docspell/restserver:v0.43.0
+          ports:
+            - containerPort: 7880
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: DOCSPELL_SERVER_INTERNAL__URL
+              value: http://docspell-restserver:7880
+            - name: DOCSPELL_SERVER_BIND_ADDRESS
+              value: 0.0.0.0
+            - name: DOCSPELL_SERVER_BACKEND_JDBC_URL
+              value: jdbc:postgresql://docspell-postgres:5432/docspell
+            - name: DOCSPELL_SERVER_BACKEND_JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: POSTGRES_USER
+            - name: DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: POSTGRES_PASSWORD
+            - name: DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED
+              value: "true"
+            - name: DOCSPELL_SERVER_FULL__TEXT__SEARCH_SOLR_URL
+              value: http://docspell-solr:8983/solr/docspell
+            - name: DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: ADMIN_ENDPOINT_SECRET
+            - name: DOCSPELL_SERVER_AUTH_SERVER__SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: AUTH_SERVER_SECRET
+            - name: DOCSPELL_SERVER_INTEGRATION__ENDPOINT_ENABLED
+              value: "true"
+            - name: DOCSPELL_SERVER_INTEGRATION__ENDPOINT_HTTP__HEADER_ENABLED
+              value: "true"
+            - name: DOCSPELL_SERVER_INTEGRATION__ENDPOINT_HTTP__HEADER_HEADER__VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: INTEGRATION_ENDPOINT_SECRET
+            - name: DOCSPELL_SERVER_BACKEND_SIGNUP_MODE
+              value: open
+            - name: DOCSPELL_SERVER_BACKEND_ADDONS_ENABLED
+              value: "false"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/info/version
+              port: 7880
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docspell-joex
+  labels:
+    app: docspell
+    component: joex
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: docspell
+      component: joex
+  template:
+    metadata:
+      labels:
+        app: docspell
+        component: joex
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: joex
+          image: ghcr.io/docspell/joex:v0.43.0
+          ports:
+            - containerPort: 7878
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: DOCSPELL_JOEX_APP__ID
+              value: joex1
+            - name: DOCSPELL_JOEX_PERIODIC__SCHEDULER_NAME
+              value: joex1
+            - name: DOCSPELL_JOEX_SCHEDULER_NAME
+              value: joex1
+            - name: DOCSPELL_JOEX_BASE__URL
+              value: https://docspell.bosscher.ch/
+            - name: DOCSPELL_JOEX_BIND_ADDRESS
+              value: 0.0.0.0
+            - name: DOCSPELL_JOEX_JDBC_URL
+              value: jdbc:postgresql://docspell-postgres:5432/docspell
+            - name: DOCSPELL_JOEX_JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: POSTGRES_USER
+            - name: DOCSPELL_JOEX_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: POSTGRES_PASSWORD
+            - name: DOCSPELL_JOEX_FULL__TEXT__SEARCH_ENABLED
+              value: "true"
+            - name: DOCSPELL_JOEX_FULL__TEXT__SEARCH_SOLR_URL
+              value: http://docspell-solr:8983/solr/docspell
+            - name: DOCSPELL_JOEX_ADDONS_EXECUTOR__CONFIG_RUNNER
+              value: docker,trivial
+            - name: DOCSPELL_JOEX_CONVERT_HTML__CONVERTER
+              value: weasyprint
+          resources:
+            requests:
+              cpu: 100m
+              memory: 768Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docspell-consumedir
+  labels:
+    app: docspell
+    component: consumedir
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: docspell
+      component: consumedir
+  template:
+    metadata:
+      labels:
+        app: docspell
+        component: consumedir
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: consumedir
+          image: docspell/dsc:v0.43.0
+          env:
+            - name: INTEGRATION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docspell-secrets
+                  key: INTEGRATION_ENDPOINT_SECRET
+          command:
+            - dsc
+            - -d
+            - http://docspell-restserver:7880
+            - watch
+            - --delete
+            - -ir
+            - --not-matches
+            - "**/.*"
+            - --header
+            - Docspell-Integration:$(INTEGRATION_SECRET)
+            - /opt/docs
+          volumeMounts:
+            - name: consume
+              mountPath: /opt/docs
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+      volumes:
+        - name: consume
+          persistentVolumeClaim:
+            claimName: docspell-consume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docspell-postgres
+  labels:
+    app: docspell
+    component: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: docspell
+      component: postgres
+  template:
+    metadata:
+      labels:
+        app: docspell
+        component: postgres
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: postgres
+          image: docker.io/library/postgres:18.0
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: docspell-secrets
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata-files/
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: docspell-postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docspell-solr
+  labels:
+    app: docspell
+    component: solr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: docspell
+      component: solr
+  template:
+    metadata:
+      labels:
+        app: docspell
+        component: solr
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      securityContext:
+        fsGroup: 8983
+      containers:
+        - name: solr
+          image: docker.io/library/solr:9
+          ports:
+            - containerPort: 8983
+          command:
+            - bash
+            - -c
+            - precreate-core docspell; exec solr -f -Dsolr.modules=analysis-extras
+          securityContext:
+            runAsUser: 8983
+            runAsGroup: 8983
+          volumeMounts:
+            - name: solrdata
+              mountPath: /var/solr/data/
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /solr/docspell/admin/ping
+              port: 8983
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 2
+      volumes:
+        - name: solrdata
+          persistentVolumeClaim:
+            claimName: docspell-solr
