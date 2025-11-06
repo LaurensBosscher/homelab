@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spotify-server
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: your-spotify-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: your-spotify-server
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: server
+          image: "yooooomi/your_spotify_server:1.14.0"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: API_ENDPOINT
+              value: http://localhost:8080
+            - name: CLIENT_ENDPOINT
+              value: http://your-spotify-web:3000
+            - name: MONGO_ENDPOINT
+              value: mongodb://your-spotify-mongo:27017/your_spotify
+            - name: SPOTIFY_PUBLIC
+              valueFrom:
+                secretKeyRef:
+                  name: your-spotify-secrets
+                  key: SPOTIFY_PUBLIC
+            - name: SPOTIFY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: your-spotify-secrets
+                  key: SPOTIFY_SECRET
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spotify-web
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: your-spotify-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: your-spotify-web
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: web
+          image: "yooooomi/your_spotify_client:1.14.0"
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: API_ENDPOINT
+              value: http://your-spotify-server:8080
+            - name: MONGO_ENDPOINT
+              value: mongodb://your-spotify-mongo:27017/your_spotify
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spotify-mongo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: your-spotify-mongo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: your-spotify-mongo
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: mongo
+          image: "mongo:8.2.1"
+          ports:
+            - name: mongo
+              containerPort: 27017
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: your-spotify-mongo-data
