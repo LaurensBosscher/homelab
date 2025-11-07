@@ -37,7 +37,7 @@ spec:
             - name: PAPERLESS_TIME_ZONE
               value: Europe/Zurich
             - name: PAPERLESS_OCR_LANGUAGE
-              value: eng+deu+nld
+              value: eng+deu
             - name: PAPERLESS_REDIS
               value: redis://paperless-redis:6379
             - name: PAPERLESS_DBHOST
