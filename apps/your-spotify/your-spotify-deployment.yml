@@ -30,7 +30,7 @@ spec:
               protocol: TCP
           env:
             - name: API_ENDPOINT
-              value: http://localhost:8080
+              value: http://your-spotify-api.bosscher.ch
             - name: CLIENT_ENDPOINT
               value: http://your-spotify-web:3000
             - name: MONGO_ENDPOINT
