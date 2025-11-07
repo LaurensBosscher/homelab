@@ -118,3 +118,8 @@ export ETCDCTL_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
 export ETCDCTL_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
 etcdctl member list
 ```
+## Add debug container to pod
+
+```bash
+kubectl debug -it my-pod --image=busybox
+```
