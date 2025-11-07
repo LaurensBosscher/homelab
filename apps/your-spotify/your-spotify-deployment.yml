@@ -35,6 +35,8 @@ spec:
               value: http://your-spotify-web:3000
             - name: MONGO_ENDPOINT
               value: mongodb://your-spotify-mongo:27017/your_spotify
+            - name: CORS_ORIGINS
+              value: "http://your-spotify-web:3000, https://your-spotify.bosscher.ch"
             - name: SPOTIFY_PUBLIC
               valueFrom:
                 secretKeyRef:
