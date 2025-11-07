@@ -80,7 +80,7 @@ spec:
             - name: NODE_ENV
               value: production
             - name: API_ENDPOINT
-              value: https://spotify-api.bosscher.ch
+              value: https://your-spotify-api.bosscher.ch
             - name: MONGO_ENDPOINT
               value: mongodb://your-spotify-mongo:27017/your_spotify
 ---

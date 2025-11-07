@@ -195,8 +195,8 @@ data:
         - Docspell:
             href: https://docspell.bosscher.ch/
             description: Document management
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
-            siteMonitor: http://docspell-rest.docspell.svc.cluster.local:7880/api/info/version
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
+            siteMonitor: http://docspell-rest.docspell.svc.cluster.local:7880/api/info/version/
         - RDT-Client:
             href: https://rdt-client.bosscher.ch/
             description: Real-Debrid torrent client
@@ -205,7 +205,7 @@ data:
         - Your-Spotify:
             href: https://your-spotify.bosscher.ch/
             description: Your Spotify client
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/spotify.png
             siteMonitor: http://your-spotify-web.your-spotify.svc.cluster.local:3000
     - Cluster:
         - Kite:

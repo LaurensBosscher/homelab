@@ -191,7 +191,7 @@ spec:
             - name: BODY_SIZE_LIMIT
               value: Infinity
             - name: PUBLIC_POCKETBASE_URL
-              value: https://wanderer-db.bosscher.ch
+              value: http://wanderer-db:8090
             - name: PUBLIC_DISABLE_SIGNUP
               value: "false"
             - name: UPLOAD_FOLDER

@@ -32,8 +32,6 @@
       # Since we're using ZRAM the performance impact is negligible for spikes. 
       # We should monitor the pods and ensure that they're not constantly swapping.
       failSwapOn: false
-      memorySwap:
-        swapBehavior: LimitedSwap
 
       # Disable Traefik (use your own ingress controller)
       disable: traefik
@@ -62,3 +60,18 @@
         - "max-pods=200"  # Increase pod density for large clusters
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
+
+- name: Insert memorySwap block in kubelet config
+  ansible.builtin.blockinfile:
+    path: /var/lib/rancher/k3s/agent/etc/kubelet.conf.d/00-k3s-defaults.conf
+    block: |
+      memorySwap:
+        swapBehavior: LimitedSwap
+      systemReserved:
+        cpu: 0.1
+        memory: 256Mi
+      kubeReserved:
+        cpu: 0.1
+        memory: 256Mi
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
+    insertafter: "kind: KubeletConfiguration"
