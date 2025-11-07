@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: your-spotify-mongo-data
+  name: rdt-client-data
   labels:
-    app: your-spotify
+    app: rdt-client
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-  storageClassName: longhorn-2replicas-us
+      storage: 2Gi
+  storageClassName: longhorn-2replicas-compressed-europe
