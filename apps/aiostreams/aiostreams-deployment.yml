@@ -6,6 +6,8 @@ metadata:
     app: aiostreams
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: aiostreams

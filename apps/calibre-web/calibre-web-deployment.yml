@@ -6,6 +6,8 @@ metadata:
     app: calibre-web
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: calibre-web
