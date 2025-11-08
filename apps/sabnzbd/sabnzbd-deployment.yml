@@ -45,8 +45,8 @@ spec:
               cpu: 50m
               memory: 128Mi
             limits:
-              cpu: 2
-              memory: 8Gi
+              # Memory can peak during unpacking files
+              memory: 16Gi
           livenessProbe:
             httpGet:
               path: /

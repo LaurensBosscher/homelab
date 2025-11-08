@@ -50,11 +50,10 @@ spec:
               mountPath: /dev/dri
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 50m
+              memory: 128Mi
             limits:
-              cpu: 2000m
-              memory: 512Mi
+              memory: 256Mi
           livenessProbe:
             httpGet:
               path: /

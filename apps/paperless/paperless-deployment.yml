@@ -83,6 +83,8 @@ spec:
             requests:
               cpu: 100m
               memory: 512Mi
+            limits:
+              memory: 1Gi
           livenessProbe:
             httpGet:
               path: /
@@ -146,6 +148,8 @@ spec:
           resources:
             requests:
               cpu: 25m
+              memory: 16Mi
+            limits:
               memory: 64Mi
           volumeMounts:
             - name: redisdata
@@ -203,8 +207,10 @@ spec:
               mountPath: /var/lib/postgresql/data
           resources:
             requests:
-              cpu: 50m
-              memory: 256Mi
+              cpu: 25m
+              memory: 48Mi
+            limits:
+              memory: 128Mi
       volumes:
         - name: pgdata
           persistentVolumeClaim:
@@ -252,7 +258,9 @@ spec:
             - "--chromium-allow-list=file:///tmp/.*"
           resources:
             requests:
-              cpu: 50m
+              cpu: 25m
+              memory: 32Mi
+            limits:
               memory: 128Mi
 ---
 apiVersion: apps/v1
@@ -294,7 +302,6 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 256Mi
+              memory: 192Mi
             limits:
-              cpu: 500m
               memory: 512Mi

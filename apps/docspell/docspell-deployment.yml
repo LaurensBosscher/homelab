@@ -83,7 +83,9 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 512Mi
+              memory: 320Mi
+            limits:
+              memory: 768Mi
           livenessProbe:
             httpGet:
               path: /api/info/version
@@ -165,7 +167,9 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 768Mi
+              memory: 512Mi
+            limits:
+              memory: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -225,6 +229,8 @@ spec:
           resources:
             requests:
               cpu: 25m
+              memory: 16Mi
+            limits:
               memory: 64Mi
       volumes:
         - name: consume
@@ -279,6 +285,8 @@ spec:
           resources:
             requests:
               cpu: 50m
+              memory: 64Mi
+            limits:
               memory: 256Mi
       volumes:
         - name: pgdata
@@ -336,7 +344,9 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 512Mi
+              memory: 768Mi
+            limits:
+              memory: 1.5Gi
           livenessProbe:
             httpGet:
               path: /solr/docspell/admin/ping

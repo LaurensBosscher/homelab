@@ -47,6 +47,12 @@ spec:
                 secretKeyRef:
                   name: your-spotify-secrets
                   key: SPOTIFY_SECRET
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -85,6 +91,12 @@ spec:
               value: https://your-spotify-api.bosscher.ch
             - name: MONGO_ENDPOINT
               value: mongodb://your-spotify-mongo:27017/your_spotify
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -119,6 +131,12 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data/db
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+            limits:
+              memory: 512Mi
       volumes:
         - name: data
           persistentVolumeClaim:
