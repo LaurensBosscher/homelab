@@ -103,6 +103,8 @@ kind: Deployment
 metadata:
   name: your-spotify-mongo
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: your-spotify-mongo

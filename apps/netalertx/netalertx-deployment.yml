@@ -6,6 +6,8 @@ metadata:
     app: netalertx
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: netalertx
