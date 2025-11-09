@@ -30,13 +30,13 @@ spec:
               protocol: TCP
           env:
             - name: API_ENDPOINT
-              value: https://your-spotify.bosscher.ch
+              value: https://your-spotify-api.bosscher.ch
             - name: CLIENT_ENDPOINT
-              value: http://your-spotify-web:3000
+              value: https://your-spotify.bosscher.ch
             - name: MONGO_ENDPOINT
               value: mongodb://your-spotify-mongo:27017/your_spotify
             - name: CORS
-              value: "http://your-spotify-web:3000,https://your-spotify.bosscher.ch"
+              value: "http://your-spotify-web:3000,https://your-spotify.bosscher.ch,https://your-spotify-api.bosscher.ch"
             - name: SPOTIFY_PUBLIC
               valueFrom:
                 secretKeyRef:
@@ -52,7 +52,7 @@ spec:
               cpu: 50m
               memory: 96Mi
             limits:
-              memory: 8000Mi
+              memory: 512Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -96,7 +96,7 @@ spec:
               cpu: 25m
               memory: 32Mi
             limits:
-              memory: 1024Mi
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -138,7 +138,7 @@ spec:
               cpu: 50m
               memory: 192Mi
             limits:
-              memory: 512Mi
+              memory: 2048Mi
       volumes:
         - name: data
           persistentVolumeClaim:
