@@ -20,8 +20,9 @@ The cluster is configured with production like settings such as:
 
 # Screenshots
 
-![](docs/homepage-screenshot.png)
-![](docs/kite-screenshot.png)
+![](docs/home.bosscher.ch_.png)
+![](docs/kite.bosscher.ch_.png)
+![](docs/argocd.bosscher.ch_applications.png)
 
 
 # Hardware
@@ -33,7 +34,7 @@ The cluster is configured with production like settings such as:
 | London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |             | $20    |
 | London     | 5GB  | 2c (Xeon Gold 6148)            | control plane |             | $20    |
 | Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | control plane |             | $20    |
-| Zurich     | 32GB | 4c (Intel N97)                 | control plane | Home Server | $0     |
+| Zurich     | 32GB | 4c (Intel N97)                 | worker        | Home Server | $0     |
 
 Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
 
@@ -41,14 +42,14 @@ Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful se
 
 I'm currently running the following apps:
 
-- [AIOStreams](https://github.com/laster13/aiostreams) - Streaming content aggregator
+- [AIOStreams](https://github.com/Viren070/AIOStreams) - Streaming content aggregator
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
-- [Calibre-Web](https://github.com/janw/calibre-web) - Web app for browsing, reading and downloading eBooks
+- [Calibre-Web](https://github.com/janeczku/calibre-web) - Web app for browsing, reading and downloading eBooks
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
-- [Fusion](https://github.com/fusion-app/fusion) - Lightweight RSS Reader
+- [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
-- [Kite](https://github.com/kite-js/kite) - Kubernetes dashboard
+- [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
 - [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
 - [n8n](https://n8n.io/) - Workflow automation tool
 - [NetAlertX](https://github.com/jokob-sk/NetAlertX) - Network device monitoring and alerting
