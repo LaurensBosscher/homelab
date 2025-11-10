@@ -28,7 +28,7 @@ spec:
                       - europe
       containers:
         - name: search
-          image: getmeili/meilisearch:v1.24.0
+          image: getmeili/meilisearch:v1.25.0
           ports:
             - containerPort: 7700
           env:
