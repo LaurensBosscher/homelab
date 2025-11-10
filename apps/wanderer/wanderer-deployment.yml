@@ -46,11 +46,10 @@ spec:
               mountPath: /meili_data/
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 25m
+              memory: 48Mi
             limits:
-              cpu: 1000m
-              memory: 512Mi
+              memory: 128Mi
           livenessProbe:
             httpGet:
               path: /health
@@ -122,11 +121,10 @@ spec:
               mountPath: /pb_data
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 25m
+              memory: 64Mi
             limits:
-              cpu: 1000m
-              memory: 512Mi
+              memory: 128Mi
           livenessProbe:
             httpGet:
               path: /health
@@ -211,8 +209,10 @@ spec:
               mountPath: /app/uploads
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
           livenessProbe:
             httpGet:
               path: /
