@@ -16,6 +16,11 @@ spec:
         values: |
           preUpgradeChecker:
             jobEnabled: false
+          image:
+            longhorn:
+              manager:
+                # Override only the manager image tag (keep repository default)
+                tag: v1.10.0-hotfix-1
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
