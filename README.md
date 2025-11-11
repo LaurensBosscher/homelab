@@ -64,13 +64,18 @@ I'm currently running the following apps:
 
 ## To Explore
 
-- [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
-- [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
-- [ ] [Ferrumc](https://github.com/ferrumc-rs/ferrumc) - Minecraft server in Rust
-- [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
-- [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
-- [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
+- [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
+- [ ] [Ferrumc](https://github.com/ferrumc-rs/ferrumc) - Minecraft server in Rust
+- [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
+- [ ] [LLocalSearch](https://github.com/nilsherzig/LLocalSearch) - Local AI-powered search engine
+- [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
+- [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
+- [ ] [Open WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs
+- [ ] [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
+- [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
+- [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
+- [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
   
 
 
