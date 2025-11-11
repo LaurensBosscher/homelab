@@ -11,7 +11,6 @@ The cluster is configured with production like settings such as:
 - Ability to target deployment to a geographical location to optimize for latency with automatic fallback or do multi-region deployment
 - All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
 - CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
-- [Etcd](https://etcd.io/docs/v3.6/) (the state and configuration of the cluster) is automatically backed-up to [Cloudflare R2](https://developers.cloudflare.com/r2/)
 - Ingress is taking care of by [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) with one instance per geographical region
 - Communication between the nodes is done through the wireguard native backed (Running over Tailscale caused double encapsulation and hard to debug issues)
 - Joining new nodes to the cluster is a ~5 minute job
@@ -47,6 +46,7 @@ I'm currently running the following apps:
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
 - [Calibre-Web](https://github.com/janeczku/calibre-web) - Web app for browsing, reading and downloading eBooks
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
+- [Docspell](https://docspell.org/) - Document management and archiving system
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
@@ -60,6 +60,20 @@ I'm currently running the following apps:
 - [Stremio](https://www.stremio.com/) - Media streaming platform
 - [Technitium](https://technitium.com/dns/) - DNS server
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
+- [Your Spotify](https://github.com/Yooooomi/your_spotify) - Self-hosted Spotify statistics and analytics
+
+## To Explore
+
+- [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
+- [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
+- [ ] [Ferrumc](https://github.com/ferrumc-rs/ferrumc) - Minecraft server in Rust
+- [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
+- [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
+- [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
+- [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
+  
+
+
 
 # Adding new nodes
 
