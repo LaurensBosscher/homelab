@@ -87,69 +87,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: n8n-redis
-  labels:
-    app: n8n-redis
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: n8n-redis
-  template:
-    metadata:
-      labels:
-        app: n8n-redis
-    spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
-                    operator: In
-                    values:
-                      - us
-      securityContext:
-        fsGroup: 999
-      containers:
-        - name: redis
-          image: redis:8-alpine
-          ports:
-            - containerPort: 6379
-          volumeMounts:
-            - name: redis-data
-              mountPath: /data
-          resources:
-            requests:
-              cpu: 25m
-              memory: 16Mi
-            limits:
-              memory: 64Mi
-          livenessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            timeoutSeconds: 5
-      volumes:
-        - name: redis-data
-          persistentVolumeClaim:
-            claimName: n8n-redis-data
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: n8n
   labels:
     app: n8n
@@ -202,11 +139,7 @@ spec:
             - name: DB_POSTGRESDB_PASSWORD
               value: n8n_password
             - name: EXECUTIONS_MODE
-              value: queue
-            - name: QUEUE_BULL_REDIS_HOST
-              value: n8n-redis
-            - name: QUEUE_HEALTH_CHECK_ACTIVE
-              value: "true"
+              value: regular
             - name: N8N_ENCRYPTION_KEY
               value: "your_encryption_key_here"
           volumeMounts:
