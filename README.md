@@ -79,8 +79,8 @@ I'm currently running the following apps:
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
 - [ ] [https://github.com/crocodilestick/Calibre-Web-Automated](Calibre Web Automated) - Enhanced version of Calibre web
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
-  
-
+- [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
+- [ ] [VSCode web](https://github.com/coder/code-server)
 
 
 # Adding new nodes
