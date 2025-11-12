@@ -65,6 +65,7 @@ I'm currently running the following apps:
 ## To Explore
 
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
+- [ ] [Dawarich](https://github.com/Freika/dawarich) - Self-hosted alternative to Google Timeline
 - [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
 - [ ] [Ferrumc](https://github.com/ferrumc-rs/ferrumc) - Minecraft server in Rust
 - [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
