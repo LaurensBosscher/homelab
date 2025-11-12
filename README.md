@@ -77,6 +77,8 @@ I'm currently running the following apps:
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
+- [ ] [https://github.com/crocodilestick/Calibre-Web-Automated](Calibre Web Automated) - Enhanced version of Calibre web
+- [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
   
 
 
