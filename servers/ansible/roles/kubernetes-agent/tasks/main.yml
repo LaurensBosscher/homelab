@@ -26,7 +26,6 @@
 
       prefer-bundled-bin: true
 
-      # flannel-external-ip: true
       flannel-iface: eth0  # Binds Flannel CNI to eth0 interface for pod networking
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
@@ -47,5 +46,8 @@
       kubeReserved:
         cpu: 100m
         memory: 256Mi
+
+      node-status-update-frequency: 10s
+      max-pods: 200
     marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
     mode: "0644"
