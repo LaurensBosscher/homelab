@@ -67,7 +67,6 @@ I'm currently running the following apps:
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
 - [ ] [Dawarich](https://github.com/Freika/dawarich) - Self-hosted alternative to Google Timeline
 - [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
-- [ ] [Ferrumc](https://github.com/ferrumc-rs/ferrumc) - Minecraft server in Rust
 - [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
 - [ ] [LLocalSearch](https://github.com/nilsherzig/LLocalSearch) - Local AI-powered search engine
 - [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
@@ -77,10 +76,10 @@ I'm currently running the following apps:
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
-- [ ] [https://github.com/crocodilestick/Calibre-Web-Automated](Calibre Web Automated) - Enhanced version of Calibre web
+- [X] [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
-- [ ] [VSCode web](https://github.com/coder/code-server)
+- [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 
 
 # Adding new nodes
