@@ -9,7 +9,7 @@ spec:
   selector:
     app: technitium
   ports:
-    - name: DNS-over-HTTP
+    - name: dnshttp
       port: 80
       targetPort: 80
       protocol: TCP
