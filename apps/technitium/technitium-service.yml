@@ -5,15 +5,11 @@ metadata:
   labels:
     app: technitium
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: technitium
   ports:
-    - name: dns-tcp
-      port: 53
-      targetPort: 53
+    - name: DNS-over-HTTP
+      port: 80
+      targetPort: 80
       protocol: TCP
-    - name: dns-udp
-      port: 53
-      targetPort: 53
-      protocol: UDP
