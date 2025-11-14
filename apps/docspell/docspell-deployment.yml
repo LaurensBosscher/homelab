@@ -270,7 +270,7 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: docker.io/library/postgres:18.0
+          image: docker.io/library/postgres:18.1
           ports:
             - containerPort: 5432
           envFrom:
