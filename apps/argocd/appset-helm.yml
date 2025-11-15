@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: homelab-helm-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/LaurensBosscher/homelab.git
+        revision: main
+        files:
+          - path: "apps/*/Chart.yaml"
+  template:
+    metadata:
+      name: "{{path[1]}}"
+      labels:
+        app.kubernetes.io/part-of: homelab
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/LaurensBosscher/homelab.git
+        targetRevision: main
+        path: "{{path.path}}"
+        helm:
+          releaseName: "{{path[1]}}"
+          valueFiles:
+            - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{path[1]}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
