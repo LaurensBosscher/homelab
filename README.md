@@ -79,7 +79,7 @@ I'm currently running the following apps:
 - [X] [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
 - [ ] [Booklore](https://github.com/booklore-app/booklore) - Book manager
-- [ ] [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
+- [X] [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
