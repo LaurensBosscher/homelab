@@ -6,6 +6,8 @@ metadata:
     app: fusion
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: fusion
@@ -16,21 +18,13 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100 # Strong preference for Zurich to reduce latency
-              preference:
-                matchExpressions:
-                  - key: city
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
-            - weight: 50 # Fallback to any other node in Europe
-              preference:
-                matchExpressions:
-                  - key: region
-                    operator: In
-                    values:
-                      - europe
+                      - bazzite
       containers:
         - name: fusion
           image: ghcr.io/0x2e/fusion:0.9.8
