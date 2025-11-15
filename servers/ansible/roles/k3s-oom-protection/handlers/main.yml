@@ -1,0 +1,26 @@
+---
+- name: reload systemd and restart k3s
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: k3s
+    state: restarted
+  failed_when: false
+
+- name: reload systemd and restart k3s-agent
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: k3s-agent
+    state: restarted
+  failed_when: false
+
+- name: reload systemd and restart tailscaled
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: tailscaled
+    state: restarted
+
+- name: reload systemd and restart chronyd
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: chronyd
+    state: restarted

@@ -1,0 +1,91 @@
+---
+- name: Install ionice utility (util-linux package)
+  ansible.builtin.dnf:
+    name: util-linux
+    state: present
+
+- name: Create systemd drop-in directory for k3s
+  ansible.builtin.file:
+    path: /etc/systemd/system/k3s.service.d
+    state: directory
+    mode: "0755"
+
+- name: Configure IO priority for etcd process
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/k3s.service.d/etcd-io-priority.conf
+    content: |
+      [Service]
+      # Set highest IO priority for etcd process (embedded in k3s)
+      # Real-time IO scheduling class (1) with highest priority (0)
+      ExecStartPost=/bin/bash -c 'for i in {1..30}; do \
+        ETCD_PID=$(pgrep -f "k3s" | head -n1); \
+        if [ -n "$ETCD_PID" ]; then \
+          ionice -c 1 -n 0 -p $ETCD_PID; \
+          echo "Set IO priority for etcd (PID: $ETCD_PID)"; \
+          break; \
+        fi; \
+        sleep 1; \
+      done'
+    mode: "0644"
+  notify: reload and restart k3s
+
+- name: Create etcd IO priority monitoring script
+  ansible.builtin.copy:
+    dest: /usr/local/bin/etcd-io-priority-check.sh
+    content: |
+      #!/bin/bash
+      # Check and maintain etcd IO priority
+
+      ETCD_PID=$(pgrep -f "k3s" | head -n1)
+
+      if [ -z "$ETCD_PID" ]; then
+        echo "etcd process not found"
+        exit 1
+      fi
+
+      # Get current IO priority
+      CURRENT_PRIORITY=$(ionice -p $ETCD_PID 2>&1)
+
+      # Check if it's already set to realtime class (1) with priority 0
+      if echo "$CURRENT_PRIORITY" | grep -q "realtime.*prio 0"; then
+        echo "etcd (PID: $ETCD_PID) already has highest IO priority"
+      else
+        echo "Setting highest IO priority for etcd (PID: $ETCD_PID)"
+        ionice -c 1 -n 0 -p $ETCD_PID
+        echo "Current priority: $(ionice -p $ETCD_PID)"
+      fi
+    mode: "0755"
+
+- name: Create systemd timer for etcd IO priority check
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/etcd-io-priority-check.timer
+    content: |
+      [Unit]
+      Description=Check and maintain etcd IO priority
+
+      [Timer]
+      OnBootSec=5min
+      OnUnitActiveSec=5min
+
+      [Install]
+      WantedBy=timers.target
+    mode: "0644"
+
+- name: Create systemd service for etcd IO priority check
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/etcd-io-priority-check.service
+    content: |
+      [Unit]
+      Description=Check and maintain etcd IO priority
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/etcd-io-priority-check.sh
+    mode: "0644"
+
+- name: Enable and start etcd IO priority check timer
+  ansible.builtin.systemd:
+    name: etcd-io-priority-check.timer
+    enabled: yes
+    state: started
+    daemon_reload: yes

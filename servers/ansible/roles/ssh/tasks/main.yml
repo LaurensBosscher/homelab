@@ -1,15 +1,54 @@
 ---
-- name: Get Tailscale IP address
-  ansible.builtin.shell: ip -4 addr show tailscale0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
-  register: tailscale_ip
-  changed_when: false
-  failed_when: tailscale_ip.stdout == ""
-
 - name: Restrict SSH ListenAddress if ssh_listen_address specified
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
-    regexp: "^ListenAddress"
-    line: "ListenAddress {{ tailscale_ip.stdout }}"
+    regexp: "^#?ListenAddress"
+    line: "ListenAddress {{ tailscale_ip }}"
+    create: no
+  notify: restart sshd
+  tags: [ssh]
+
+- name: SSH hardening - Disable password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    create: no
+  notify: restart sshd
+  tags: [ssh]
+
+- name: SSH hardening - Set MaxAuthTries
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?MaxAuthTries"
+    line: "MaxAuthTries 3"
+    create: no
+  notify: restart sshd
+  tags: [ssh]
+
+- name: SSH hardening - Disable X11Forwarding
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?X11Forwarding"
+    line: "X11Forwarding no"
+    create: no
+  notify: restart sshd
+  tags: [ssh]
+
+- name: SSH hardening - Set ClientAliveInterval
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?ClientAliveInterval"
+    line: "ClientAliveInterval 300"
+    create: no
+  notify: restart sshd
+  tags: [ssh]
+
+- name: SSH hardening - Set ClientAliveCountMax
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?ClientAliveCountMax"
+    line: "ClientAliveCountMax 2"
     create: no
   notify: restart sshd
   tags: [ssh]

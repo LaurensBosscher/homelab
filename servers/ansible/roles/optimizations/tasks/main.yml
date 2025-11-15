@@ -41,8 +41,9 @@
   tags: [optimizations]
 
 - name: Apply throughput-performance profile
-  ansible.builtin.shell: tuned-adm profile throughput-performance
+  ansible.builtin.command: tuned-adm profile throughput-performance
   become: true
+  changed_when: false
   tags: [optimizations]
 
 - name: Apply memory optimization parameters
@@ -66,28 +67,80 @@
     - { name: "vm.dirty_expire_centisecs", value: "30000" }
   tags: [optimizations]
 
+- name: Disable Transparent Huge Pages (THP) for K8s/etcd performance
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX='
+    line: 'GRUB_CMDLINE_LINUX="transparent_hugepage=never"'
+    backrefs: yes
+  register: grub_thp_config
+  become: true
+  tags: [optimizations]
+
+- name: Update GRUB configuration
+  ansible.builtin.command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  become: true
+  when: grub_thp_config.changed
+  tags: [optimizations]
+
+- name: Disable THP immediately (runtime)
+  ansible.builtin.shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+  become: true
+  changed_when: false
+  tags: [optimizations]
+
 - name: Get primary block device
   ansible.builtin.shell: "lsblk -no NAME,RO | grep '^sd' | grep '0$' | head -1 | awk '{print $1}'"
   register: primary_block_device
   changed_when: false
   tags: [optimizations]
 
+- name: Check current I/O scheduler
+  ansible.builtin.slurp:
+    src: "/sys/block/{{ primary_block_device.stdout }}/queue/scheduler"
+  register: current_scheduler
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Check current read-ahead buffer
+  ansible.builtin.slurp:
+    src: "/sys/block/{{ primary_block_device.stdout }}/queue/read_ahead_kb"
+  register: current_read_ahead
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
+- name: Check current queue depth
+  ansible.builtin.slurp:
+    src: "/sys/block/{{ primary_block_device.stdout }}/queue/nr_requests"
+  register: current_queue_depth
+  when: primary_block_device.stdout != ""
+  tags: [optimizations]
+
 - name: Apply I/O scheduler optimization (mq-deadline)
   ansible.builtin.shell: "echo mq-deadline > /sys/block/{{ primary_block_device.stdout }}/queue/scheduler"
   become: true
-  when: primary_block_device.stdout != ""
+  when: 
+    - primary_block_device.stdout != ""
+    - "'[mq-deadline]' not in (current_scheduler.content | b64decode)"
+  changed_when: true
   tags: [optimizations]
 
 - name: Set read-ahead buffer to 4MB for better container image performance
   ansible.builtin.shell: "echo 4096 > /sys/block/{{ primary_block_device.stdout }}/queue/read_ahead_kb"
   become: true
-  when: primary_block_device.stdout != ""
+  when: 
+    - primary_block_device.stdout != ""
+    - "(current_read_ahead.content | b64decode | trim) != '4096'"
+  changed_when: true
   tags: [optimizations]
 
 - name: Optimize queue depth based on system memory
   ansible.builtin.shell: "echo {{ queue_depth }} > /sys/block/{{ primary_block_device.stdout }}/queue/nr_requests"
   become: true
-  when: primary_block_device.stdout != ""
+  when: 
+    - primary_block_device.stdout != ""
+    - "(current_queue_depth.content | b64decode | trim) != queue_depth"
+  changed_when: true
   tags: [optimizations]
 
 - name: Remount root filesystem with noatime for better I/O performance

@@ -1,16 +1,4 @@
 ---
-- name: Get Tailscale IP address
-  ansible.builtin.shell: ip -4 addr show tailscale0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
-  register: tailscale_ip
-  changed_when: false
-  failed_when: tailscale_ip.stdout == ""
-
-- name: Get eth0 IP address
-  ansible.builtin.shell: ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
-  register: eth0_ip
-  changed_when: false
-  failed_when: eth0_ip.stdout == ""
-
 - name: Ensure /etc/rancher/k3s directory exists
   ansible.builtin.file:
     path: /etc/rancher/k3s
@@ -26,7 +14,7 @@
 
       prefer-bundled-bin: true
 
-      node-external-ip: {{ eth0_ip.stdout }}  # Advertises eth0 IP for external access
+      node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
 
       # Swap support for ZRAM, this allows containers to spike above the configured memory limits safely
       # Since we're using ZRAM the performance impact is negligible for spikes. 
@@ -46,10 +34,10 @@
         - 'log-level=warn'  # Since etcd logs end-up mixed with the K3S logs make it less verbose
 
         # Increase snapshot count to reduce I/O spikes and leader elections.
-        - "snapshot-count=100000"
+        - "snapshot-count=1000000"
 
-        - "grpc-keepalive-interval=30000"
-        - "grpc-keepalive-timeout=30000"
+        - "grpc-keepalive-interval=300000"
+        - "grpc-keepalive-timeout=300000"
 
         - "warning-apply-duration=500000000" # 1000ms is quite high, can tune down
 

@@ -1,0 +1,68 @@
+---
+- name: Create systemd override directory for k3s
+  ansible.builtin.file:
+    path: /etc/systemd/system/k3s.service.d
+    state: directory
+    mode: "0755"
+  tags: [k3s-oom-protection]
+
+- name: Configure OOM protection for k3s service
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      OOMScoreAdjust=-900
+    dest: /etc/systemd/system/k3s.service.d/oom-protection.conf
+    mode: "0644"
+  notify: reload systemd and restart k3s
+  tags: [k3s-oom-protection]
+
+- name: Create systemd override directory for k3s-agent
+  ansible.builtin.file:
+    path: /etc/systemd/system/k3s-agent.service.d
+    state: directory
+    mode: "0755"
+  tags: [k3s-oom-protection]
+
+- name: Configure OOM protection for k3s-agent service
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      OOMScoreAdjust=-900
+    dest: /etc/systemd/system/k3s-agent.service.d/oom-protection.conf
+    mode: "0644"
+  notify: reload systemd and restart k3s-agent
+  tags: [k3s-oom-protection]
+
+- name: Create systemd override directory for tailscaled
+  ansible.builtin.file:
+    path: /etc/systemd/system/tailscaled.service.d
+    state: directory
+    mode: "0755"
+  tags: [k3s-oom-protection]
+
+- name: Configure OOM protection for tailscaled service
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      OOMScoreAdjust=-900
+    dest: /etc/systemd/system/tailscaled.service.d/oom-protection.conf
+    mode: "0644"
+  notify: reload systemd and restart tailscaled
+  tags: [k3s-oom-protection]
+
+- name: Create systemd override directory for chronyd
+  ansible.builtin.file:
+    path: /etc/systemd/system/chronyd.service.d
+    state: directory
+    mode: "0755"
+  tags: [k3s-oom-protection]
+
+- name: Configure OOM protection for chronyd service
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      OOMScoreAdjust=-900
+    dest: /etc/systemd/system/chronyd.service.d/oom-protection.conf
+    mode: "0644"
+  notify: reload systemd and restart chronyd
+  tags: [k3s-oom-protection]

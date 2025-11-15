@@ -1,0 +1,82 @@
+---
+- name: Configure journald log rotation and limits
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/journald.conf
+    block: |
+      SystemMaxUse=2G
+      RuntimeMaxUse=512M
+      MaxRetentionSec=1month
+      MaxFileSec=1week
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - journald limits"
+    backup: yes
+    create: yes
+  notify: restart journald
+  tags: [system-hardening, logging]
+
+- name: Install NTP client (chrony)
+  ansible.builtin.dnf:
+    name: chrony
+    state: present
+  tags: [system-hardening, time-sync]
+
+- name: Enable and start chronyd service
+  ansible.builtin.systemd:
+    name: chronyd
+    state: started
+    enabled: true
+  tags: [system-hardening, time-sync]
+
+- name: Verify time synchronization
+  ansible.builtin.command: chronyc tracking
+  register: chrony_status
+  changed_when: false
+  failed_when: false
+  tags: [system-hardening, time-sync]
+
+- name: Display time sync status
+  ansible.builtin.debug:
+    msg: "{{ chrony_status.stdout_lines }}"
+  when: chrony_status.stdout_lines is defined
+  tags: [system-hardening, time-sync]
+
+- name: Install CPU power management tools
+  ansible.builtin.dnf:
+    name: kernel-tools
+    state: present
+  tags: [system-hardening, cpu-optimization]
+
+- name: Set CPU governor to performance
+  ansible.builtin.shell: |
+    for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+      echo performance > $cpu 2>/dev/null || true
+    done
+  become: true
+  changed_when: false
+  tags: [system-hardening, cpu-optimization]
+
+- name: Create systemd service for CPU governor persistence
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Set CPU governor to performance
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/bash -c 'for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do echo performance > $cpu 2>/dev/null || true; done'
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/cpu-governor-performance.service
+    mode: "0644"
+  become: true
+  tags: [system-hardening, cpu-optimization]
+
+- name: Enable CPU governor service
+  ansible.builtin.systemd:
+    name: cpu-governor-performance
+    enabled: true
+    daemon_reload: true
+  become: true
+  tags: [system-hardening, cpu-optimization]
