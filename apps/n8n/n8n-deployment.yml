@@ -50,7 +50,7 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 48Mi
+              memory: 64Mi
             limits:
               memory: 128Mi
           livenessProbe:
@@ -148,7 +148,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 320Mi
+              memory: 384Mi
             limits:
               memory: 768Mi
           livenessProbe:
@@ -157,6 +157,7 @@ spec:
               port: 5678
             initialDelaySeconds: 30
             periodSeconds: 60
+            timeoutSeconds: 5
       volumes:
         - name: n8n-data
           persistentVolumeClaim:

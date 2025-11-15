@@ -57,6 +57,7 @@ spec:
               port: 8083
             initialDelaySeconds: 15
             periodSeconds: 60
+            timeoutSeconds: 5
       volumes:
         - name: config
           persistentVolumeClaim:

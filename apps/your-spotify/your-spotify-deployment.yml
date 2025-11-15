@@ -50,9 +50,9 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 96Mi
+              memory: 128Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -94,9 +94,9 @@ spec:
           resources:
             requests:
               cpu: 25m
-              memory: 32Mi
+              memory: 64Mi
             limits:
-              memory: 256Mi
+              memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -136,9 +136,9 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 192Mi
+              memory: 512Mi
             limits:
-              memory: 2048Mi
+              memory: 1024Mi
       volumes:
         - name: data
           persistentVolumeClaim:

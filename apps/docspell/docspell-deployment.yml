@@ -285,9 +285,27 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 64Mi
+              memory: 96Mi
             limits:
               memory: 256Mi
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
       volumes:
         - name: pgdata
           persistentVolumeClaim:
