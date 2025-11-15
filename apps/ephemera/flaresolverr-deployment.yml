@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+  labels:
+    app.kubernetes.io/name: flaresolverr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: flaresolverr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: flaresolverr
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: flaresolverr
+          image: ghcr.io/flaresolverr/flaresolverr:latest
+          ports:
+            - containerPort: 8191
+              name: http
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+            - name: LOG_HTML
+              value: "false"
+            - name: CAPTCHA_SOLVER
+              value: "none"
+            - name: TZ
+              value: "US/Eastern"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8191
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8191
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "2Gi"

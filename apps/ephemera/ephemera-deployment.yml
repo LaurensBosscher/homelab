@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ephemera
+  labels:
+    app.kubernetes.io/name: ephemera
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ephemera
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ephemera
+    spec:
+      securityContext:
+        fsGroup: 100
+        runAsUser: 1000
+        runAsGroup: 100
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: ephemera
+          image: ghcr.io/orwellianepilogue/ephemera:latest
+          ports:
+            - containerPort: 8286
+              name: http
+          env:
+            - name: AA_BASE_URL
+              value: "https://annas-archive.org/"
+            - name: FLARESOLVERR_URL
+              value: "http://flaresolverr:8191"
+            - name: LG_BASE_URL
+              value: "https://libgen.bz/"
+            - name: AA_API_KEY
+              value: ""
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: downloads
+              mountPath: /app/downloads
+            - name: ingest
+              mountPath: /app/ingest
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8286
+            initialDelaySeconds: 40
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8286
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ephemera-data
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: ephemera-downloads
+        - name: ingest
+          persistentVolumeClaim:
+            claimName: ephemera-ingest
