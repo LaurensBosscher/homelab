@@ -1,0 +1,10 @@
+server: https://{{ hostvars[groups['kubernetes-control-plane'][0]].inventory_hostname }}:6443
+token: "{{ hostvars[groups['kubernetes-control-plane'][0]]['k3s_token'] }}"
+
+bind-address: {{ eth0_ip }}
+node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
+# node-ip: {{ tailscale_ip }}  # Sets internal node IP to Tailscale address
+
+prefer-bundled-bin: true
+
+flannel-iface: eth0  # Binds Flannel CNI to eth0 interface for pod networking

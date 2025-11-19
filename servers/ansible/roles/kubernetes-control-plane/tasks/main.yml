@@ -6,65 +6,21 @@
     mode: "0755"
 
 - name: Create /etc/rancher/k3s/config.yaml with built-in Tailscale configuration
-  ansible.builtin.copy:
-    content: |
-      flannel-backend: wireguard-native
-      flannel-external-ip: true
-      flannel-iface: eth0
-
-      prefer-bundled-bin: true
-
-      node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
-
-      # Swap support for ZRAM, this allows containers to spike above the configured memory limits safely
-      # Since we're using ZRAM the performance impact is negligible for spikes. 
-      # We should monitor the pods and ensure that they're not constantly swapping.
-      failSwapOn: false
-
-      # Disable Traefik (use your own ingress controller)
-      disable: traefik
-
-      # Enable secret encryption at rest
-      secrets-encryption: true
-
-      # etcd tunings for high-latency (in milliseconds as integers)
-      etcd-arg:
-        - "heartbeat-interval=500" # 500ms
-        - "election-timeout=5000" # 5 seconds = 5000ms
-        - 'log-level=warn'  # Since etcd logs end-up mixed with the K3S logs make it less verbose
-
-        # Increase snapshot count to reduce I/O spikes and leader elections.
-        - "snapshot-count=1000000"
-
-        - "grpc-keepalive-interval=300000"
-        - "grpc-keepalive-timeout=300000"
-
-        - "warning-apply-duration=500000000" # 1000ms is quite high, can tune down
-
-      kube-controller-manager-arg:
-        - "node-monitor-period=10s"
-        - "node-monitor-grace-period=60s"
+  ansible.builtin.template:
+    src: config.yaml.j2
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
 
-- name: Configure kubelet to use limited swap and resource constraints
-  ansible.builtin.blockinfile:
-    create: True
-    path: /var/lib/rancher/k3s/agent/etc/kubelet.conf.d/01-swap-and-constraints.conf
-    block: |
-      kind: KubeletConfiguration
-      apiVersion: kubelet.config.k8s.io/v1beta1
+- name: Get k3s token from first master
+  ansible.builtin.command: "cat /var/lib/rancher/k3s/server/node-token"
+  register: k3s_token
+  changed_when: false
+  when: inventory_hostname == groups['kubernetes-control-plane'][0]
 
-      memorySwap:
-        swapBehavior: LimitedSwap
-      systemReserved:
-        cpu: 100m
-        memory: 256Mi
-      kubeReserved:
-        cpu: 100m
-        memory: 256Mi
+- name: Store k3s token
+  ansible.builtin.set_fact:
+    k3s_token: "{{ k3s_token.stdout }}"
+    cacheable: yes
+  when: inventory_hostname == groups['kubernetes-control-plane'][0]
 
-      node-status-update-frequency: 10s
-      max-pods: 200
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
-    mode: "0644"
+

@@ -10,7 +10,7 @@
   ansible.builtin.copy:
     content: |
       [Service]
-      OOMScoreAdjust=-900
+      OOMScoreAdjust=-400
     dest: /etc/systemd/system/k3s.service.d/oom-protection.conf
     mode: "0644"
   notify: reload systemd and restart k3s
@@ -27,7 +27,7 @@
   ansible.builtin.copy:
     content: |
       [Service]
-      OOMScoreAdjust=-900
+      OOMScoreAdjust=-400
     dest: /etc/systemd/system/k3s-agent.service.d/oom-protection.conf
     mode: "0644"
   notify: reload systemd and restart k3s-agent

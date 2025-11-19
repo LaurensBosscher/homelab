@@ -1,0 +1,47 @@
+flannel-backend: wireguard-native
+flannel-external-ip: true
+flannel-iface: eth0
+
+prefer-bundled-bin: true
+
+node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
+
+# Swap support for ZRAM, this allows containers to spike above the configured memory limits safely
+# Since we're using ZRAM the performance impact is negligible for spikes.
+# We should monitor the pods and ensure that they're not constantly swapping.
+failSwapOn: false
+
+# Disable Traefik (use your own ingress controller)
+disable: traefik
+
+# Enable secret encryption at rest
+secrets-encryption: true
+
+# etcd tunings for high-latency (in milliseconds as integers)
+etcd-arg:
+  - 'log-level=warn'  # Since etcd logs end-up mixed with the K3S logs make it less verbose
+
+  - "grpc-keepalive-interval=300000"
+  - "grpc-keepalive-timeout=300000"
+
+  - "auto-compaction-retention=1h"           # keep only 1 hour of history (revision or periodic)
+  # Optional: speeds up large snapshot transfers a lot (K3s ≥ v1.21.5)
+  - "max-request-bytes=10485760"            # 10 MiB instead of ~1.5 MiB
+
+  - "warning-apply-duration=500000000" # 1000ms is quite high, can tune down
+
+kube-controller-manager-arg:
+  - "node-monitor-period=10s"
+  - "node-monitor-grace-period=60s"
+
+node-taint:
+  - "CriticalAddonsOnly=true:NoExecute"
+
+tls-san:
+  - "k3s.bosscher.ch"
+
+{% if inventory_hostname == groups['kubernetes-control-plane'][0] %}
+cluster-init: true
+{% else %}
+server: https://{{ hostvars[groups['kubernetes-control-plane'][0]].inventory_hostname }}:6443
+{% endif %}

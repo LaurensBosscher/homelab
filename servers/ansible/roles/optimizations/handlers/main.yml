@@ -1,0 +1,4 @@
+---
+- name: activate kubernetes-node profile
+  ansible.builtin.command: tuned-adm profile kubernetes-node
+  become: true

@@ -1,0 +1,22 @@
+---
+- name: Configure kubelet to use limited swap and resource constraints
+  ansible.builtin.blockinfile:
+    create: True
+    path: /var/lib/rancher/k3s/agent/etc/kubelet.conf.d/01-swap-and-constraints.conf
+    block: |
+      kind: KubeletConfiguration
+      apiVersion: kubelet.config.k8s.io/v1beta1
+
+      memorySwap:
+        swapBehavior: LimitedSwap
+      systemReserved:
+        cpu: 100m
+        memory: 256Mi
+      kubeReserved:
+        cpu: 100m
+        memory: 256Mi
+
+      node-status-update-frequency: 10s
+      max-pods: 200
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
+    mode: "0644"
