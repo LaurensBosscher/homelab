@@ -1,13 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: fusion
   labels:
     app: fusion
 spec:
+  serviceName: "fusion"
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: fusion
@@ -37,7 +36,7 @@ spec:
                   name: fusion-secret
                   key: password
           volumeMounts:
-            - name: data
+            - name: fusion-data
               mountPath: /data
           resources:
             requests:
@@ -53,7 +52,14 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: fusion-data
+  volumeClaimTemplates:
+    - metadata:
+        name: fusion-data
+        labels:
+          app: fusion
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "longhorn-2replicas-europe"
+        resources:
+          requests:
+            storage: 2Gi
