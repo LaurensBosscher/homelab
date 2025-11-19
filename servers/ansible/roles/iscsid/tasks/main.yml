@@ -5,3 +5,9 @@
     state: started
     enabled: true
   tags: [iscsid]
+
+- name: Apply SELinux fix for Longhorn iscsid
+  ansible.builtin.shell: echo '(allow iscsid_t self (capability (dac_override)))' > local_longhorn.cil && semodule -vi local_longhorn.cil
+  args:
+    chdir: /tmp
+  tags: [iscsid]

@@ -50,6 +50,7 @@
     - { role: system-hardening }
     - { role: dotfiles }
     - { role: tools }
+    - { role: iscsid }
     - { role: k9s }
     - { role: optimizations }
     - { role: network-optimizations }
