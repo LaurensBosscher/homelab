@@ -10,7 +10,7 @@ parameters:
   numberOfReplicas: "2"
   # If possible, store the data locally on the node where the pod is scheduled
   dataLocality: "best-effort"
-  nodeDownPodDeletionPolicy: "Delete"
+  nodeDownPodDeletionPolicy: "delete"
   staleReplicaTimeout: "30"
   fromBackup: ""
   # Compress backups
