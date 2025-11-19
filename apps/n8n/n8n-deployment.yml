@@ -52,7 +52,7 @@ spec:
               cpu: 50m
               memory: 64Mi
             limits:
-              memory: 128Mi
+              memory: 512Mi
           livenessProbe:
             exec:
               command:
@@ -63,8 +63,8 @@ spec:
                 - n8n
                 - -d
                 - n8n
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 20
+            periodSeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             exec:
@@ -76,8 +76,8 @@ spec:
                 - n8n
                 - -d
                 - n8n
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 10
+            periodSeconds: 10
             timeoutSeconds: 5
       volumes:
         - name: postgres-data
@@ -116,7 +116,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: n8n
-          image: docker.n8n.io/n8nio/n8n
+          image: docker.n8n.io/n8nio/n8n:1.121.0
           ports:
             - containerPort: 5678
           env:
