@@ -28,7 +28,7 @@ spec:
                       - europe
       containers:
         - name: aiostreams
-          image: ghcr.io/viren070/aiostreams:v2.17.2
+          image: ghcr.io/viren070/aiostreams:v2.17.5
           ports:
             - containerPort: 3000
           env:

@@ -125,7 +125,7 @@ spec:
                       - us
       containers:
         - name: mongo
-          image: "mongo:8.2.1"
+          image: "mongo:8.2.2"
           ports:
             - name: mongo
               containerPort: 27017
