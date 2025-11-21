@@ -11,10 +11,12 @@ spec:
   selector:
     matchLabels:
       app: paperless
+      component: web
   template:
     metadata:
       labels:
         app: paperless
+        component: web
     spec:
       affinity:
         nodeAffinity:

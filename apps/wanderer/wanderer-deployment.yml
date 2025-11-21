@@ -98,7 +98,7 @@ spec:
                       - europe
       containers:
         - name: db
-          image: flomp/wanderer-db
+          image: flomp/wanderer-db:v0.3.2
           ports:
             - containerPort: 8090
           env:
@@ -173,7 +173,7 @@ spec:
                       - europe
       containers:
         - name: wanderer
-          image: flomp/wanderer-web
+          image: flomp/wanderer-web:v0.3.1
           ports:
             - containerPort: 3000
           env:
