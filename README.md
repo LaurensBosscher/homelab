@@ -26,14 +26,15 @@ The cluster is configured with production like settings such as:
 
 # Hardware
 
-| location   | ram  | cpu                            | role          | note        | cost/y |
-| ---------- | ---- | ------------------------------ | ------------- | ----------- | ------ |
-| California | 30GB | 3c (Xeon Gold 6248)            | worker        |             | $35    |
-| California | 30GB | 3c (Xeon Silver 4214)          | worker        |             | $35    |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | worker        |             | $20    |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | control plane |             | $20    |
-| Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | control plane |             | $20    |
-| Zurich     | 32GB | 4c (Intel N97)                 | worker        | Home Server | $0     |
+| location   | ram  | cpu                            | Storage | role          | note        | cost/y | management url                  |
+| ---------- | ---- | ------------------------------ | ------- | ------------- | ----------- | ------ |
+| California | 30GB | 3c (Xeon Gold 6248)            | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
+| California | 30GB | 3c (Xeon Silver 4214)          | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
+| London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | worker        |             | $20    | https://master.pandahost.co.uk/ |
+| London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | control plane |             | $20    | https://master.pandahost.co.uk/ |
+| London     | 8GB  | 4c (AMD EPYC 7542)             | NVMe    | control plane |             | $35    | https://rarecloud.io/clients/   |
+| Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | SSD     | control plane |             | $20    | https://vps.deluxhost.net/      |
+| Zurich     | 32GB | 4c (Intel N97)                 | SSD     | worker        | Home Server | $0     |
 
 Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
 
@@ -148,3 +149,11 @@ etcdctl member list
 ```bash
 kubectl debug -it my-pod --image=busybox
 ```
+
+## Run test container on specific node
+
+```bash
+kubectl run busybox-bazzite --image=busybox:latest --restart=Never --overrides='{"spec":{"nodeName":"k3s-london-1"}}' -- /bin/sleep 3600
+```
+
+

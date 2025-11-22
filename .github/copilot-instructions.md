@@ -68,6 +68,12 @@ This repository contains declarative configuration files (YAML) that are:
 - Kubernetes files: `<app-name>-<resource-type>.yml` (e.g., `homepage-deployment.yml`)
 - Ansible files: Follow standard Ansible conventions
 
+### Homepage
+- Check if the app already exists in apps/homepage/homepage-config.yml, if not add a new entry following existing format
+- link: should be in the format service name (e.g stremio).bosscher.ch
+- set siteMonitor: to the health check URL of the app, if applicable
+- set ping: if siteMonitor is not applicable or if the app does not offer an http endpoint (e.g a UDP DNS service)
+
 ## Testing & Validation
 
 ### Kubernetes Manifests
