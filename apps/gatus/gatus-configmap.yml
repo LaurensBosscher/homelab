@@ -13,8 +13,8 @@ data:
     endpoints:
       - name: homepage
         group: core
-        url: "http://homepage.homepage.svc.cluster.local:3000"
-        interval: 30s
+        url: "http://homepage.default.svc.cluster.local:3000"
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -22,7 +22,7 @@ data:
       - name: argocd
         group: cluster
         url: "https://argocd-server.argocd.svc.cluster.local"
-        interval: 1m
+        interval: 5m
         client:
           insecure: true
         conditions:
@@ -32,7 +32,7 @@ data:
       - name: longhorn
         group: cluster
         url: "http://longhorn-frontend.longhorn-system.svc.cluster.local:80"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -40,7 +40,7 @@ data:
       - name: netalertx
         group: cluster
         url: "http://netalertx.netalertx.svc.cluster.local:20211"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -48,7 +48,7 @@ data:
       - name: kite
         group: cluster
         url: "http://kite.kube-system.svc.cluster.local:8080"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -56,7 +56,7 @@ data:
       - name: technitium-web
         group: cluster
         url: "http://technitium-web.technitium.svc.cluster.local:5380"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -64,7 +64,7 @@ data:
       - name: gatus
         group: cluster
         url: "http://gatus.gatus.svc.cluster.local:8080"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -72,7 +72,7 @@ data:
       - name: fusion
         group: news
         url: "http://fusion.fusion.svc.cluster.local:8080"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -80,7 +80,7 @@ data:
       - name: shiori
         group: news
         url: "http://shiori.shiori.svc.cluster.local:8080"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -88,7 +88,7 @@ data:
       - name: wanderer
         group: productivity
         url: "http://wanderer.wanderer.svc.cluster.local:3000"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -96,7 +96,7 @@ data:
       - name: n8n
         group: productivity
         url: "http://n8n.n8n.svc.cluster.local:5678"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -104,7 +104,7 @@ data:
       - name: calibre-web
         group: media
         url: "http://calibre-web.calibre-web.svc.cluster.local:8083"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -112,7 +112,7 @@ data:
       - name: audiobookshelf
         group: media
         url: "http://audiobookshelf.audiobookshelf.svc.cluster.local:80"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -120,7 +120,7 @@ data:
       - name: stremio
         group: media
         url: "http://stremio.stremio.svc.cluster.local:8080"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -128,7 +128,7 @@ data:
       - name: aiostreams
         group: media
         url: "http://aiostreams.aiostreams.svc.cluster.local:3000"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -136,7 +136,7 @@ data:
       - name: sabnzbd
         group: media
         url: "http://sabnzbd.sabnzbd.svc.cluster.local:8085"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -144,7 +144,7 @@ data:
       - name: paperless
         group: media
         url: "http://paperless-web.paperless.svc.cluster.local:8000"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -152,7 +152,7 @@ data:
       - name: docspell
         group: media
         url: "http://docspell-restserver.docspell.svc.cluster.local:7880"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -160,7 +160,7 @@ data:
       - name: rdt-client
         group: media
         url: "http://rdt-client.rdt-client.svc.cluster.local:6500"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -168,7 +168,7 @@ data:
       - name: your-spotify
         group: media
         url: "http://your-spotify-web.your-spotify.svc.cluster.local:3000"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
@@ -187,6 +187,6 @@ data:
       - name: cloudflare-icmp
         group: external
         url: "icmp://1.1.1.1"
-        interval: 1m
+        interval: 5m
         conditions:
           - "[CONNECTED] == true"
