@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/LaurensBosscher/homelab.git
         revision: main
         files:
-          - path: "apps/*/Chart.yaml"
+          - path: "helm/*/Chart.yaml"
   template:
     metadata:
       name: "{{path[1]}}"
