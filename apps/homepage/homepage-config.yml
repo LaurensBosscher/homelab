@@ -191,12 +191,12 @@ data:
             href: https://paperless.bosscher.ch/
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
-            ping: paperless-web.paperless.svc.cluster.local
+            siteMonitor: http://paperless-web.paperless.svc.cluster.local:8000
         - Docspell:
             href: https://docspell.bosscher.ch/
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
-            ping: docspell-rest.docspell.svc.cluster.local
+            siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
         - RDT-Client:
             href: https://rdt-client.bosscher.ch/
             description: Real-Debrid torrent client
@@ -217,7 +217,7 @@ data:
             href: https://argocd.bosscher.ch
             description: GitOps continuous delivery
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            ping: argocdserver.argocd.svc.cluster.local
+            siteMonitor: https://argocd-server.argocd.svc.cluster.local
         - Longhorn:
             href: https://longhorn.bosscher.ch
             description: Storage management
