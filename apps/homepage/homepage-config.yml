@@ -233,6 +233,11 @@ data:
             description: DNS server management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/technitium.webp
             siteMonitor: http://technitium-web.technitium.svc.cluster.local:5380
+        - Gatus:
+            href: https://gatus.bosscher.ch
+            description: Synthetic uptime monitoring
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
+            siteMonitor: http://gatus.gatus.svc.cluster.local:8080
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab

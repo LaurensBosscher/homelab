@@ -49,6 +49,7 @@ I'm currently running the following apps:
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [Docspell](https://docspell.org/) - Document management and archiving system
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
+- [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring and status page
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
 - [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
@@ -67,7 +68,7 @@ I'm currently running the following apps:
 
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
 - [ ] [Dawarich](https://github.com/Freika/dawarich) - Self-hosted alternative to Google Timeline
-- [ ] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
+- [X] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
 - [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
 - [ ] [LLocalSearch](https://github.com/nilsherzig/LLocalSearch) - Local AI-powered search engine
 - [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
@@ -81,6 +82,7 @@ I'm currently running the following apps:
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
 - [ ] [Booklore](https://github.com/booklore-app/booklore) - Book manager
 - [X] [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
+- [X] [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
