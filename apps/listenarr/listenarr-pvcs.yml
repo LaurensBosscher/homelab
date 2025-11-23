@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: listenarr-config
+      labels:
+        app: listenarr
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: longhorn-2replicas-compressed-europe
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: listenarr-data
+      labels:
+        app: listenarr
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: longhorn-2replicas-europe

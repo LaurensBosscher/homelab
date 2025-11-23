@@ -45,6 +45,7 @@ I'm currently running the following apps:
 - [AIOStreams](https://github.com/Viren070/AIOStreams) - Streaming content aggregator
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
+- [BookLore](https://github.com/booklore-app/booklore) - Self-hosted book manager with multi-user libraries
 - [Calibre-Web](https://github.com/janeczku/calibre-web) - Web app for browsing, reading and downloading eBooks
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [Docspell](https://docspell.org/) - Document management and archiving system
@@ -53,6 +54,7 @@ I'm currently running the following apps:
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
 - [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
+- [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
 - [n8n](https://n8n.io/) - Workflow automation tool
 - [NetAlertX](https://github.com/jokob-sk/NetAlertX) - Network device monitoring and alerting
 - [Paperless-ngx](https://docs.paperless-ngx.com/) - Document management system
@@ -80,13 +82,13 @@ I'm currently running the following apps:
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
 - [X] [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
-- [ ] [Booklore](https://github.com/booklore-app/booklore) - Book manager
+- [X] [Booklore](https://github.com/booklore-app/booklore) - Book manager
 - [X] [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
 - [X] [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
-- [ ] [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
+- [X] [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
 
 
 # Adding new nodes
