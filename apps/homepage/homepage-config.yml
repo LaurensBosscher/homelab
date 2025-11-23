@@ -304,6 +304,8 @@ data:
           memory: true
           showLabel: true
     - openmeteo:
+        latitude: 47.3769
+        longitude: 8.5417
         timezone: Europe/Zurich
         units: metric # or imperial
         cache: 5 # Time in minutes to cache API responses, to stay within limits
