@@ -36,6 +36,13 @@
       "automerge": false,
       "prCreation": "immediate",
       "groupName": "container image updates"
+    },
+    {
+      "matchPackageNames": [
+        "getmeili/meilisearch"
+      ],
+      "enabled": false,
+      "description": "Meilisearch needs to be updated manually"
     }
   ]
 }
