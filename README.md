@@ -89,7 +89,7 @@ I'm currently running the following apps:
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
 - [X] [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
-
+- [X] [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
 
 # Adding new nodes
 

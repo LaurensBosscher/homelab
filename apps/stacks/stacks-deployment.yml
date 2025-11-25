@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stacks
+  labels:
+    app.kubernetes.io/name: stacks
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stacks
+  template:
+    metadata:
+      labels:
+        app: stacks
+    spec:
+      nodeSelector:
+        city: zurich
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: stacks
+          image: zelest/stacks:v1.0.2
+          ports:
+            - containerPort: 7788
+          env:
+            - name: USERNAME
+              value: "admin"
+            - name: PASSWORD
+              value: "stacks"
+            - name: TZ
+              value: "Europe/Zurich"
+          volumeMounts:
+            - name: config
+              mountPath: /opt/stacks/config
+            - name: download
+              mountPath: /opt/stacks/download
+            - name: logs
+              mountPath: /opt/stacks/logs
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 7788
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 7788
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: stacks-config
+        - name: download
+          persistentVolumeClaim:
+            claimName: stacks-download
+        - name: logs
+          persistentVolumeClaim:
+            claimName: stacks-logs

@@ -215,6 +215,11 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
             siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
     - Downloads:
+        - Stacks:
+            href: https://stacks.bosscher.ch
+            description: Download manager
+            icon: https://cdn-icons-png.flaticon.com/512/29/29302.png
+            siteMonitor: http://stacks.stacks.svc.cluster.local:7788
         - sabnzbd:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader
