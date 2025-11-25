@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: shiori
   labels:
-    app: shiori
+    app.kubernetes.io/name: shiori
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   selector:
@@ -49,6 +50,14 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:

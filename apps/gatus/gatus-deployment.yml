@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: gatus
   labels:
-    app: gatus
+    app.kubernetes.io/name: gatus
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   selector:

@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: stremio
   labels:
-    app: stremio
+    app.kubernetes.io/name: stremio
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   selector:
@@ -60,6 +61,13 @@ spec:
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
             timeoutSeconds: 5
       volumes:
         - name: data

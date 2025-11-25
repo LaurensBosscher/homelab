@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared-deployment-zurich
-  namespace: default
 spec:
   replicas: 1
   selector:
@@ -65,3 +64,10 @@ spec:
             failureThreshold: 3
             initialDelaySeconds: 10
             periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5

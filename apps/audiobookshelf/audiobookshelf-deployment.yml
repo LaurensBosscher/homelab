@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: audiobookshelf
   labels:
-    app: audiobookshelf
+    app.kubernetes.io/name: audiobookshelf
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   strategy:

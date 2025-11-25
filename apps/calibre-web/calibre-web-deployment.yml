@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: calibre-web
   labels:
-    app: calibre-web
+    app.kubernetes.io/name: calibre-web
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   strategy:

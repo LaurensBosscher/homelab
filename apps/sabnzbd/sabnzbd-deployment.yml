@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: sabnzbd
   labels:
-    app: sabnzbd
+    app.kubernetes.io/name: sabnzbd
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   selector:

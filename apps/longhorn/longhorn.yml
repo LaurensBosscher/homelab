@@ -12,6 +12,14 @@ spec:
     - chart: longhorn
       repoURL: https://charts.longhorn.io/
       targetRevision: 1.10.1
+      helm:
+        valuesObject:
+          defaultSettings:
+            defaultReplicaCount: 2
+            backupTarget: "s3://longhorn-backups-ay76@s3.eu-central-003/"
+            backupTargetCredentialSecret: "k3s-longhorn-backup-backblaze"
+          persistence:
+            defaultClassReplicaCount: 2
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system

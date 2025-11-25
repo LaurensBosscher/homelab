@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: rdt-client
   labels:
-    app: rdt-client
+    app.kubernetes.io/name: rdt-client
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
   selector:
@@ -54,6 +55,14 @@ spec:
               port: 6500
             initialDelaySeconds: 10
             periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 6500
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:

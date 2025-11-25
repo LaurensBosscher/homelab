@@ -3,8 +3,12 @@ kind: Deployment
 metadata:
   name: wanderer-search
   labels:
-    app: wanderer-search
+    app.kubernetes.io/name: wanderer
+    app.kubernetes.io/component: search
+    app.kubernetes.io/part-of: homelab
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -14,8 +18,6 @@ spec:
       labels:
         app: wanderer-search
     spec:
-      strategy:
-        type: Recreate
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -74,7 +76,9 @@ kind: Deployment
 metadata:
   name: wanderer-db
   labels:
-    app: wanderer-db
+    app.kubernetes.io/name: wanderer
+    app.kubernetes.io/component: db
+    app.kubernetes.io/part-of: homelab
 spec:
   strategy:
     type: Recreate
@@ -149,7 +153,9 @@ kind: Deployment
 metadata:
   name: wanderer
   labels:
-    app: wanderer
+    app.kubernetes.io/name: wanderer
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: homelab
 spec:
   strategy:
     type: Recreate
