@@ -1,4 +1,4 @@
-server: https://{{ hostvars[groups['kubernetes-control-plane'][0]].inventory_hostname }}:6443
+server: https://{{ hostvars[groups['kubernetes-control-plane'][0]].ansible_host }}:6443
 token: "{{ hostvars[groups['kubernetes-control-plane'][0]]['k3s_token'] }}"
 
 bind-address: {{ eth0_ip }}

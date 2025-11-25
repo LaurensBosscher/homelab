@@ -25,7 +25,7 @@
   when: 
     - primary_network_interface.stdout != ""
     - current_ethtool_features.rc == 0
-  changed_when: true
+  changed_when: false
   failed_when: false
   tags: [network-optimizations]
 
@@ -47,6 +47,10 @@
     - { name: "net.ipv4.tcp_keepalive_time", value: "60" }
     - { name: "net.ipv4.tcp_keepalive_intvl", value: "10" }
     - { name: "net.ipv4.tcp_keepalive_probes", value: "6" }
+    # Multi-region WAN optimizations
+    - { name: "net.ipv4.tcp_window_scaling", value: "1" }
+    - { name: "net.ipv4.tcp_timestamps", value: "1" }
+    - { name: "net.ipv4.tcp_sack", value: "1" }
   tags: [network-optimizations]
 
 - name: Create systemd service to persist network interface optimizations

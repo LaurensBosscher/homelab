@@ -6,8 +6,17 @@
     enabled: true
   tags: [iscsid]
 
+- name: Check if SELinux Longhorn module exists
+  ansible.builtin.shell: semodule -l | grep -q local_longhorn
+  register: selinux_module
+  failed_when: false
+  changed_when: false
+  tags: [iscsid]
+
 - name: Apply SELinux fix for Longhorn iscsid
-  ansible.builtin.shell: echo '(allow iscsid_t self (capability (dac_override)))' > local_longhorn.cil && semodule -vi local_longhorn.cil
-  args:
-    chdir: /tmp
+  ansible.builtin.shell: |
+    echo '(allow iscsid_t self (capability (dac_override)))' > /tmp/local_longhorn.cil
+    semodule -vi /tmp/local_longhorn.cil
+    rm -f /tmp/local_longhorn.cil
+  when: selinux_module.rc != 0
   tags: [iscsid]

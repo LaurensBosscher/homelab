@@ -3,10 +3,10 @@
   ansible.builtin.blockinfile:
     path: /etc/systemd/journald.conf
     block: |
-      SystemMaxUse=2G
-      RuntimeMaxUse=512M
-      MaxRetentionSec=1month
-      MaxFileSec=1week
+      SystemMaxUse={{ journal_max_use | default('2G') }}
+      RuntimeMaxUse={{ journal_runtime_max_use | default('512M') }}
+      MaxRetentionSec={{ journal_max_retention | default('1month') }}
+      MaxFileSec={{ journal_max_file_sec | default('1week') }}
     marker: "# {mark} ANSIBLE MANAGED BLOCK - journald limits"
     backup: yes
     create: yes

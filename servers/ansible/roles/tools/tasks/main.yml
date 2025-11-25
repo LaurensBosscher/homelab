@@ -16,6 +16,9 @@
       - htop
       - nmap
       - iscsi-initiator-utils
+      - tar
+      - net-tools
+      - nfs-utils
     state: present
   become: true
   tags: [tools]
@@ -65,7 +68,7 @@
 
 - name: Install ELRepo repository
   ansible.builtin.dnf:
-    name: https://www.elrepo.org/elrepo-release-10.el10.elrepo.noarch.rpm
+    name: "{{ elrepo_rpm_url | default('https://www.elrepo.org/elrepo-release-10.el10.elrepo.noarch.rpm') }}"
     state: present
     disable_gpg_check: true
   become: true

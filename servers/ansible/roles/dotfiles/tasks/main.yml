@@ -86,6 +86,9 @@
           sudo dnf update -y && sudo dnf autoremove -y
       }
 
+      # Set KUBECONFIG for k3s, required for helm
+      export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
     owner: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
     group: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
     mode: "0644"

@@ -17,25 +17,26 @@ disable: traefik
 # Enable secret encryption at rest
 secrets-encryption: true
 
-# etcd tunings for high-latency (in milliseconds as integers)
+# etcd tunings for high-latency multi-region WAN cluster
 etcd-arg:
   - 'log-level=warn'  # Since etcd logs end-up mixed with the K3S logs make it less verbose
 
-  - "grpc-keepalive-interval=300000"
-  - "grpc-keepalive-timeout=300000"
+  # WAN optimizations - increased timeouts for cross-region latency
+  - "heartbeat-interval=500"             # Default 100ms, increased for WAN latency
+  - "election-timeout=5000"              # Default 1000ms, increased for WAN latency
+  - "grpc-keepalive-interval=30000"      # 30s keepalive for WAN connections
+  - "grpc-keepalive-timeout=20000"       # 20s timeout
 
-  - "auto-compaction-retention=1h"           # keep only 1 hour of history (revision or periodic)
+  - "auto-compaction-retention=1h"       # keep only 1 hour of history (revision or periodic)
+  - "snapshot-count=5000"                # Reduce snapshot frequency for WAN
   # Optional: speeds up large snapshot transfers a lot (K3s ≥ v1.21.5)
-  - "max-request-bytes=10485760"            # 10 MiB instead of ~1.5 MiB
+  - "max-request-bytes=10485760"         # 10 MiB instead of ~1.5 MiB
 
-  - "warning-apply-duration=500000000" # 1000ms is quite high, can tune down
+  - "warning-apply-duration=750000000"   # 750ms warning threshold
 
 kube-controller-manager-arg:
   - "node-monitor-period=10s"
   - "node-monitor-grace-period=60s"
-
-node-taint:
-  - "CriticalAddonsOnly=true:NoExecute"
 
 tls-san:
   - "k3s.bosscher.ch"

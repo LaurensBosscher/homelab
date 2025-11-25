@@ -27,7 +27,7 @@ The cluster is configured with production like settings such as:
 # Hardware
 
 | location   | ram  | cpu                            | Storage | role          | note        | cost/y | management url                  |
-| ---------- | ---- | ------------------------------ | ------- | ------------- | ----------- | ------ |
+| ---------- | ---- | ------------------------------ | ------- | ------------- | ----------- | ------ | ------------------------------- |
 | California | 30GB | 3c (Xeon Gold 6248)            | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
 | California | 30GB | 3c (Xeon Silver 4214)          | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
 | London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | worker        |             | $20    | https://master.pandahost.co.uk/ |

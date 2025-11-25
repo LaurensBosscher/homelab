@@ -38,7 +38,7 @@
 - name: Create udev rule for Tailscale MTU
   ansible.builtin.copy:
     content: |
-      ACTION=="add", SUBSYSTEM=="net", KERNEL=="tailscale0", RUN+="/sbin/ip link set dev tailscale0 mtu 1280"
+      ACTION=="add", SUBSYSTEM=="net", KERNEL=="tailscale0", RUN+="/sbin/ip link set dev tailscale0 mtu {{ tailscale_mtu | default(1280) }}"
     dest: /etc/udev/rules.d/99-tailscale-mtu.rules
     mode: "0644"
   become: true

@@ -9,3 +9,16 @@ zram_enable: true
 firewall_enable: false
 firewall_default_zone: internal
 firewall_block_interface: eth0
+
+# Tool versions
+k9s_version: "v0.32.7"
+
+# System tuning
+tailscale_mtu: 1280
+journal_max_use: "2G"
+journal_runtime_max_use: "512M"
+journal_max_retention: "1month"
+journal_max_file_sec: "1week"
+
+# ELRepo
+elrepo_rpm_url: "https://www.elrepo.org/elrepo-release-10.el10.elrepo.noarch.rpm"

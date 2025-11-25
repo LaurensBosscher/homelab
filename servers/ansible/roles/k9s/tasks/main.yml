@@ -10,7 +10,7 @@
   block:
     - name: Download k9s
       ansible.builtin.get_url:
-        url: https://github.com/derailed/k9s/releases/download/v0.30.0/k9s_Linux_amd64.tar.gz
+        url: "https://github.com/derailed/k9s/releases/download/{{ k9s_version }}/k9s_Linux_amd64.tar.gz"
         dest: /tmp/k9s_Linux_amd64.tar.gz
         mode: "0644"
       become: true
