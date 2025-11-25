@@ -23,10 +23,10 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: region
+                  - key: city
                     operator: In
                     values:
-                      - europe
+                      - zurich
       containers:
         - name: aiostreams
           image: ghcr.io/viren070/aiostreams:v2.17.6
