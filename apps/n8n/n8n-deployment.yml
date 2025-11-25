@@ -28,7 +28,7 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: postgres:18
+          image: postgres:18.1
           ports:
             - containerPort: 5432
           env:

@@ -34,9 +34,9 @@ The cluster is configured with production like settings such as:
 | London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | control plane |             | $20    | https://master.pandahost.co.uk/ |
 | London     | 8GB  | 4c (AMD EPYC 7542)             | NVMe    | control plane |             | $35    | https://rarecloud.io/clients/   |
 | Amsterdam  | 8GB  | 2c (Intel Xeon Platinum 8173M) | SSD     | control plane |             | $20    | https://vps.deluxhost.net/      |
-| Zurich     | 32GB | 4c (Intel N97)                 | SSD     | worker        | Home Server | $0     |
+| Zurich     | 32GB | 4c (Intel N97)                 | SSD     | worker        | Home Server | $0     |                                 |
 
-Total of 110 GB RAM and 16 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
+Total of 118 GB RAM and 20 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
 
 # Apps
 
@@ -76,7 +76,7 @@ I'm currently running the following apps:
 - [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
 - [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [ ] [Open WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs
-- [ ] [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
+- [X] [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine

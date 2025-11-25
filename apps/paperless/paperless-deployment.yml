@@ -144,7 +144,7 @@ spec:
         fsGroup: 999
       containers:
         - name: redis
-          image: docker.io/library/redis:8
+          image: docker.io/library/redis:8-alpine
           ports:
             - containerPort: 6379
           resources:
@@ -211,7 +211,7 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: docker.io/library/postgres:18
+          image: docker.io/library/postgres:18.1
           ports:
             - containerPort: 5432
           envFrom:
