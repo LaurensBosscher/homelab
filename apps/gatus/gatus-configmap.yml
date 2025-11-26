@@ -11,9 +11,33 @@ data:
       path: /data/data.db
 
     endpoints:
+      - name: laurensbosscher.nl
+        group: external
+        url: "https://laurensbosscher.nl/"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
+      - name: Bosscher.ch
+        group: external
+        url: "https://bosscher.ch/"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
+      - name: savexcapital.com
+        group: external
+        url: "https://savexcapital.com/"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
       - name: homepage
         group: core
-        url: "http://homepage.default.svc.cluster.local:3000"
+        url: "http://homepage.homepage.svc.cluster.local:3000"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
