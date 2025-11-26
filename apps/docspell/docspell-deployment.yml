@@ -29,6 +29,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: docspell
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: restserver
           image: ghcr.io/docspell/restserver:v0.43.0
@@ -126,6 +134,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: docspell
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: joex
           image: ghcr.io/docspell/joex:v0.43.0
@@ -202,6 +218,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: docspell
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: consumedir
           image: docspell/dsc:v0.11.0
@@ -268,6 +292,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: docspell
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: postgres
           image: docker.io/library/postgres:18.1
@@ -342,6 +374,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: docspell
+                topologyKey: kubernetes.io/hostname
       securityContext:
         fsGroup: 8983
       containers:

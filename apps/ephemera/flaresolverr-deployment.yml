@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: flaresolverr
+        app.kubernetes.io/part-of: ephemera
     spec:
       affinity:
         nodeAffinity:
@@ -24,6 +25,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: ephemera
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: flaresolverr
           image: ghcr.io/flaresolverr/flaresolverr:v3.4.5

@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: ephemera
+        app.kubernetes.io/part-of: ephemera
     spec:
       affinity:
         nodeAffinity:
@@ -26,6 +27,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: ephemera
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: ephemera
           image: ghcr.io/orwellianepilogue/ephemera:1.3.1

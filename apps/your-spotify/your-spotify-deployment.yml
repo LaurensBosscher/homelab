@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: your-spotify-server
+        app.kubernetes.io/part-of: your-spotify
     spec:
       affinity:
         nodeAffinity:
@@ -21,6 +22,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: your-spotify
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: server
           image: "yooooomi/your_spotify_server:1.15.0"
@@ -66,6 +75,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: your-spotify-web
+        app.kubernetes.io/part-of: your-spotify
     spec:
       affinity:
         nodeAffinity:
@@ -77,6 +87,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: your-spotify
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: web
           image: "yooooomi/your_spotify_client:1.15.0"
@@ -112,6 +130,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: your-spotify-mongo
+        app.kubernetes.io/part-of: your-spotify
     spec:
       affinity:
         nodeAffinity:
@@ -123,6 +142,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: your-spotify
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: mongo
           image: "mongo:8.2.2"

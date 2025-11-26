@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: n8n-postgres
+        app.kubernetes.io/part-of: n8n
     spec:
       affinity:
         nodeAffinity:
@@ -26,6 +27,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: n8n
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: postgres
           image: postgres:18.1
@@ -101,6 +110,7 @@ spec:
     metadata:
       labels:
         app: n8n
+        app.kubernetes.io/part-of: n8n
     spec:
       affinity:
         nodeAffinity:
@@ -112,6 +122,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: n8n
+                topologyKey: kubernetes.io/hostname
       securityContext:
         fsGroup: 1000
       containers:

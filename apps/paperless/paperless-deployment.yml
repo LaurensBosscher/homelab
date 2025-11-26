@@ -28,6 +28,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: paperless
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: paperless
           image: ghcr.io/paperless-ngx/paperless-ngx:2.20.0
@@ -140,6 +148,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: paperless
+                topologyKey: kubernetes.io/hostname
       securityContext:
         fsGroup: 999
       containers:
@@ -209,6 +225,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: paperless
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: postgres
           image: docker.io/library/postgres:18.1
@@ -283,6 +307,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: paperless
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: gotenberg
           image: docker.io/gotenberg/gotenberg:8.25
@@ -330,6 +362,14 @@ spec:
                     operator: In
                     values:
                       - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: paperless
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: tika
           image: docker.io/apache/tika:3.2.3.0

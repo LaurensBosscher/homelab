@@ -17,6 +17,7 @@ spec:
     metadata:
       labels:
         app: wanderer-search
+        app.kubernetes.io/name: wanderer
     spec:
       affinity:
         nodeAffinity:
@@ -28,6 +29,14 @@ spec:
                     operator: In
                     values:
                       - europe
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: wanderer
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: search
           image: getmeili/meilisearch:v1.25.0
@@ -89,6 +98,7 @@ spec:
     metadata:
       labels:
         app: wanderer-db
+        app.kubernetes.io/name: wanderer
     spec:
       affinity:
         nodeAffinity:
@@ -100,6 +110,14 @@ spec:
                     operator: In
                     values:
                       - europe
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: wanderer
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: db
           image: flomp/wanderer-db:v0.18.3
@@ -166,6 +184,7 @@ spec:
     metadata:
       labels:
         app: wanderer
+        app.kubernetes.io/name: wanderer
     spec:
       affinity:
         nodeAffinity:
@@ -177,6 +196,14 @@ spec:
                     operator: In
                     values:
                       - europe
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: wanderer
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: wanderer
           image: flomp/wanderer-web:v0.18.3
