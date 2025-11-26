@@ -46,7 +46,7 @@ I'm currently running the following apps:
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
 - [BookLore](https://github.com/booklore-app/booklore) - Self-hosted book manager with multi-user libraries
-- [Calibre-Web](https://github.com/janeczku/calibre-web) - Web app for browsing, reading and downloading eBooks
+- [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [Docspell](https://docspell.org/) - Document management and archiving system
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
@@ -65,7 +65,12 @@ I'm currently running the following apps:
 - [Technitium](https://technitium.com/dns/) - DNS server
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
 - [Your Spotify](https://github.com/Yooooomi/your_spotify) - Self-hosted Spotify statistics and analytics
-
+- [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
+- [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
+- [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
+- [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
+- [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
+- 
 ## To Explore
 
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
@@ -76,20 +81,15 @@ I'm currently running the following apps:
 - [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
 - [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [ ] [Open WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs
-- [X] [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
 - [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
-- [X] [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
 - [X] [Booklore](https://github.com/booklore-app/booklore) - Book manager
-- [X] [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
-- [X] [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
-- [X] [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
-- [X] [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
+
 
 # Adding new nodes
 
