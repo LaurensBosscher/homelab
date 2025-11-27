@@ -44,10 +44,9 @@ spec:
             - name: REDIS_URL
               value: "redis://aiometadata-redis:6379"
             - name: HOST_NAME
-              value: "https://aiometadata.bosscher.ch" # Default, can be overridden by secret if needed
+              value: "https://aiometadata.bosscher.ch"
             - name: LOG_LEVEL
-              value: "info" # User requested info, docker-compose has debug
-            # Default values from docker-compose, can be overridden by configmap or secret
+              value: "info"
             - name: META_TTL
               value: "604800"
             - name: CATALOG_TTL
@@ -57,10 +56,44 @@ spec:
             - name: CATALOG_LIST_ITEMS_SIZE
               value: "20"
             - name: DATABASE_URI
-              value: "sqlite:///app/addon/data/db.sqlite"
-          envFrom:
-            - secretRef:
-                name: aiometadata-secret # For TMDB_API, TVDB_API_KEY, FANART_API_KEY, MDBLIST_API_KEY, RPDB_API_KEY, ADMIN_KEY, TMDB_SOCKS_PROXY_URL
+              value: "sqlite://addon/data/db.sqlite"
+            # Explicitly map secrets to the environment variables expected by the app
+            - name: TMDB_API
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: TMDB_API_KEY
+            - name: TVDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: TVDB_API_KEY
+            - name: FANART_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: FANART_API_KEY
+            - name: MDBLIST_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: MDBLIST_API_KEY
+            - name: RPDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: RPDB_API_KEY
+            - name: ADMIN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: ADMIN_KEY
+            - name: TMDB_SOCKS_PROXY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: TMDB_SOCKS_PROXY_URL
+                  optional: true
           volumeMounts:
             - name: data
               mountPath: /app/addon/data
