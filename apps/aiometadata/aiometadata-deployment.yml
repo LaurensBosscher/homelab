@@ -3,9 +3,12 @@ kind: Deployment
 metadata:
   name: aiometadata
   labels:
-    app: aiometadata
+    app.kubernetes.io/name: aiometadata
+    app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: aiometadata
@@ -23,25 +26,50 @@ spec:
                     operator: In
                     values:
                       - europe
+        # podAffinity to ensure aiometadata and aiometadata-redis are on the same node
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: aiometadata-redis
+              topologyKey: "kubernetes.io/hostname"
       containers:
         - name: aiometadata
           image: ghcr.io/cedya77/aiometadata:latest
           ports:
             - containerPort: 3232
           env:
-            - name: REDIS_HOST
-              value: "localhost"
+            - name: PORT
+              value: "3232"
+            - name: REDIS_URL
+              value: "redis://aiometadata-redis:6379"
+            - name: HOST_NAME
+              value: "https://aiometadata.bosscher.ch" # Default, can be overridden by secret if needed
             - name: LOG_LEVEL
-              value: "info"
+              value: "info" # User requested info, docker-compose has debug
+            # Default values from docker-compose, can be overridden by configmap or secret
+            - name: META_TTL
+              value: "604800"
+            - name: CATALOG_TTL
+              value: "86400"
+            - name: TMDB_TRENDING_TTL
+              value: "10800"
+            - name: CATALOG_LIST_ITEMS_SIZE
+              value: "20"
+            - name: DATABASE_URI
+              value: "sqlite:///app/addon/data/db.sqlite"
           envFrom:
             - secretRef:
-                name: aiometadata-secret
+                name: aiometadata-secret # For TMDB_API, TVDB_API_KEY, FANART_API_KEY, MDBLIST_API_KEY, RPDB_API_KEY, ADMIN_KEY, TMDB_SOCKS_PROXY_URL
+          volumeMounts:
+            - name: data
+              mountPath: /app/addon/data
           resources:
             requests:
-              cpu: 10m
-              memory: 64Mi
+              cpu: 50m
+              memory: 128Mi
             limits:
-              memory: 256Mi
+              memory: 512Mi
           livenessProbe:
             tcpSocket:
               port: 3232
@@ -52,11 +80,7 @@ spec:
               port: 3232
             initialDelaySeconds: 5
             periodSeconds: 10
-        - name: redis
-          image: redis:alpine
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
-            limits:
-              memory: 128Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: aiometadata-data
