@@ -89,7 +89,7 @@ I'm currently running the following apps:
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
-
+- [ ] [AIOMetadata](https://github.com/cedya77/aiometadata)
 
 # Adding new nodes
 

@@ -157,6 +157,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
 
+      - name: aiometadata
+        group: media
+        url: "http://aiometadata.aiometadata.svc.cluster.local:3232"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
+
       - name: sabnzbd
         group: media
         url: "http://sabnzbd.sabnzbd.svc.cluster.local:8085"

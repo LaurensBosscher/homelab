@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiometadata
+  labels:
+    app: aiometadata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiometadata
+  template:
+    metadata:
+      labels:
+        app: aiometadata
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: aiometadata
+          image: ghcr.io/cedya77/aiometadata:latest
+          ports:
+            - containerPort: 3232
+          env:
+            - name: REDIS_HOST
+              value: "localhost"
+            - name: LOG_LEVEL
+              value: "info"
+          envFrom:
+            - secretRef:
+                name: aiometadata-secret
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          livenessProbe:
+            tcpSocket:
+              port: 3232
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 3232
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        - name: redis
+          image: redis:alpine
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi

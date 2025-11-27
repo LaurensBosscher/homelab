@@ -203,6 +203,11 @@ data:
             description: Media streaming service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
+        - Aiometadata:
+            href: https://aiometadata.bosscher.ch/
+            description: Metadata proxy
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
+            siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
     - Documents:
         - Paperless:
             href: https://paperless.bosscher.ch/
