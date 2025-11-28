@@ -15,20 +15,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: stacks-download
-  labels:
-    app: stacks
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: longhorn-2replicas-europe
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: stacks-logs
   labels:
     app: stacks

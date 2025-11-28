@@ -87,7 +87,7 @@ spec:
             claimName: stacks-config
         - name: download
           persistentVolumeClaim:
-            claimName: stacks-download
+            claimName: calibre-web-ingest
         - name: logs
           persistentVolumeClaim:
             claimName: stacks-logs

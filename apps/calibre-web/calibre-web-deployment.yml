@@ -46,6 +46,8 @@ spec:
               mountPath: /config
             - name: library
               mountPath: /calibre-library
+            - name: ingest
+              mountPath: /cwa-book-ingest
           resources:
             requests:
               cpu: 50m
@@ -66,3 +68,6 @@ spec:
         - name: library
           persistentVolumeClaim:
             claimName: calibre-web-library
+        - name: ingest
+          persistentVolumeClaim:
+            claimName: calibre-web-ingest

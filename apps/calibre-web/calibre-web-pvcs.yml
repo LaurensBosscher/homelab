@@ -27,3 +27,16 @@ items:
         requests:
           storage: 5Gi
       storageClassName: longhorn-2replicas-compressed-europe
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: calibre-web-ingest
+      labels:
+        app: calibre-web
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: longhorn-2replicas-compressed-europe
