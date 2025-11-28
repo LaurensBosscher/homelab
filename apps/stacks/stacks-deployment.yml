@@ -39,6 +39,8 @@ spec:
               value: "stacks"
             - name: TZ
               value: "Europe/Zurich"
+            - name: SOLVERR_URL
+              value: "localhost:8191"
           volumeMounts:
             - name: config
               mountPath: /opt/stacks/config
@@ -66,6 +68,19 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 5
+        - name: flaresolverr
+          image: ghcr.io/flaresolverr/flaresolverr:latest
+          ports:
+            - containerPort: 8191
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
       volumes:
         - name: config
           persistentVolumeClaim:
