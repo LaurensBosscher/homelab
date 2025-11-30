@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stacks
+  namespace: books
   labels:
     app.kubernetes.io/name: stacks
     app.kubernetes.io/part-of: homelab
@@ -88,7 +89,6 @@ spec:
         - name: download
           persistentVolumeClaim:
             claimName: calibre-web-ingest
-            namespace: calibre-web
         - name: logs
           persistentVolumeClaim:
             claimName: stacks-logs

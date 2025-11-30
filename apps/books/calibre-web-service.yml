@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: calibre-web
+  namespace: books
   labels:
     app: calibre-web
 spec:
