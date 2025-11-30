@@ -38,5 +38,5 @@ items:
         - ReadWriteMany
       resources:
         requests:
-          storage: 2Gi
+          storage: 1Gi
       storageClassName: longhorn-2replicas-compressed-europe

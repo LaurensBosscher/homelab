@@ -88,6 +88,7 @@ spec:
         - name: download
           persistentVolumeClaim:
             claimName: calibre-web-ingest
+            namespace: calibre-web
         - name: logs
           persistentVolumeClaim:
             claimName: stacks-logs
