@@ -58,9 +58,9 @@ spec:
           resources:
             requests:
               cpu: 25m
-              memory: 48Mi
-            limits:
               memory: 128Mi
+            limits:
+              memory: 1Gi
           livenessProbe:
             httpGet:
               path: /health
@@ -144,9 +144,9 @@ spec:
           resources:
             requests:
               cpu: 25m
-              memory: 64Mi
-            limits:
               memory: 128Mi
+            limits:
+              memory: 512Mi
           livenessProbe:
             httpGet:
               path: /health
