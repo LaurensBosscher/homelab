@@ -28,7 +28,7 @@ spec:
                       - europe
       containers:
         - name: redis
-          image: redis:latest
+          image: docker.io/library/redis:8-alpine
           command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
           ports:
             - containerPort: 6379
