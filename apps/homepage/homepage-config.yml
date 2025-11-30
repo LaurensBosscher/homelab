@@ -172,11 +172,16 @@ data:
             description: OpenRouter AI Chat
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-router-dark.svg
     - Books:
+        - Stacks:
+            href: https://stacks.bosscher.ch
+            description: Download manager
+            icon: https://cdn-icons-png.flaticon.com/512/29/29302.png
+            siteMonitor: http://stacks.books.svc.cluster.local:7788
         - Calibre-Web:
             href: https://calibre-web.bosscher.ch
             description: E-book library
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
-            siteMonitor: http://calibre-web.calibre-web.svc.cluster.local:8083
+            siteMonitor: http://calibre-web.books.svc.cluster.local:8083
         - Audiobookshelf:
             href: https://audiobookshelf.bosscher.ch
             description: Audiobook server
@@ -220,11 +225,6 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
             siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
     - Downloads:
-        - Stacks:
-            href: https://stacks.bosscher.ch
-            description: Download manager
-            icon: https://cdn-icons-png.flaticon.com/512/29/29302.png
-            siteMonitor: http://stacks.stacks.svc.cluster.local:7788
         - sabnzbd:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader

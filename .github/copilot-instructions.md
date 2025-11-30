@@ -74,6 +74,11 @@ This repository contains declarative configuration files (YAML) that are:
 - set siteMonitor: to the health check URL of the app, if applicable
 - set ping: if siteMonitor is not applicable or if the app does not offer an http endpoint (e.g a UDP DNS service)
 
+
+### Gatus
+- Check if the app already exists in apps/gatus/gatus-configmap.yml, if not add a new entry following existing format
+- set url: to the health check URL of the app, if applicable
+
 ## Testing & Validation
 
 ### Kubernetes Manifests
