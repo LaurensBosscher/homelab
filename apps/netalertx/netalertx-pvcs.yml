@@ -1,29 +1,13 @@
 apiVersion: v1
-kind: List
-items:
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: netalertx-config
-      labels:
-        app: netalertx
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: longhorn-2replicas-compressed-us
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: netalertx-db
-      labels:
-        app: netalertx
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 2Gi
-      storageClassName: longhorn-2replicas-us
+kind: PersistentVolumeClaim
+metadata:
+  name: netalertx-data
+  labels:
+    app: netalertx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn-2replicas-us
