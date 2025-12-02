@@ -16,6 +16,10 @@
         cpu: 100m
         memory: 256Mi
 
+      imageGCHighThresholdPercent: 85
+      imageGCLowThresholdPercent: 80
+      imageMaximumGCAge: "24h"
+
       node-status-update-frequency: 10s
       max-pods: 200
     marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
