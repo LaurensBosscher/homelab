@@ -35,6 +35,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: aiometadata
+          # Doesn't publish tags for versions
           image: ghcr.io/cedya77/aiometadata:latest
           ports:
             - containerPort: 3232
@@ -57,7 +58,6 @@ spec:
               value: "20"
             - name: DATABASE_URI
               value: "sqlite://addon/data/db.sqlite"
-            # Explicitly map secrets to the environment variables expected by the app
             - name: TMDB_API
               valueFrom:
                 secretKeyRef:
@@ -68,32 +68,11 @@ spec:
                 secretKeyRef:
                   name: aiometadata-secret
                   key: TVDB_API_KEY
-            - name: FANART_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aiometadata-secret
-                  key: FANART_API_KEY
-            - name: MDBLIST_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aiometadata-secret
-                  key: MDBLIST_API_KEY
-            - name: RPDB_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aiometadata-secret
-                  key: RPDB_API_KEY
             - name: ADMIN_KEY
               valueFrom:
                 secretKeyRef:
                   name: aiometadata-secret
                   key: ADMIN_KEY
-            - name: TMDB_SOCKS_PROXY_URL
-              valueFrom:
-                secretKeyRef:
-                  name: aiometadata-secret
-                  key: TMDB_SOCKS_PROXY_URL
-                  optional: true
           volumeMounts:
             - name: data
               mountPath: /app/addon/data
