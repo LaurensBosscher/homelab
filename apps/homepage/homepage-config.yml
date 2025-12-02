@@ -187,11 +187,6 @@ data:
             description: Audiobook server
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
             siteMonitor: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
-        - BookLore:
-            href: https://booklore.bosscher.ch
-            description: Self-hosted book manager
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/books.png
-            siteMonitor: http://booklore.booklore.svc.cluster.local:6060
         - Listenarr:
             href: https://listenarr.bosscher.ch
             description: Automated audiobook downloader

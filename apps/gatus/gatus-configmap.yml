@@ -205,14 +205,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
 
-      - name: booklore
-        group: media
-        url: "http://booklore.booklore.svc.cluster.local:6060"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
-
       - name: listenarr
         group: media
         url: "http://listenarr.listenarr.svc.cluster.local:5000"
