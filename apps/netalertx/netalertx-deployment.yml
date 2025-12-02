@@ -30,7 +30,7 @@ spec:
       hostNetwork: true
       initContainers:
         - name: fix-permissions
-          image: busybox:1.36
+          image: busybox:1.37
           command: ["sh", "-c", "chown -R 20211:20211 /data"]
           volumeMounts:
             - name: data
