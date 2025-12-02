@@ -48,8 +48,10 @@ spec:
             - name: PORT
               value: "20211"
           volumeMounts:
-            - name: data
-              mountPath: /data
+            - name: config
+              mountPath: /app/config
+            - name: db
+              mountPath: /app/db
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
