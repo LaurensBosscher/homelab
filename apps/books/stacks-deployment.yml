@@ -30,7 +30,7 @@ spec:
                       - europe
       containers:
         - name: stacks
-          image: zelest/stacks:v1.1.0
+          image: zelest/stacks:v1.1.1
           ports:
             - containerPort: 7788
           env:
