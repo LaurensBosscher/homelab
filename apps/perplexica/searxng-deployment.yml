@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: perplexica
+  name: perplexica-searxng
   labels:
-    app.kubernetes.io/name: perplexica
+    app.kubernetes.io/name: perplexica-searxng
     app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
@@ -11,11 +11,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: perplexica
+      app: perplexica-searxng
   template:
     metadata:
       labels:
-        app: perplexica
+        app: perplexica-searxng
         app-group: perplexica-stack
     spec:
       affinity:
@@ -38,43 +38,35 @@ spec:
                       - perplexica-stack
               topologyKey: kubernetes.io/hostname
       containers:
-        - name: perplexica
-          image: itzcrazykns1337/perplexica:v1.11.2
-          imagePullPolicy: IfNotPresent
+        - name: searxng
+          image: docker.io/searxng/searxng:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
           env:
-            - name: TZ
-              value: Europe/Zurich
+            - name: SEARXNG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: searxng-secret
+                  key: secret_key
+            - name: SEARXNG_BASE_URL
+              value: "https://searxng.bosscher.ch/"
           volumeMounts:
-            - name: data
-              mountPath: /home/perplexica/data
-            - name: uploads
-              mountPath: /home/perplexica/uploads
+            - name: searxng-config
+              mountPath: /etc/searxng
+            - name: searxng-data
+              mountPath: /var/cache/searxng
           resources:
             requests:
-              cpu: 100m
-              memory: 512Mi
+              cpu: 50m
+              memory: 128Mi
             limits:
-              memory: 1Gi
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            timeoutSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 5
+              memory: 512Mi
       volumes:
-        - name: data
+        - name: searxng-config-template
+          configMap:
+            name: searxng-config
+        - name: searxng-config
+          emptyDir: {}
+        - name: searxng-data
           persistentVolumeClaim:
-            claimName: perplexica-data
-        - name: uploads
-          persistentVolumeClaim:
-            claimName: perplexica-uploads
+            claimName: perplexica-searxng-data

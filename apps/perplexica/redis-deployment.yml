@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perplexica-redis
+  labels:
+    app.kubernetes.io/name: perplexica-redis
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: perplexica-redis
+  template:
+    metadata:
+      labels:
+        app: perplexica-redis
+        app-group: perplexica-stack
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app-group
+                    operator: In
+                    values:
+                      - perplexica-stack
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: redis
+          image: docker.io/library/redis:8-alpine
+          command:
+            ["redis-server", "--save", "30", "1", "--loglevel", "warning"]
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: perplexica-redis-data

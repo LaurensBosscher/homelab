@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: perplexica-redis
+  labels:
+    app: perplexica-redis
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+  selector:
+    app: perplexica-redis
