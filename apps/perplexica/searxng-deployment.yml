@@ -49,7 +49,9 @@ spec:
                   name: searxng-secret
                   key: secret_key
             - name: SEARXNG_BASE_URL
-              value: "https://searxng.bosscher.ch/"
+              value: "perplexica-searxng.perplexica.svc.cluster.local:8080"
+            - name: SEARCHXNG_OUTPUT
+              value: ["json", "html"]
           volumeMounts:
             - name: searxng-config
               mountPath: /etc/searxng

@@ -157,12 +157,18 @@ data:
           description: Self-hosted trail database
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
           siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
-    - AI:
+    - Search:
+        - SearchXNG:
+            href: https://searchxng.bosscher.ch
+            description: Self-Hosted Search Engine
+            icon: https://avatars.githubusercontent.com/u/80454229?s=200&v=4
+            siteMonitor: http://perplexica-searxng.perplexica.svc.cluster.local:8080
         - Perplexica:
             href: https://perplexica.bosscher.ch
             description: AI Search Engine
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/perplexica.png
+            icon: https://perplexica.io/favicon.ico
             siteMonitor: http://perplexica.perplexica.svc.cluster.local:3000
+    - AI:
         - Grok:
             href: https://grok.com/
             description: Truth seeker
