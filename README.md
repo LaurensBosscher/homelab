@@ -45,7 +45,6 @@ I'm currently running the following apps:
 - [AIOStreams](https://github.com/Viren070/AIOStreams) - Streaming content aggregator
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
-- [BookLore](https://github.com/booklore-app/booklore) - Self-hosted book manager with multi-user libraries
 - [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [Docspell](https://docspell.org/) - Document management and archiving system
@@ -68,8 +67,9 @@ I'm currently running the following apps:
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Audiobook downloader
 - [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
 - [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
-- [Ephemera](https://github.com/OrwellianEpilogue/ephemera) - Book downloader
 - [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
+- [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
+- [AIOMetadata](https://github.com/cedya77/aiometadata) - Metadata for Stremio
 - 
 ## To Explore
 
@@ -83,13 +83,14 @@ I'm currently running the following apps:
 - [ ] [Open WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
-- [ ] [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
 - [ ] [Calibre Web Automated Book Downloader](https://github.com/calibrain/calibre-web-automated-book-downloader) - Automatically download (and add) books to Calibre web
-- [X] [Booklore](https://github.com/booklore-app/booklore) - Book manager
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
-- [ ] [AIOMetadata](https://github.com/cedya77/aiometadata)
+- [ ] [Norish](https://github.com/norish-recipes/norish) - Norish - A realtime, self-hosted recipe app for families & friends
+- [ ] [IT-Tools](https://github.com/sharevb/it-tools) - Collection of handy online tools for developers, with great UX
+- [ ] [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF) - Stirling PDF is a powerful, open-source PDF editing platform
+- [ ] [hotpot](https://github.com/erik/hotpot) - Render customizable activity heatmap images from GPS tracks extracted from GPX, TCX, and FIT files. Includes a built-in web server for XYZ tiles and endpoints to add new data via HTTP POST or Strava webhooks.
 
 # Adding new nodes
 
