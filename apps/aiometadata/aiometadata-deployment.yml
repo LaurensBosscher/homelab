@@ -68,6 +68,11 @@ spec:
                 secretKeyRef:
                   name: aiometadata-secret
                   key: TVDB_API_KEY
+            - name: RPDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aiometadata-secret
+                  key: RPDB_API_KEY
             - name: ADMIN_KEY
               valueFrom:
                 secretKeyRef:
