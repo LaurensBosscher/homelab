@@ -146,6 +146,11 @@ data:
             description: Workflow automation
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
             siteMonitor: http://n8n.n8n.svc.cluster.local:5678
+        - Obsidian Live Sync:
+            href: https://obsidian-live-sync.bosscher.ch/_utils/
+            description: CouchDB for Obsidian sync
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
+            siteMonitor: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
     - Personal Dashboards:
       - Your-Spotify:
           href: https://your-spotify.bosscher.ch/
@@ -204,14 +209,19 @@ data:
             description: Media center
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
             siteMonitor: http://stremio.stremio.svc.cluster.local:8080
-        - Aiostreams:
+        - AIOstreams:
             href: https://aiostreams.bosscher.ch/
             description: Media streaming service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
-        - Aiometadata:
+        - AIOmetadata:
             href: https://aiometadata.bosscher.ch/
-            description: Metadata proxy
+            description: Aiometadata for Stremio
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
+            siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
+        - AIOmetadata Dashboard:
+            href: https://aiometadata.bosscher.ch/dashboard
+            description: Usage dashboard for Aiometadata
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
     - Documents:
