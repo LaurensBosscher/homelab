@@ -23,5 +23,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 128Mi
   storageClassName: longhorn-2replicas-compressed-us
