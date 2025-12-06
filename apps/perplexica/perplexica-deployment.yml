@@ -71,6 +71,38 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 5
+        - name: caddy
+          image: caddy:2.9.1-alpine
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - name: caddy-config
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+            - name: caddy-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -78,3 +110,8 @@ spec:
         - name: uploads
           persistentVolumeClaim:
             claimName: perplexica-uploads
+        - name: caddy-config
+          configMap:
+            name: perplexica-caddy-config
+        - name: caddy-data
+          emptyDir: {}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: perplexica-caddy-config
+  labels:
+    app: perplexica
+data:
+  Caddyfile: |
+    {
+      auto_https disable_redirects
+    }
+
+    :443 {
+      tls internal
+
+      reverse_proxy localhost:3000
+    }
