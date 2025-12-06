@@ -87,22 +87,22 @@ spec:
               memory: 32Mi
             limits:
               memory: 64Mi
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 443
-              scheme: HTTPS
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 443
-              scheme: HTTPS
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 443
+          #     scheme: HTTPS
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 443
+          #     scheme: HTTPS
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 30
+          #   timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:
