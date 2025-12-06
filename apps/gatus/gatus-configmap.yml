@@ -238,3 +238,27 @@ data:
         interval: 5m
         conditions:
           - "[CONNECTED] == true"
+
+      - name: obsidian-live-sync
+        group: productivity
+        url: "http://couchdb.obsidian-live-sync.svc.cluster.local:5984"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
+
+      - name: stacks
+        group: media
+        url: "http://stacks.books.svc.cluster.local:7788"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
+
+      - name: searxng
+        group: productivity
+        url: "http://perplexica-searxng.perplexica.svc.cluster.local:8080"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
