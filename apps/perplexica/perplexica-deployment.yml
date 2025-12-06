@@ -72,7 +72,7 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 5
         - name: caddy
-          image: caddy:2.9.1-alpine
+          image: caddy:2.10.2-alpine
           ports:
             - containerPort: 443
           volumeMounts:
