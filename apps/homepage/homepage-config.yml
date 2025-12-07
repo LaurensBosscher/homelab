@@ -33,6 +33,8 @@ data:
         style: column
       News:
         style: column
+      Food:
+        style: column
       Productivity:
         style: column
       Cluster:
@@ -162,6 +164,12 @@ data:
           description: Self-hosted trail database
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
           siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
+    - Food:
+        - Norish:
+            href: https://norish.bosscher.ch
+            description: Recipe manager
+            icon: https://raw.githubusercontent.com/norish-recipes/norish/main/public/logo.png
+            siteMonitor: http://norish.norish.svc.cluster.local:3000
     - Search:
         - SearchXNG:
             href: https://searchxng.bosscher.ch
@@ -225,6 +233,16 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
     - Documents:
+        - IT-Tools:
+            href: https://it-tools.bosscher.ch
+            description: Collection of handy online tools
+            icon: https://it-tools.tech/favicon.ico
+            siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
+        - Stirling PDF:
+            href: https://stirling-pdf.bosscher.ch
+            description: PDF tools and manipulation
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/stirling-pdf.png
+            siteMonitor: http://stirling-pdf.stirling-pdf.svc.cluster.local:8080
         - Paperless:
             href: https://paperless.bosscher.ch/
             description: Document management
@@ -277,6 +295,11 @@ data:
             description: Synthetic uptime monitoring
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
             siteMonitor: http://gatus.gatus.svc.cluster.local:8080
+        - Grafana:
+          href: https://grafana.bosscher.ch
+          description: Monitoring & Dashboards
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
+          siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab
