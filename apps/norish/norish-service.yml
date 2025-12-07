@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: norish
+      labels:
+        app: norish
+        component: web
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 3000
+          targetPort: 3000
+          protocol: TCP
+      selector:
+        app: norish
+        component: web
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: norish-db
+      labels:
+        app: norish
+        component: db
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 5432
+          targetPort: 5432
+          protocol: TCP
+      selector:
+        app: norish
+        component: db
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: norish-chrome
+      labels:
+        app: norish
+        component: chrome
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 3000
+          targetPort: 3000
+          protocol: TCP
+      selector:
+        app: norish
+        component: chrome

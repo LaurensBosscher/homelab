@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: norish-data
+      labels:
+        app: norish
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn-2replicas-compressed-us
+      resources:
+        requests:
+          storage: 1Gi
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: norish-db-data
+      labels:
+        app: norish
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn-2replicas-compressed-us
+      resources:
+        requests:
+          storage: 1Gi
