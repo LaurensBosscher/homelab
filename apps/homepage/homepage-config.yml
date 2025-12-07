@@ -168,7 +168,7 @@ data:
         - Norish:
             href: https://norish.bosscher.ch
             description: Recipe manager
-            icon: https://raw.githubusercontent.com/norish-recipes/norish/main/public/logo.png
+            icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
             siteMonitor: http://norish.norish.svc.cluster.local:3000
     - Search:
         - SearchXNG:
@@ -296,10 +296,10 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
             siteMonitor: http://gatus.gatus.svc.cluster.local:8080
         - Grafana:
-          href: https://grafana.bosscher.ch
-          description: Monitoring & Dashboards
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
-          siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
+            href: https://grafana.bosscher.ch
+            description: Monitoring & Dashboards
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
+            siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
     - Infrastructure:
         - Homelab Repo:
             href: https://github.com/LaurensBosscher/homelab
