@@ -5,9 +5,9 @@ This repo contains backups, scripts, and documentationfor my hobby and education
 The cluster is configured with production like settings such as:
 
 - Automatic fail-over for all deployments and nodes, deployed on: 
-    - 6 nodes
+    - 7 nodes
     - Across 4 regions
-    - Across 2 different providers + my home server
+    - Across 3 different providers + my home server
 - Ability to target deployment to a geographical location to optimize for latency with automatic fallback or do multi-region deployment
 - All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
 - CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
@@ -45,7 +45,7 @@ I'm currently running the following apps:
 - [AIOStreams](https://github.com/Viren070/AIOStreams) - Streaming content aggregator
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
-- [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated)) - Enhanced version of Calibre web
+- [Calibre Web Automated](https://github.com/crocodilestick/Calibre-Web-Automated) - Enhanced version of Calibre web
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [Docspell](https://docspell.org/) - Document management and archiving system
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
@@ -70,7 +70,11 @@ I'm currently running the following apps:
 - [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring now live
 - [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
 - [AIOMetadata](https://github.com/cedya77/aiometadata) - Metadata for Stremio
-- 
+- [Norish](https://github.com/norish-recipes/norish) - Norish - A realtime, self-hosted recipe app for families & friends
+- [IT-Tools](https://github.com/sharevb/it-tools) - Collection of handy online tools for developers, with great UX
+- [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF) - Stirling PDF is a powerful, open-source PDF editing platform  
+- [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
+
 ## To Explore
 
 - [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
@@ -79,7 +83,6 @@ I'm currently running the following apps:
 - [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
 - [ ] [LLocalSearch](https://github.com/nilsherzig/LLocalSearch) - Local AI-powered search engine
 - [ ] [Netvisor](https://github.com/mayanayza/netvisor?tab=readme-ov-file) - Netvisor, overview of network and services
-- [ ] [Obsidian Livesync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [ ] [Open WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs
 - [ ] [Pumpkin](https://github.com/Snowiiii/Pumpkin) - Minecraft server implementation in Rust
 - [ ] [Quartz 4](https://quartz.jzhao.xyz/) - Static site generator
@@ -87,9 +90,6 @@ I'm currently running the following apps:
 - [ ] [daedalOS](https://github.com/DustinBrett/daedalOS) - Desktop enviroment in the browser
 - [ ] [VSCode web](https://github.com/coder/code-server) - Web version of VSCode
 - [ ] [Khoj](https://github.com/khoj-ai/khoj) - Self-hosted AI second brain
-- [ ] [Norish](https://github.com/norish-recipes/norish) - Norish - A realtime, self-hosted recipe app for families & friends
-- [ ] [IT-Tools](https://github.com/sharevb/it-tools) - Collection of handy online tools for developers, with great UX
-- [ ] [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF) - Stirling PDF is a powerful, open-source PDF editing platform
 - [ ] [hotpot](https://github.com/erik/hotpot) - Render customizable activity heatmap images from GPS tracks extracted from GPX, TCX, and FIT files. Includes a built-in web server for XYZ tiles and endpoints to add new data via HTTP POST or Strava webhooks.
 
 # Adding new nodes
