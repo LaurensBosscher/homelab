@@ -153,7 +153,7 @@ data:
             description: CouchDB for Obsidian sync
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
             siteMonitor: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
-    - Personal Dashboards:
+    - Personal & Dashboards:
       - Your-Spotify:
           href: https://your-spotify.bosscher.ch/
           description: Your Spotify client
@@ -164,12 +164,11 @@ data:
           description: Self-hosted trail database
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
           siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
-    - Food:
-        - Norish:
-            href: https://norish.bosscher.ch
-            description: Recipe manager
-            icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
-            siteMonitor: http://norish.norish.svc.cluster.local:3000
+      - Norish:
+          href: https://norish.bosscher.ch
+          description: Recipe manager
+          icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
+          siteMonitor: http://norish.norish.svc.cluster.local:3000
     - Search:
         - SearchXNG:
             href: https://searchxng.bosscher.ch
