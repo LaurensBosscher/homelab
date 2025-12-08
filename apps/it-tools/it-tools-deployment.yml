@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: it-tools
-          image: docker.io/sharevb/it-tools:2025.10.19-baseurl-it-tools
+          image: docker.io/sharevb/it-tools:2025.12.7-baseurl-it-tools
           ports:
             - containerPort: 8080
           resources:
