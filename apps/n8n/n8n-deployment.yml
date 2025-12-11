@@ -42,15 +42,30 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: "n8n"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-user
             - name: POSTGRES_PASSWORD
-              value: "n8n_password"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-password
             - name: POSTGRES_DB
-              value: "n8n"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-db
             - name: POSTGRES_NON_ROOT_USER
-              value: "n8n"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-user
             - name: POSTGRES_NON_ROOT_PASSWORD
-              value: "n8n_password"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-password
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
@@ -137,6 +152,7 @@ spec:
           image: docker.n8n.io/n8nio/n8n:2.0.0
           ports:
             - containerPort: 5678
+            - containerPort: 5679
           env:
             - name: TZ
               value: Europe/Zurich
@@ -151,15 +167,40 @@ spec:
             - name: DB_POSTGRESDB_PORT
               value: "5432"
             - name: DB_POSTGRESDB_DATABASE
-              value: n8n
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-db
             - name: DB_POSTGRESDB_USER
-              value: n8n
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-user
             - name: DB_POSTGRESDB_PASSWORD
-              value: n8n_password
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: postgres-password
             - name: EXECUTIONS_MODE
               value: regular
             - name: N8N_ENCRYPTION_KEY
-              value: "your_encryption_key_here"
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: n8n-encryption-key
+            - name: N8N_RUNNERS_ENABLED
+              value: "true"
+            - name: N8N_RUNNERS_MODE
+              value: "external"
+            - name: N8N_RUNNERS_BROKER_LISTEN_ADDRESS
+              value: "0.0.0.0"
+            - name: N8N_RUNNERS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: n8n-runners-auth-token
+            - name: N8N_NATIVE_PYTHON_RUNNER
+              value: "true"
           volumeMounts:
             - name: n8n-data
               mountPath: /home/node/.n8n
@@ -180,3 +221,81 @@ spec:
         - name: n8n-data
           persistentVolumeClaim:
             claimName: n8n-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n-task-runners
+  labels:
+    app: n8n-task-runners
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: n8n-task-runners
+  template:
+    metadata:
+      labels:
+        app: n8n-task-runners
+        app.kubernetes.io/part-of: n8n
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: n8n
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: n8n-task-runners
+          image: docker.n8n.io/n8nio/runners:2.0.0
+          env:
+            - name: N8N_RUNNERS_TASK_BROKER_URI
+              value: "http://n8n.n8n.svc.cluster.local:5679"
+            - name: N8N_RUNNERS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: n8n-runners-auth-token
+            - name: N8N_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-secrets
+                  key: n8n-encryption-key
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep node
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep node
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
