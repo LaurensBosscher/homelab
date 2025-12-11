@@ -154,7 +154,7 @@ spec:
             - containerPort: 5678
             - containerPort: 5679
           env:
-            - name: TZ
+            - name: GENERIC_TIMEZONE
               value: Europe/Zurich
             - name: N8N_HOST
               value: "0.0.0.0"
@@ -261,10 +261,12 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: n8n-task-runners
-          image: docker.n8n.io/n8nio/runners:2.0.0
+          image: n8nio/runners:2.0.1
           env:
+            - name: N8N_RUNNERS_STDLIB_ALLOW
+              value: "*"
             - name: N8N_RUNNERS_TASK_BROKER_URI
-              value: "http://n8n.n8n.svc.cluster.local:5679"
+              value: "http://n8n:5679"
             - name: N8N_RUNNERS_AUTH_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -281,21 +283,21 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
-          livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - pgrep node
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - pgrep node
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #       - /bin/sh
+          #       - -c
+          #       - pgrep node
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       - /bin/sh
+          #       - -c
+          #       - pgrep node
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5

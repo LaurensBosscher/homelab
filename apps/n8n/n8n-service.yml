@@ -21,6 +21,8 @@ spec:
     - protocol: TCP
       port: 5678
       targetPort: 5678
+      name: http
     - protocol: TCP
       port: 5679
       targetPort: 5679
+      name: task-broker
