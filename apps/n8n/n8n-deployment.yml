@@ -261,7 +261,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: n8n-task-runners
-          image: docker.n8n.io/n8nio/runners:2.0.0
+          image: n8nio/runners:1.111.0
           env:
             - name: N8N_RUNNERS_TASK_BROKER_URI
               value: "http://n8n.n8n.svc.cluster.local:5679"
