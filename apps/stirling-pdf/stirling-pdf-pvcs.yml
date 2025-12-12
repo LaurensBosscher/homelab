@@ -26,4 +26,4 @@ items:
       storageClassName: longhorn-2replicas-us
       resources:
         requests:
-          storage: 100Mi
+          storage: 128Mi
