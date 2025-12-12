@@ -19,9 +19,9 @@ spec:
     spec:
       containers:
         - name: bentopdf
-          image: docker.io/tomblue/bentopdf:v1.11.1
+          image: bentopdf/bentopdf:v1.11.1
           ports:
-            - containerPort: 5000
+            - containerPort: 8000
           env:
             - name: TZ
               value: Europe/Zurich
