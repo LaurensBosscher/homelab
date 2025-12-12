@@ -189,6 +189,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
 
+      - name: bentopdf
+        group: media
+        url: "http://bentopdf.bentopdf.svc.cluster.local:5000"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
+
       - name: it-tools
         group: productivity
         url: "http://it-tools.it-tools.svc.cluster.local:8080"
