@@ -19,6 +19,7 @@ spec:
       labels:
         app: linkwarden-postgres
         app.kubernetes.io/name: linkwarden
+        app.kubernetes.io/component: database
         app.kubernetes.io/part-of: linkwarden
     spec:
       affinity:
@@ -115,6 +116,7 @@ spec:
       labels:
         app: linkwarden-meilisearch
         app.kubernetes.io/name: linkwarden
+        app.kubernetes.io/component: search
         app.kubernetes.io/part-of: linkwarden
     spec:
       affinity:
@@ -206,6 +208,7 @@ spec:
       labels:
         app: linkwarden
         app.kubernetes.io/name: linkwarden
+        app.kubernetes.io/component: app
         app.kubernetes.io/part-of: linkwarden
     spec:
       affinity:
