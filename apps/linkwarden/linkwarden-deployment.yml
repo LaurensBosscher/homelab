@@ -198,7 +198,7 @@ metadata:
   name: linkwarden
   labels:
     app.kubernetes.io/name: linkwarden
-    app.kubernetes.io/part-of: homelab
+    app.kubernetes.io/part-of: linkwarden
 spec:
   replicas: 1
   strategy:
@@ -267,7 +267,7 @@ spec:
               value: "false"
           volumeMounts:
             - name: linkwarden-data
-              mountPath: /data/data
+              mountPath: /data
           resources:
             requests:
               cpu: 100m
