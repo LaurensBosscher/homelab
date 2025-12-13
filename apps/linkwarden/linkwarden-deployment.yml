@@ -74,22 +74,18 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready
-                - -h
-                - localhost
-                - -U
-                - postgres
+                - sh
+                - -c
+                - pg_isready -h localhost -U $POSTGRES_USER -d $POSTGRES_DB
             initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             exec:
               command:
-                - pg_isready
-                - -h
-                - localhost
-                - -U
-                - postgres
+                - sh
+                - -c
+                - pg_isready -h localhost -U $POSTGRES_USER -d $POSTGRES_DB
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
