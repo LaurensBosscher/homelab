@@ -39,7 +39,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: norish
-          image: norishapp/norish:v0.13.6-beta
+          image: norishapp/norish:v0.13.7-beta
           ports:
             - containerPort: 3000
           env:
