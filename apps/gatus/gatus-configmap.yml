@@ -109,6 +109,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1500"
 
+      - name: linkwarden
+        group: productivity
+        url: "http://linkwarden.linkwarden.svc.cluster.local:3000"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1500"
+
       - name: wanderer
         group: productivity
         url: "http://wanderer.wanderer.svc.cluster.local:3000"

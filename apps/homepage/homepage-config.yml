@@ -143,6 +143,11 @@ data:
             description: Bookmark manager
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
             siteMonitor: http://shiori.shiori.svc.cluster.local:8080
+        - Linkwarden:
+            href: https://linkwarden.bosscher.ch
+            description: Collaborative bookmark manager
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png
+            siteMonitor: http://linkwarden.linkwarden.svc.cluster.local:3000
         - n8n:
             href: https://n8n.bosscher.ch
             description: Workflow automation

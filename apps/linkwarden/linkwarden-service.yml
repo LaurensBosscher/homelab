@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden-postgres
+  labels:
+    app: linkwarden-postgres
+    app.kubernetes.io/name: linkwarden
+    app.kubernetes.io/component: database
+spec:
+  selector:
+    app: linkwarden-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden-meilisearch
+  labels:
+    app: linkwarden-meilisearch
+    app.kubernetes.io/name: linkwarden
+    app.kubernetes.io/component: search
+spec:
+  selector:
+    app: linkwarden-meilisearch
+  ports:
+    - protocol: TCP
+      port: 7700
+      targetPort: 7700
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden
+  labels:
+    app: linkwarden
+    app.kubernetes.io/name: linkwarden
+    app.kubernetes.io/component: app
+spec:
+  selector:
+    app: linkwarden
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      name: http
