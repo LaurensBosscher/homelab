@@ -1,2 +1,8 @@
 .history
 secret-notes.md
+
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.venv/
+credentials.env

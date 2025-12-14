@@ -1,0 +1,52 @@
+name: Update Cloudflare Tunnel Settings
+run-name: ${{ github.ref_name }} (triggered by ${{ github.actor }}) update Cloudflare Tunnel Settings
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: "Commit hash to deploy"
+        required: true
+        default: "latest"
+  push:
+    branches:
+      - main
+    paths:
+      - "cloudflare/tunnels/config.yml"
+      - ".github/workflows/update_cloudflare_settings.yml"
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: cloudflare update tunnels & dns
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: |
+          cd cloudflare/tunnels
+          uv sync
+
+      - name: Update Cloudflare Tunnel Settings
+        run: |
+          cd cloudflare/tunnels
+          uv run python update_config.py
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_TUNNEL_ID: ${{ secrets.CLOUDFLARE_TUNNEL_ID }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
