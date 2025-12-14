@@ -1,3 +1,5 @@
+- hostname: home.bosscher.ch
+  service: http://homepage.homepage.svc.cluster.local:3000
 - hostname: n8n.bosscher.ch
   service: http://n8n.n8n.svc.cluster.local:5678
 - hostname: fusion.bosscher.ch
@@ -58,3 +60,5 @@
   service: http://gatus.gatus.svc.cluster.local:8080
 - hostname: grafana.bosscher.ch
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
+- hostname: bentopdf.bosscher.ch
+  service: http://bentopdf.bentopdf.svc.cluster.local:8000
