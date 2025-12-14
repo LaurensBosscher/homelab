@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cloudflared-deployment-europe
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       pod: cloudflared
@@ -34,19 +34,16 @@ spec:
         - image: cloudflare/cloudflared:2025.11.1
           name: cloudflared
           env:
-            # Defines an environment variable for the tunnel token.
             - name: TUNNEL_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare-tunnel-token
+                  name: cloudflared-token
                   key: token
           command:
             # Configures tunnel run parameters
             - cloudflared
             - tunnel
             - --no-autoupdate
-            # - --protocol
-            # - http2
             - --loglevel
             - info
             - --metrics

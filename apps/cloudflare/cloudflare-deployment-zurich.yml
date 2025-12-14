@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cloudflared-deployment-zurich
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       pod: cloudflared
@@ -15,7 +15,7 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100 # Prefer deployments in Zurich to reduce latency
+            - weight: 100
               preference:
                 matchExpressions:
                   - key: city
@@ -24,26 +24,21 @@ spec:
                       - zurich
       securityContext:
         sysctls:
-          # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
           - name: net.ipv4.ping_group_range
             value: "65532 65532"
       containers:
         - image: cloudflare/cloudflared:2025.11.1
           name: cloudflared
           env:
-            # Defines an environment variable for the tunnel token.
             - name: TUNNEL_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare-tunnel-token
+                  name: cloudflared-token
                   key: token
           command:
-            # Configures tunnel run parameters
             - cloudflared
             - tunnel
             - --no-autoupdate
-            # - --protocol
-            # - http2
             - --loglevel
             - info
             - --metrics
@@ -57,8 +52,6 @@ spec:
               memory: 128Mi
           livenessProbe:
             httpGet:
-              # Cloudflared has a /ready endpoint which returns 200 if and only if
-              # it has an active connection to Cloudflare's network.
               path: /ready
               port: 2000
             failureThreshold: 3
