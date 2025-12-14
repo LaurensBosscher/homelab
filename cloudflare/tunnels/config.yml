@@ -61,4 +61,4 @@
 - hostname: grafana.bosscher.ch
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
 - hostname: bentopdf.bosscher.ch
-  service: http://bentopdf.bentopdf.svc.cluster.local:8000
+  service: http://bentopdf.bentopdf.svc.cluster.local:8080

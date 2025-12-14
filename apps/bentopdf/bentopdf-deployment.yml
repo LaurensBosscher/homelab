@@ -21,7 +21,7 @@ spec:
         - name: bentopdf
           image: bentopdf/bentopdf:v1.11.1
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
           env:
             - name: TZ
               value: Europe/Zurich

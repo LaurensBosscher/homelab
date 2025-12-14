@@ -191,7 +191,7 @@ data:
 
       - name: bentopdf
         group: media
-        url: "http://bentopdf.bentopdf.svc.cluster.local:8000"
+        url: "http://bentopdf.bentopdf.svc.cluster.local:8080"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
