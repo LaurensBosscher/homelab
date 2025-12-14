@@ -37,11 +37,30 @@ spec:
                     values:
                       - norish
               topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.36
+          command: ['sh', '-c', 'chown -R 100:101 /app/uploads && chmod -R 755 /app/uploads']
+          volumeMounts:
+            - name: data
+              mountPath: /app/uploads
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
       containers:
         - name: norish
           image: norishapp/norish:v0.13.6-beta
           ports:
             - containerPort: 3000
+          securityContext:
+            runAsUser: 100
+            runAsGroup: 101
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: AUTH_URL
               value: https://norish.bosscher.ch
