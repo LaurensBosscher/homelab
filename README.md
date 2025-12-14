@@ -12,6 +12,7 @@ The cluster is configured with production like settings such as:
 - All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
 - CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
 - Ingress is taking care of by [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) with one instance per geographical region
+  - Changes are automatically updated using a [Github Actions workflow](/home/laurens/develop/homelab/.github/workflows/update_cloudflare_settings.yml)
 - Communication between the nodes is done through the wireguard native backed (Running over Tailscale caused double encapsulation and hard to debug issues)
 - Joining new nodes to the cluster is a ~5 minute job
 - Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
@@ -77,7 +78,6 @@ I'm currently running the following apps:
 
 ## To Explore
 
-- [ ] [Cloudflare Operator](https://github.com/adyanth/cloudflare-operator) - Cloudflare Tunnel integration for Kubernetes
 - [ ] [Dawarich](https://github.com/Freika/dawarich) - Self-hosted alternative to Google Timeline
 - [X] [DNS Blocklist](https://github.com/hagezi/dns-blocklists?tab=readme-ov-file#overview) - DNS Blocklist
 - [ ] [Github-to-sops](https://github.com/tarasglek/github-to-sops) - Easy way to integrate secrets in GIT
@@ -162,4 +162,9 @@ kubectl debug -it my-pod --image=busybox
 kubectl run busybox-bazzite --image=busybox:latest --restart=Never --overrides='{"spec":{"nodeName":"k3s-london-1"}}' -- /bin/sleep 3600
 ```
 
+## Monitoring configuration for Kite
+Kite resets its settings on every upgrade, URL to enable the prometheus integration is:
 
+```
+http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+```
