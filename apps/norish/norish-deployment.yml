@@ -158,24 +158,24 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
-          # livenessProbe:
-          #   exec:
-          #     command:
-          #       - pg_isready
-          #       - -U
-          #       - postgres
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 10
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   exec:
-          #     command:
-          #       - pg_isready
-          #       - -U
-          #       - postgres
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
-          #   timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
       volumes:
         - name: db-data
           persistentVolumeClaim:
@@ -224,6 +224,8 @@ spec:
         - name: chrome
           image: zenika/alpine-chrome:124
           command:
+            - "chromium-browser"
+          args:
             - "--no-sandbox"
             - "--disable-gpu"
             - "--disable-dev-shm-usage"
