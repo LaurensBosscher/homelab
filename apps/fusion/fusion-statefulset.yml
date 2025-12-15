@@ -29,6 +29,15 @@ spec:
           image: ghcr.io/0x2e/fusion:0.9.8
           ports:
             - containerPort: 8080
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: PASSWORD
               valueFrom:
