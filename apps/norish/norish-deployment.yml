@@ -157,6 +157,15 @@ spec:
           image: postgres:18.1
           ports:
             - containerPort: 5432
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -247,6 +256,15 @@ spec:
       containers:
         - name: chrome
           image: zenika/alpine-chrome:124
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           command:
             - "chromium-browser"
           args:
