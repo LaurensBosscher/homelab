@@ -66,14 +66,14 @@ spec:
               path: /health
               port: 7700
             initialDelaySeconds: 20
-            periodSeconds: 15
+            periodSeconds: 60
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /health
               port: 7700
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 10
       volumes:
         - name: search-data
@@ -152,14 +152,14 @@ spec:
               path: /health
               port: 8090
             initialDelaySeconds: 20
-            periodSeconds: 15
+            periodSeconds: 60
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /health
               port: 8090
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 10
       volumes:
         - name: db-data
@@ -251,14 +251,14 @@ spec:
               path: /
               port: 3000
             initialDelaySeconds: 20
-            periodSeconds: 15
+            periodSeconds: 60
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: 3000
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 10
       volumes:
         - name: uploads

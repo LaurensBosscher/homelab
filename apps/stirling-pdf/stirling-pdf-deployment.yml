@@ -44,7 +44,7 @@ spec:
           #     path: /api/v1/health
           #     port: 8080
           #   initialDelaySeconds: 60
-          #   periodSeconds: 30
+          #   periodSeconds: 60
           #   timeoutSeconds: 5
           #   failureThreshold: 3
           # readinessProbe:
@@ -52,7 +52,7 @@ spec:
           #     path: /api/v1/health
           #     port: 8080
           #   initialDelaySeconds: 30
-          #   periodSeconds: 10
+          #   periodSeconds: 60
           #   timeoutSeconds: 5
       affinity:
         nodeAffinity:

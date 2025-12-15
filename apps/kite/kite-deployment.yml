@@ -61,13 +61,13 @@ spec:
               path: /healthz
               port: 8080
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 60
           readinessProbe:
             httpGet:
               path: /healthz
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
           ports:
             - containerPort: 8080
               protocol: TCP

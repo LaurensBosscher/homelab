@@ -96,7 +96,7 @@ spec:
             tcpSocket:
               port: 3232
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: 60
       volumes:
         - name: data
           persistentVolumeClaim:

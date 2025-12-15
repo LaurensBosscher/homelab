@@ -168,7 +168,7 @@ data:
           href: https://norish.bosscher.ch
           description: Recipe manager
           icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
-          siteMonitor: http://norish.norish.svc.cluster.local:3000
+          siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
     - Search:
         - SearchXNG:
             href: https://searchxng.bosscher.ch
