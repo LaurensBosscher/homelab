@@ -292,3 +292,9 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 60
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {} # Default: node disk-backed
