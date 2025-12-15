@@ -72,7 +72,7 @@ spec:
               path: /
               port: web
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: config

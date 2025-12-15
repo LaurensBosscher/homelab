@@ -60,7 +60,7 @@ spec:
               path: /
               port: 8085
             initialDelaySeconds: 15
-            periodSeconds: 15
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: config

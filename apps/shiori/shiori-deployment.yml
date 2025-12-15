@@ -56,7 +56,7 @@ spec:
               path: /
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: data

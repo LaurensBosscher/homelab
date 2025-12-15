@@ -67,7 +67,7 @@ spec:
               path: /
               port: 7788
             initialDelaySeconds: 15
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
         - name: flaresolverr
           image: ghcr.io/flaresolverr/flaresolverr:v3.4.6

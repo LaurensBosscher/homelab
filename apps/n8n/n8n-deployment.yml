@@ -88,7 +88,7 @@ spec:
                 - -d
                 - n8n
             initialDelaySeconds: 20
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             exec:
@@ -101,7 +101,7 @@ spec:
                 - -d
                 - n8n
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: postgres-data
@@ -290,7 +290,7 @@ spec:
           #       - -c
           #       - pgrep node
           #   initialDelaySeconds: 30
-          #   periodSeconds: 10
+          #   periodSeconds: 60
           #   timeoutSeconds: 5
           # readinessProbe:
           #   exec:
@@ -299,5 +299,5 @@ spec:
           #       - -c
           #       - pgrep node
           #   initialDelaySeconds: 10
-          #   periodSeconds: 10
+          #   periodSeconds: 60
           #   timeoutSeconds: 5

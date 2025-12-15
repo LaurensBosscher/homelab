@@ -327,7 +327,7 @@ spec:
                 - -U
                 - postgres
             initialDelaySeconds: 30
-            periodSeconds: 10
+            periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             exec:
@@ -336,7 +336,7 @@ spec:
                 - -U
                 - postgres
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: pgdata
