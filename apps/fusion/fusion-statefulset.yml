@@ -15,6 +15,9 @@ spec:
       labels:
         app: fusion
     spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -47,6 +50,8 @@ spec:
           volumeMounts:
             - name: fusion-data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               cpu: 25m
@@ -61,6 +66,9 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
+      volumes:
+        - name: tmp
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: fusion-data
