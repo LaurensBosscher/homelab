@@ -263,6 +263,10 @@ spec:
         - name: n8n-task-runners
           image: n8nio/runners:2.1.0
           env:
+            - name: N8N_BLOCK_RUNNER_ENV_ACCESS
+              value: "False"
+            - name: N8N_RUNNERS_ENV_BLOCK_RUNNER_ENV_ACCESS
+              value: "False"
             - name: N8N_RUNNERS_STDLIB_ALLOW
               value: "*"
             - name: N8N_RUNNERS_TASK_BROKER_URI
