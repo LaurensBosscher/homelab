@@ -156,7 +156,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: postgres
-          image: postgres:17-alpine
+          image: postgres:18.1-alpine
           ports:
             - containerPort: 5432
           securityContext:
@@ -342,7 +342,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: redis
-          image: redis:8.4.0
+          image: redis:8.4.0-alpine
           ports:
             - containerPort: 6379
           securityContext:
@@ -350,13 +350,15 @@ spec:
             runAsGroup: 999
             runAsNonRoot: true
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
           volumeMounts:
             - name: redis-data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               cpu: 50m
@@ -383,3 +385,5 @@ spec:
         - name: redis-data
           persistentVolumeClaim:
             claimName: norish-redis-data
+        - name: tmp
+          emptyDir: {}
