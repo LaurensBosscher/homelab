@@ -85,6 +85,8 @@ spec:
               value: /app/uploads
             - name: PASSWORD_AUTH_ENABLED
               value: "true"
+            - name: REDIS_URL
+              value: redis://norish-redis:6379
           volumeMounts:
             - name: data
               mountPath: /app/uploads
@@ -154,7 +156,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: postgres
-          image: postgres:18.1
+          image: postgres:18.1-alpine
           ports:
             - containerPort: 5432
           securityContext:
@@ -255,7 +257,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: chrome
-          image: zenika/alpine-chrome:124
+          image: zenika/alpine-chrome:latest
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -298,3 +300,90 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {} # Default: node disk-backed
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: norish-redis
+  labels:
+    app: norish
+    component: redis
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: norish
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: norish
+        component: redis
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - norish
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: redis
+          image: redis:8.4.0-alpine
+          ports:
+            - containerPort: 6379
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: norish-redis-data
+        - name: tmp
+          emptyDir: {}

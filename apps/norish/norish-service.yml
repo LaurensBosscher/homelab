@@ -49,3 +49,19 @@ items:
       selector:
         app: norish
         component: chrome
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: norish-redis
+      labels:
+        app: norish
+        component: redis
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 6379
+          targetPort: 6379
+          protocol: TCP
+      selector:
+        app: norish
+        component: redis
