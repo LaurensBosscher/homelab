@@ -31,6 +31,20 @@ spec:
               memory: 256Mi
             limits:
               memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

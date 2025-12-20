@@ -62,6 +62,20 @@ spec:
               memory: 128Mi
             limits:
               memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -115,6 +129,20 @@ spec:
               memory: 64Mi
             limits:
               memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -166,6 +194,18 @@ spec:
               memory: 512Mi
             limits:
               memory: 1024Mi
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:
