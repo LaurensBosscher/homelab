@@ -11,7 +11,7 @@
 - hostname: your-spotify.bosscher.ch
   service: http://your-spotify-web.your-spotify.svc.cluster.local:3000
 - hostname: your-spotify-api.bosscher.ch
-  service: http://your-spotify-server.your-spotify.svc.cluster.local:808
+  service: http://your-spotify-server.your-spotify.svc.cluster.local:8080
 - hostname: wanderer.bosscher.ch
   service: http://wanderer.wanderer.svc.cluster.local:3000
 - hostname: norish.bosscher.ch
