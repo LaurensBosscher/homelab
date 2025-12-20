@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docspell-restserver
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: docspell
     component: restserver
@@ -107,6 +109,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docspell-joex
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: docspell
     component: joex
@@ -191,6 +195,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docspell-consumedir
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: docspell
     component: consumedir
@@ -265,6 +271,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docspell-postgres
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: docspell
     component: postgres

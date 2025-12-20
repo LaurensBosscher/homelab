@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: paperless
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: paperless
 spec:
@@ -198,6 +200,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: paperless-postgres
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: paperless
     component: postgres
