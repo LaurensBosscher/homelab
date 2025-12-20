@@ -226,6 +226,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: n8n-task-runners
+  annotations:
+    reloader.stakater.com/auto: "true"
   labels:
     app: n8n-task-runners
 spec:
@@ -263,12 +265,6 @@ spec:
         - name: n8n-task-runners
           image: n8nio/runners:2.1.1
           env:
-            - name: N8N_BLOCK_RUNNER_ENV_ACCESS
-              value: "False"
-            - name: N8N_RUNNERS_ENV_BLOCK_RUNNER_ENV_ACCESS
-              value: "False"
-            - name: N8N_RUNNERS_STDLIB_ALLOW
-              value: "*"
             - name: N8N_RUNNERS_TASK_BROKER_URI
               value: "http://n8n:5679"
             - name: N8N_RUNNERS_AUTH_TOKEN
@@ -281,6 +277,10 @@ spec:
                 secretKeyRef:
                   name: n8n-secrets
                   key: n8n-encryption-key
+          volumeMounts:
+            - name: task-runners-config
+              mountPath: /etc/n8n-task-runners.json
+              subPath: n8n-task-runners.json
           resources:
             requests:
               cpu: 50m
@@ -305,3 +305,7 @@ spec:
           #   initialDelaySeconds: 10
           #   periodSeconds: 60
           #   timeoutSeconds: 5
+      volumes:
+        - name: task-runners-config
+          configMap:
+            name: n8n-task-runners-config
