@@ -8,7 +8,7 @@ spec:
   storageClassName: longhorn-2replicas-compressed-us
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -20,7 +20,7 @@ spec:
   storageClassName: longhorn-2replicas-compressed-us
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -32,4 +32,4 @@ spec:
   storageClassName: longhorn-2replicas-compressed-us
   resources:
     requests:
-      storage: 2Gi
+      storage: 1Gi

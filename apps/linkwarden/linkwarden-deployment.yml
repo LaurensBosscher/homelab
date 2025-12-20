@@ -37,7 +37,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: postgres
-          image: postgres:16-alpine
+          image: postgres:18.1-alpine
           ports:
             - containerPort: 5432
           env:
@@ -61,6 +61,10 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /var/run/postgresql
           resources:
             requests:
               cpu: 50m
@@ -97,6 +101,7 @@ spec:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 999
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -104,6 +109,10 @@ spec:
         - name: postgres-data
           persistentVolumeClaim:
             claimName: linkwarden-postgres-data
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -160,6 +169,8 @@ spec:
           volumeMounts:
             - name: meili-data
               mountPath: /meili_data
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               cpu: 50m
@@ -184,6 +195,7 @@ spec:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 1000
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -191,6 +203,8 @@ spec:
         - name: meili-data
           persistentVolumeClaim:
             claimName: linkwarden-meili-data
+        - name: tmp
+          emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -268,6 +282,10 @@ spec:
           volumeMounts:
             - name: linkwarden-data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            - name: nextjs-cache
+              mountPath: /data/.next
           resources:
             requests:
               cpu: 100m
@@ -292,6 +310,7 @@ spec:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 1000
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -299,3 +318,7 @@ spec:
         - name: linkwarden-data
           persistentVolumeClaim:
             claimName: linkwarden-data
+        - name: tmp
+          emptyDir: {}
+        - name: nextjs-cache
+          emptyDir: {}
