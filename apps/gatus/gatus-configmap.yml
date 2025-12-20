@@ -61,14 +61,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
-      - name: netalertx
-        group: cluster
-        url: "http://netalertx.netalertx.svc.cluster.local:20211"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1000"
-
       - name: kite
         group: cluster
         url: "http://kite.kube-system.svc.cluster.local:8080"

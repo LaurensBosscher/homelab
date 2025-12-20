@@ -284,11 +284,6 @@ data:
             description: Storage management
             icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
             siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
-        - NetAlertX:
-            href: https://netalertx.bosscher.ch
-            description: Network monitoring & alerts
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pi-alert.png
-            siteMonitor: http://netalertx.netalertx.svc.cluster.local:20211
         - Technitium DNS:
             href: https://technitium-web.bosscher.ch
             description: DNS server management

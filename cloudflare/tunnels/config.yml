@@ -54,8 +54,6 @@
     noTLSVerify: true
 - hostname: longhorn.bosscher.ch
   service: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
-- hostname: netalertx.bosscher.ch
-  service: http://netalertx.netalertx.svc.cluster.local:20211
 - hostname: technitium-web.bosscher.ch
   service: http://technitium-web.technitium.svc.cluster.local:5380
 - hostname: gatus.bosscher.ch
