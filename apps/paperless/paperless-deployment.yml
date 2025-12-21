@@ -38,6 +38,8 @@ spec:
                   matchLabels:
                     app: paperless
                 topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: paperless
           image: ghcr.io/paperless-ngx/paperless-ngx:2.20.3
@@ -97,6 +99,14 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
           livenessProbe:
             httpGet:
               path: /
@@ -174,7 +184,7 @@ spec:
           volumeMounts:
             - name: redisdata
               mountPath: /data
-          args: ["--save", "60", "1", "--loglevel", "warning"]
+          args: ["--loglevel", "warning"]
           livenessProbe:
             exec:
               command:
