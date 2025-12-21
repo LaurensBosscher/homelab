@@ -27,6 +27,9 @@ spec:
                     operator: In
                     values:
                       - europe
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: calibre-web
           image: crocodilestick/calibre-web-automated:V3.1.4
