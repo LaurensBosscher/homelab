@@ -31,6 +31,18 @@ spec:
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
+      initContainers:
+        - name: fix-lost-found-permissions
+          image: busybox:latest
+          command:
+            [
+              "sh",
+              "-c",
+              "chown -R 1000:1000 /opt/stacks/download/lost+found 2>/dev/null || true",
+            ]
+          volumeMounts:
+            - name: download
+              mountPath: /opt/stacks/download
       containers:
         - name: stacks
           image: zelest/stacks:v1.1.2
