@@ -340,6 +340,13 @@ spec:
                     values:
                       - norish
               topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: fix-lost-found-permissions
+          image: busybox:latest
+          command: ["sh", "-c", "chown -R 999:999 /data 2>/dev/null || true"]
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
       containers:
         - name: redis
           image: redis:8.4.0-alpine
@@ -348,6 +355,7 @@ spec:
           securityContext:
             runAsUser: 999
             runAsGroup: 999
+            fsGroup: 999
             runAsNonRoot: true
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
