@@ -35,11 +35,7 @@ spec:
         - name: fix-lost-found-permissions
           image: busybox:latest
           command:
-            [
-              "sh",
-              "-c",
-              "chown -R 1000:1000 /opt/stacks/download/lost+found 2>/dev/null || true",
-            ]
+            ["sh", "-c", "chown -R 1000:1000 /opt/stacks/ 2>/dev/null || true"]
           volumeMounts:
             - name: download
               mountPath: /opt/stacks/download
@@ -92,6 +88,7 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 60
             timeoutSeconds: 5
+
         - name: flaresolverr
           image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
           ports:
@@ -113,6 +110,7 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
+
       volumes:
         - name: config
           persistentVolumeClaim:
