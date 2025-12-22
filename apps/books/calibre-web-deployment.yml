@@ -59,9 +59,10 @@ spec:
               memory: 512Mi
           livenessProbe:
             httpGet:
-              path: /
+              path: /login
               port: 8083
-            initialDelaySeconds: 60
+            # Initial setup downloads mods and can take a while
+            initialDelaySeconds: 300
             periodSeconds: 60
             timeoutSeconds: 5
       volumes:
