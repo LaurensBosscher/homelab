@@ -29,7 +29,7 @@ spec:
                       - us
       containers:
         - name: audiobookshelf
-          image: ghcr.io/advplyr/audiobookshelf:2.32.0
+          image: ghcr.io/advplyr/audiobookshelf:2.32.1
           ports:
             - containerPort: 80
           env:
