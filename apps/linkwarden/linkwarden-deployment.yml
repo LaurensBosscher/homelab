@@ -151,6 +151,8 @@ spec:
                   matchLabels:
                     app.kubernetes.io/part-of: linkwarden
                 topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: meilisearch
           image: getmeili/meilisearch:v1.12.8
