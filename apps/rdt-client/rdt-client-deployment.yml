@@ -69,5 +69,5 @@ spec:
             claimName: rdt-client-data
         - name: downloads
           hostPath:
-            path: /mnt/containers/torrents/
+            path: /mnt/downloads/
             type: DirectoryOrCreate

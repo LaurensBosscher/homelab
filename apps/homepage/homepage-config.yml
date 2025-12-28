@@ -263,6 +263,16 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
             siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
     - Downloads:
+        - Radarr:
+            href: https://radarr.bosscher.ch/
+            description: Movie downloader
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
+            siteMonitor: http://radarr.radarr.svc.cluster.local:7878
+        - Sonarr:
+            href: https://sonarr.bosscher.ch/
+            description: TV series downloader
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
+            siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
         - sabnzbd:
             href: https://sabnzbd.bosscher.ch/
             description: Usenet downloader

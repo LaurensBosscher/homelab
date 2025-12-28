@@ -157,6 +157,22 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: radarr
+        group: media
+        url: "http://radarr.radarr.svc.cluster.local:7878"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
+      - name: sonarr
+        group: media
+        url: "http://sonarr.sonarr.svc.cluster.local:8989"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: sabnzbd
         group: media
         url: "http://sabnzbd.sabnzbd.svc.cluster.local:8085"

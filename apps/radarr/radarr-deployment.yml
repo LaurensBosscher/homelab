@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sabnzbd
+  name: radarr
   labels:
-    app.kubernetes.io/name: sabnzbd
+    app.kubernetes.io/name: radarr
     app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: sabnzbd
+      app: radarr
   template:
     metadata:
       labels:
-        app: sabnzbd
+        app: radarr
     spec:
       affinity:
         nodeAffinity:
@@ -25,10 +27,11 @@ spec:
                     values:
                       - zurich
       containers:
-        - name: sabnzbd
-          image: lscr.io/linuxserver/sabnzbd:4.5.5
+        - name: radarr
+          image: lscr.io/linuxserver/radarr:latest
           ports:
-            - containerPort: 8085
+            - containerPort: 7878
+              name: http
           env:
             - name: PUID
               value: "1000"
@@ -40,33 +43,32 @@ spec:
             - name: config
               mountPath: /config
             - name: downloads
-              mountPath: /downloads
+              mountPath: /downloads/
           resources:
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 100m
+              memory: 256Mi
             limits:
-              # Memory can peak during unpacking files
-              memory: 16Gi
+              memory: 2Gi
           livenessProbe:
             httpGet:
               path: /
-              port: 8085
-            initialDelaySeconds: 10
+              port: 7878
+            initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
-              port: 8085
-            initialDelaySeconds: 15
+              port: 7878
+            initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: sabnzbd-config
-        - name: downloads
+            claimName: radarr-config
+        - name: downloads-sabnzbd
           hostPath:
             path: /mnt/downloads/
             type: DirectoryOrCreate
