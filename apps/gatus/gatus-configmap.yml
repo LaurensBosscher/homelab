@@ -165,6 +165,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: prowlarr
+        group: media
+        url: "http://prowlarr.prowlarr.svc.cluster.local:9696"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: paperless
         group: media
         url: "http://paperless-web.paperless.svc.cluster.local:8000"

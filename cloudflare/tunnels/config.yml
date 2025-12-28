@@ -44,6 +44,8 @@
   service: http://docspell-restserver.docspell.svc.cluster.local:7880
 - hostname: sabnzbd.bosscher.ch
   service: http://sabnzbd.sabnzbd.svc.cluster.local:8085
+- hostname: prowlarr.bosscher.ch
+  service: http://prowlarr.prowlarr.svc.cluster.local:9696
 - hostname: rdt-client.bosscher.ch
   service: http://rdt-client.rdt-client.svc.cluster.local:6500
 - hostname: kite.bosscher.ch
