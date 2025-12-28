@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: surfsense
+  labels:
+    app.kubernetes.io/name: surfsense
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: surfsense
+  template:
+    metadata:
+      labels:
+        app: surfsense
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      initContainers:
+        - name: init-postgres-dir
+          image: alpine:3.18
+          command: ["/bin/sh", "-c", "mkdir -p /data/postgres"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: surfsense
+          image: ghcr.io/modsetter/surfsense:v1.0.86
+          ports:
+            - name: frontend
+              containerPort: 3000
+            - name: backend
+              containerPort: 8000
+          env:
+            - name: NEXT_PUBLIC_FASTAPI_BACKEND_URL
+              value: https://surfsense-backend.bosscher.ch
+            - name: TZ
+              value: Europe/Zurich
+            - name: AUTH_TYPE
+              value: LOCAL
+            - name: EMBEDDING_MODEL
+              value: sentence-transformers/all-MiniLM-L6-v2
+            - name: RERANKERS_ENABLED
+              value: "FALSE"
+            - name: ETL_SERVICE
+              value: DOCLING
+            - name: TTS_SERVICE
+              value: local/kokoro
+            - name: STT_SERVICE
+              value: local/base
+            - name: REGISTRATION_ENABLED
+              value: "TRUE"
+            - name: SCHEDULE_CHECKER_INTERVAL
+              value: 1m
+            - name: LANGSMITH_TRACING
+              value: "false"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 300
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 300
+            periodSeconds: 60
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: surfsense-data

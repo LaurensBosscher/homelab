@@ -33,7 +33,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1000"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: homepage
         group: core
@@ -91,7 +91,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: shiori
         group: news
@@ -99,7 +99,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: wanderer
         group: productivity
@@ -107,7 +107,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: n8n
         group: productivity
@@ -115,7 +115,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: calibre-web
         group: media
@@ -123,7 +123,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: audiobookshelf
         group: media
@@ -131,7 +131,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: stremio
         group: media
@@ -139,7 +139,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: aiostreams
         group: media
@@ -147,7 +147,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: aiometadata
         group: media
@@ -155,7 +155,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: sabnzbd
         group: media
@@ -163,7 +163,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: paperless
         group: media
@@ -171,7 +171,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: stirling-pdf
         group: media
@@ -179,7 +179,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: bentopdf
         group: media
@@ -187,7 +187,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: it-tools
         group: productivity
@@ -195,7 +195,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: docspell
         group: media
@@ -203,7 +203,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: rdt-client
         group: media
@@ -211,7 +211,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: your-spotify
         group: media
@@ -219,7 +219,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: listenarr
         group: media
@@ -227,7 +227,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: perplexica
         group: productivity
@@ -235,7 +235,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: norish
         group: food
@@ -243,7 +243,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: grafana
         group: cluster
@@ -277,7 +277,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: stacks
         group: media
@@ -285,7 +285,7 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: searxng
         group: productivity
@@ -293,4 +293,20 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1500"
+          - "[RESPONSE_TIME] < 2500"
+
+      - name: surfsense-frontend
+        group: ai
+        url: "http://surfsense-frontend.surfsense.svc.cluster.local:3000"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
+      - name: surfsense-backend
+        group: ai
+        url: "http://surfsense-backend.surfsense.svc.cluster.local:8000/docs"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"

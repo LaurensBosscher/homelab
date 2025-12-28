@@ -62,3 +62,7 @@
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
 - hostname: bentopdf.bosscher.ch
   service: http://bentopdf.bentopdf.svc.cluster.local:8080
+- hostname: surfsense.bosscher.ch
+  service: http://surfsense-frontend.surfsense.svc.cluster.local:3000
+- hostname: surfsense-backend.bosscher.ch
+  service: http://surfsense-backend.surfsense.svc.cluster.local:8000
