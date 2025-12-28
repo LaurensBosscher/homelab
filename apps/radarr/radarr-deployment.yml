@@ -68,7 +68,7 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: radarr-config
-        - name: downloads-sabnzbd
+        - name: downloads
           hostPath:
             path: /mnt/downloads/
             type: DirectoryOrCreate
