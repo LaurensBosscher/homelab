@@ -28,7 +28,7 @@ spec:
                       - zurich
       containers:
         - name: radarr
-          image: lscr.io/linuxserver/radarr:latest
+          image: lscr.io/linuxserver/radarr:6.0.4
           ports:
             - containerPort: 7878
               name: http
