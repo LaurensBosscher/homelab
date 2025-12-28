@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: rdt-client
@@ -15,6 +17,12 @@ spec:
       labels:
         app: rdt-client
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +36,8 @@ spec:
       containers:
         - name: rdt-client
           image: rogerfar/rdtclient:2.0.119
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 6500
           env:

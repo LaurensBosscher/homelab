@@ -17,6 +17,12 @@ spec:
       labels:
         app: radarr
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,6 +35,8 @@ spec:
       containers:
         - name: radarr
           image: lscr.io/linuxserver/radarr:6.0.4
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 7878
               name: http

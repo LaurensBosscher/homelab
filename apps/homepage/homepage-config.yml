@@ -273,16 +273,16 @@ data:
             description: TV series downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
             siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
-        - sabnzbd:
-            href: https://sabnzbd.bosscher.ch/
-            description: Usenet downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
-        - prowlarr:
+        - Prowlarr:
             href: https://prowlarr.bosscher.ch/
             description: Indexer manager for *arr apps
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
             siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
+        - Sabnzbd:
+            href: https://sabnzbd.bosscher.ch/
+            description: Usenet downloader
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
+            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
         - RDT-Client:
             href: https://rdt-client.bosscher.ch/
             description: Real-Debrid torrent client

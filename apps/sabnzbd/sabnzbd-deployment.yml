@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: sabnzbd
@@ -15,6 +17,12 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -27,6 +35,8 @@ spec:
       containers:
         - name: sabnzbd
           image: lscr.io/linuxserver/sabnzbd:4.5.5
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 8085
           env:

@@ -17,6 +17,12 @@ spec:
       labels:
         app: sonarr
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,6 +35,8 @@ spec:
       containers:
         - name: sonarr
           image: lscr.io/linuxserver/sonarr:4.0.16
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 8989
               name: http
