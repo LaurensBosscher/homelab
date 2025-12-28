@@ -29,7 +29,7 @@ spec:
                       - us
       initContainers:
         - name: init-postgres-dir
-          image: alpine:3.18
+          image: alpine:3.23
           command: ["/bin/sh", "-c", "mkdir -p /data/postgres"]
           volumeMounts:
             - name: data
