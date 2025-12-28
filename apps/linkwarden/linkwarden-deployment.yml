@@ -35,6 +35,8 @@ spec:
                   matchLabels:
                     app.kubernetes.io/part-of: linkwarden
                 topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 999
       containers:
         - name: postgres
           image: postgres:18.1
@@ -283,11 +285,9 @@ spec:
               value: "false"
           volumeMounts:
             - name: linkwarden-data
-              mountPath: /data
+              mountPath: /data/data
             - name: tmp
               mountPath: /tmp
-            - name: nextjs-cache
-              mountPath: /data/.next
           resources:
             requests:
               cpu: 100m
@@ -296,17 +296,17 @@ spec:
               memory: 768Mi
           livenessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /
               port: 3000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /
               port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 10
+            initialDelaySeconds: 60
+            periodSeconds: 60
             timeoutSeconds: 5
           securityContext:
             # allowPrivilegeEscalation: false
@@ -321,6 +321,4 @@ spec:
           persistentVolumeClaim:
             claimName: linkwarden-data
         - name: tmp
-          emptyDir: {}
-        - name: nextjs-cache
           emptyDir: {}
