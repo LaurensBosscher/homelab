@@ -17,24 +17,35 @@ spec:
       labels:
         app: listenarr
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: city
                     operator: In
                     values:
-                      - europe
+                      - zurich
       containers:
         - name: listenarr
           image: docker.io/therobbiedavis/listenarr:canary-0.2.40
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 5000
               name: http
           env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
             - name: TZ
               value: Europe/Zurich
             - name: LISTENARR_PUBLIC_URL
@@ -44,6 +55,8 @@ spec:
               mountPath: /app/config
             - name: data
               mountPath: /app/data
+            - name: downloads
+              mountPath: /downloads
           resources:
             requests:
               cpu: 100m
@@ -71,3 +84,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: listenarr-data
+        - name: downloads
+          hostPath:
+            path: /mnt/downloads/
+            type: DirectoryOrCreate

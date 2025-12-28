@@ -4,32 +4,6 @@ items:
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: audiobookshelf-audiobooks
-      labels:
-        app: audiobookshelf
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-      storageClassName: longhorn-2replicas-us
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: audiobookshelf-podcasts
-      labels:
-        app: audiobookshelf
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: longhorn-2replicas-us
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
       name: audiobookshelf-config
       labels:
         app: audiobookshelf
@@ -39,7 +13,7 @@ items:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: longhorn-2replicas-compressed-us
+      storageClassName: longhorn-2replicas-compressed-europe
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -52,4 +26,4 @@ items:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: longhorn-2replicas-compressed-us
+      storageClassName: longhorn-2replicas-compressed-europe
