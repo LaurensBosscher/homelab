@@ -13,4 +13,4 @@ items:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: longhorn-2replicas-us
+      storageClassName: longhorn-2replicas-europe

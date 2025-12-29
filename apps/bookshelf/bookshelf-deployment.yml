@@ -19,17 +19,21 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: city
                     operator: In
                     values:
-                      - us
+                      - zurich
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: bookshelf
-          image: ghcr.io/pennydreadful/bookshelf:hardcover
+          image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20
           ports:
             - containerPort: 8787
               name: http

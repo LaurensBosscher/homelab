@@ -213,7 +213,7 @@ data:
         - Bookshelf:
             href: https://bookshelf.bosscher.ch
             description: Book library manager
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/bookshelf.png
+            icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAtOTSa9JJj3VwkEkAp1XM2zX1Eb9f01K7NA&s
             siteMonitor: http://bookshelf.bookshelf.svc.cluster.local:8787
         - Audiobookshelf:
             href: https://audiobookshelf.bosscher.ch
