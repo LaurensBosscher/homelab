@@ -141,6 +141,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: bookshelf
+        group: media
+        url: "http://bookshelf.bookshelf.svc.cluster.local:8787"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: stremio
         group: media
         url: "http://stremio.stremio.svc.cluster.local:8080"

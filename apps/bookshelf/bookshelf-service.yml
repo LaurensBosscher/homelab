@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookshelf
+  labels:
+    app: bookshelf
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8787
+      targetPort: 8787
+      protocol: TCP
+  selector:
+    app: bookshelf
