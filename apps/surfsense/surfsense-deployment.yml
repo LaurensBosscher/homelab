@@ -36,7 +36,7 @@ spec:
               mountPath: /data
       containers:
         - name: surfsense
-          image: ghcr.io/modsetter/surfsense:v1.0.86
+          image: ghcr.io/modsetter/surfsense:v1.0.87
           ports:
             - name: frontend
               containerPort: 3000

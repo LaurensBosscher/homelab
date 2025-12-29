@@ -252,7 +252,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: linkwarden
-          image: ghcr.io/linkwarden/linkwarden:v2.9.2
+          image: ghcr.io/linkwarden/linkwarden:v2.13.5
           ports:
             - containerPort: 3000
           env:
