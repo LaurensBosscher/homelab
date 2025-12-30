@@ -8,16 +8,4 @@ spec:
   storageClassName: longhorn-2replicas-compressed-us
   resources:
     requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mydia-postgres-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn-2replicas-compressed-us
-  resources:
-    requests:
       storage: 5Gi
