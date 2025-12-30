@@ -32,9 +32,10 @@ spec:
                     operator: In
                     values:
                       - zurich
-      containers:
+      initContainers:
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
+          restartPolicy: Always
           securityContext:
             privileged: true
             capabilities:
@@ -42,7 +43,7 @@ spec:
             allowPrivilegeEscalation: true
           env:
             - name: VPN_SERVICE_PROVIDER
-              value: "privado"
+              value: "custom"
             - name: VPN_TYPE
               value: "wireguard"
             - name: WIREGUARD_PRIVATE_KEY
@@ -55,6 +56,12 @@ spec:
                 secretKeyRef:
                   name: gluetun-secrets
                   key: wireguard-addresses
+            - name: WIREGUARD_PUBLIC_KEY
+              value: "KgTUh3KLijVluDvNpzDCJJfrJ7EyLzYLmdHCksG4sRg="
+            - name: WIREGUARD_ENDPOINT_IP
+              value: "91.148.244.80"
+            - name: WIREGUARD_ENDPOINT_PORT
+              value: "51820"
             - name: FIREWALL
               value: "on"
             - name: FIREWALL_INPUT_PORTS
@@ -78,7 +85,7 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
-        - name: qbittorrent
+      containers:
           image: lscr.io/linuxserver/qbittorrent:5.1.4
           # securityContext:
           #   allowPrivilegeEscalation: false
