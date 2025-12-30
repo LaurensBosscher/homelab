@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mydia-postgres
+spec:
+  selector:
+    app: mydia-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+      name: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mydia
+  labels:
+    app.kubernetes.io/name: mydia
+spec:
+  selector:
+    app: mydia
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+      name: http

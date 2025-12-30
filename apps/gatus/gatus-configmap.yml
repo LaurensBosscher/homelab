@@ -277,6 +277,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: mydia
+        group: media
+        url: "http://mydia.mydia.svc.cluster.local:4000/health"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: perplexica
         group: productivity
         url: "http://perplexica.perplexica.svc.cluster.local:3000"

@@ -246,6 +246,11 @@ data:
             description: Usage dashboard for Aiometadata
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
+        - Mydia:
+            href: https://mydia.bosscher.ch
+            description: Media library manager
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/jellyfin.png
+            siteMonitor: http://mydia.mydia.svc.cluster.local:4000/health
     - Documents:
         - IT-Tools:
             href: https://it-tools.bosscher.ch
