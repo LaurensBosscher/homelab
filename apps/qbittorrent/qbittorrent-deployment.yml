@@ -33,12 +33,8 @@ spec:
                     values:
                       - zurich
       initContainers:
-        # ────────────────────────────────────────────────
-        # Gluetun VPN sidecar
-        # Native Sidecar pattern (K8s >= 1.29 or 1.28+featureGate)
-        # ────────────────────────────────────────────────
         - name: gluetun
-          image: qmcgaw/gluetun:latest
+          image: qmcgaw/gluetun:v3.41
           restartPolicy: Always
           securityContext:
             capabilities:
@@ -68,10 +64,8 @@ spec:
             - name: TZ
               value: "Europe/Zurich"
           ports:
-            # Expose WebUI internally to the cluster
             - containerPort: 8080
               name: webui
-            # Torrent ports (incoming via VPN)
             - containerPort: 6881
               name: tcp-torrent
               protocol: TCP
@@ -86,20 +80,17 @@ spec:
               memory: 512Mi
 
       containers:
-        # ────────────────────────────────────────────────
-        # qBittorrent main app
-        # ────────────────────────────────────────────────
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:latest
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 1000
-            runAsGroup: 1000
+          image: lscr.io/linuxserver/qbittorrent:5.1.4
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          # runAsUser: 1000
+          # runAsGroup: 1000
           env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
+            # - name: PUID
+            #   value: "1000"
+            # - name: PGID
+            #   value: "1000"
             - name: TZ
               value: "Europe/Zurich"
             - name: WEBUI_PORT
@@ -118,26 +109,25 @@ spec:
               memory: 256Mi
             limits:
               memory: 2Gi
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 5
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: qbittorrent-config
         - name: downloads
-          # Matches Sonarr/Radarr configuration for atomic moves/hardlinks
           hostPath:
             path: /mnt/downloads/
             type: DirectoryOrCreate

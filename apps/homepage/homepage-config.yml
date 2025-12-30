@@ -298,6 +298,11 @@ data:
             description: Real-Debrid torrent client
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
             siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
+        - Qbittorrent:
+            href: https://qbittorrent.bosscher.ch
+            description: Torrent client
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
+            siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
     - Cluster:
         - Kite:
             href: https://kite.bosscher.ch
