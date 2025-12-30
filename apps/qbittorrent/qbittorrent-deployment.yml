@@ -32,11 +32,12 @@ spec:
                     operator: In
                     values:
                       - zurich
-      initContainers:
+      containers:
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
           restartPolicy: Always
           securityContext:
+            privileged: true
             capabilities:
               add: ["NET_ADMIN"]
             allowPrivilegeEscalation: true
@@ -78,8 +79,6 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
-
-      containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.1.4
           # securityContext:
