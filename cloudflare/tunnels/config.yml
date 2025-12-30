@@ -50,6 +50,8 @@
   service: http://prowlarr.prowlarr.svc.cluster.local:9696
 - hostname: rdt-client.bosscher.ch
   service: http://rdt-client.rdt-client.svc.cluster.local:6500
+- hostname: qbittorrent.bosscher.ch
+  service: http://qbittorrent.qbittorrent.svc.cluster.local:8080
 - hostname: radarr.bosscher.ch
   service: http://radarr.radarr.svc.cluster.local:7878
 - hostname: sonarr.bosscher.ch

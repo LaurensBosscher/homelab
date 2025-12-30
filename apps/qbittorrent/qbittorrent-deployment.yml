@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app.kubernetes.io/name: qbittorrent
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: city
+                    operator: In
+                    values:
+                      - zurich
+      initContainers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41
+          restartPolicy: Always
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
+            allowPrivilegeEscalation: true
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "custom"
+            - name: VPN_TYPE
+              value: "wireguard"
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gluetun-secrets
+                  key: wireguard-private-key
+            - name: WIREGUARD_ADDRESSES
+              valueFrom:
+                secretKeyRef:
+                  name: gluetun-secrets
+                  key: wireguard-addresses
+            - name: WIREGUARD_PUBLIC_KEY
+              value: "KgTUh3KLijVluDvNpzDCJJfrJ7EyLzYLmdHCksG4sRg="
+            - name: WIREGUARD_ENDPOINT_IP
+              value: "91.148.244.80"
+            - name: WIREGUARD_ENDPOINT_PORT
+              value: "51820"
+            - name: FIREWALL
+              value: "on"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"
+            - name: VPN_PORT_FORWARDING
+              value: "off"
+            - name: TZ
+              value: "Europe/Zurich"
+          ports:
+            - containerPort: 8080
+              name: webui
+            - containerPort: 6881
+              name: tcp-torrent
+              protocol: TCP
+            - containerPort: 6881
+              name: udp-torrent
+              protocol: UDP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      containers:
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:5.1.4
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          # runAsUser: 1000
+          # runAsGroup: 1000
+          env:
+            # - name: PUID
+            #   value: "1000"
+            # - name: PGID
+            #   value: "1000"
+            - name: TZ
+              value: "Europe/Zurich"
+            - name: WEBUI_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+              name: webui
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads/
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 2Gi
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 60
+          #   timeoutSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
+        - name: downloads
+          hostPath:
+            path: /mnt/downloads/
+            type: DirectoryOrCreate

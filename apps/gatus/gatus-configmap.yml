@@ -253,6 +253,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: qbittorrent
+        group: media
+        url: "http://qbittorrent.qbittorrent.svc.cluster.local:8080"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: your-spotify
         group: media
         url: "http://your-spotify-web.your-spotify.svc.cluster.local:3000"
