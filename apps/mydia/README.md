@@ -28,8 +28,8 @@ stringData:
 
 Generate secrets using OpenSSL:
 ```bash
-openssl rand -base64 48  # For SECRET_KEY_BASE
-openssl rand -base64 48  # For GUARDIAN_SECRET_KEY
+openssl rand -base64 48  # For secret-key-base
+openssl rand -base64 48  # For guardian-secret-key
 ```
 
 ## Security Features
@@ -47,7 +47,7 @@ This deployment follows Kubernetes security best practices:
 
 ## Storage
 
-- **SQLite Database & Config**: 5Gi PVC with `longhorn-2replicas-compressed-us` storage class
+- **SQLite Database & Config**: Single 5Gi PVC with `longhorn-2replicas-compressed-us` storage class (stores both SQLite database and application configuration in `/config`)
 - **Media Files**: Mounted from host path `/mnt/downloads/` (read-write access)
 
 ## Network Access
