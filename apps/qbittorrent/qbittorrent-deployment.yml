@@ -35,7 +35,6 @@ spec:
       containers:
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
-          restartPolicy: Always
           securityContext:
             privileged: true
             capabilities:
