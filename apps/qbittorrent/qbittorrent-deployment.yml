@@ -86,6 +86,7 @@ spec:
             limits:
               memory: 512Mi
       containers:
+        - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.1.4
           # securityContext:
           #   allowPrivilegeEscalation: false
