@@ -16,17 +16,10 @@
   notify: reload systemd and restart k3s
   tags: [k3s-oom-protection]
 
-- name: Limit memory for the main k3s process (fixes embedded etcd crashes)
-  ansible.builtin.copy:
-    dest: /etc/systemd/system/k3s.service.d/memory-limit.conf
-    content: |
-      [Service]
-      MemoryAccounting=yes
-      MemoryHigh={{ (ansible_memtotal_mb * 0.85) | int }}M
-      MemoryMax={{ (ansible_memtotal_mb * 0.90) | int }}M
-    mode: "0644"
-    owner: root
-    group: root
+- name: Ensure memory limit override is removed (now using ZRAM and kernel tunings)
+  ansible.builtin.file:
+    path: /etc/systemd/system/k3s.service.d/memory-limit.conf
+    state: absent
   notify: reload systemd and restart k3s
   tags: [k3s-oom-protection]
 

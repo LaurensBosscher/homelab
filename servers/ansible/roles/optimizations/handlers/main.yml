@@ -1,4 +1,10 @@
 ---
+- name: restart tuned
+  ansible.builtin.systemd:
+    name: tuned
+    state: restarted
+  become: true
+
 - name: activate kubernetes-node profile
   ansible.builtin.command: tuned-adm profile kubernetes-node
   become: true

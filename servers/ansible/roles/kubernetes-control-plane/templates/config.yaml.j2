@@ -38,6 +38,10 @@ kube-controller-manager-arg:
   - "node-monitor-period=10s"
   - "node-monitor-grace-period=60s"
 
+kubelet-arg:
+  - "container-log-max-files=2"
+  - "container-log-max-size=10Mi"
+
 tls-san:
   - "k3s.bosscher.ch"
 

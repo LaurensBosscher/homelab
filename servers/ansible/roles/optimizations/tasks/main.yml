@@ -49,9 +49,16 @@
   become: true
   tags: [optimizations]
 
-- name: Create directory for custom tuned profile
+- name: Remove old custom tuned profile directory
   ansible.builtin.file:
     path: /etc/tuned/kubernetes-node
+    state: absent
+  become: true
+  tags: [optimizations]
+
+- name: Create directory for custom tuned profile
+  ansible.builtin.file:
+    path: /etc/tuned/profiles/kubernetes-node
     state: directory
     mode: "0755"
   become: true
@@ -60,48 +67,101 @@
 # Use a custom tuned profile instead of throughput-performance + manual overrides
 - name: Create custom tuned profile for Kubernetes nodes
   ansible.builtin.copy:
-    dest: /etc/tuned/kubernetes-node/tuned.conf
+    dest: /etc/tuned/profiles/kubernetes-node/tuned.conf
     mode: "0644"
     content: |
       [main]
-      include=virtual-guest   # or throughput-performance as base if you prefer
+      include=virtual-guest
 
       [sysctl]
+      # With ZRAM, we can swap more aggressively (higher swappiness) to compress stale memory
+      # and free up RAM for active workloads, as ZRAM latency is much lower than disk I/O.
       vm.swappiness = {{ vm_swappiness }}
+      
+      # Start writing dirty pages to disk earlier to avoid large I/O spikes
       vm.dirty_ratio = {{ vm_dirty_ratio }}
       vm.dirty_background_ratio = {{ vm_dirty_background_ratio }}
+      
+      # Prefer keeping directory structure in memory over file content for faster lookups
       vm.vfs_cache_pressure = 50
+      
+      # Reserve memory for atomic allocations to prevent network stack starvation
       vm.min_free_kbytes = {{ vm_min_free_kbytes }}
+      
+      # Write out dirty data more frequently to reduce data loss on crash
       vm.dirty_expire_centisecs = 3000
       vm.dirty_writeback_centisecs = 500
+      
+      # Trigger kswapd earlier to smooth out memory reclamation spikes
       vm.watermark_scale_factor = 200
+      
+      # Disable swap prefetching; ZRAM is CPU-bound not I/O-bound, so read-ahead is overhead
       vm.page-cluster = 0
+      
+      # Do not panic on OOM; let the OOM killer pick a process (usually a pod) to kill
+      vm.panic_on_oom = 0
+      
+      # Allow overcommitting memory; K8s manages limits/requests, so OS should be lenient
+      vm.overcommit_memory = 1
+      
+      # Reboot automatically 10 seconds after a kernel panic to recover the node
+      kernel.panic = 10
+      
+      # Panic on oops to trigger the automatic reboot and recover from undefined states
+      kernel.panic_on_oops = 1
 
       [vm]
+      # Disable Transparent Huge Pages (THP) to prevent memory bloating and latency spikes in databases (Redis, etc.)
       transparent_hugepages = never
   become: true
   tags: [optimizations]
-  notify: activate kubernetes-node profile
+  register: tuned_profile_created
 
-- name: Determine root block device (more reliable than grep sd*)
-  ansible.builtin.set_fact:
-    root_block_device: >-
-      {{ ansible_mounts
-         | selectattr('mount', 'equalto', '/')
-         | map(attribute='device')
-         | map('regex_replace', '^/dev/(.*)', '\1')
-         | first }}
+- name: Check active tuned profile
+  ansible.builtin.command: tuned-adm active
+  register: current_tuned_profile
+  changed_when: false
+  failed_when: false
   tags: [optimizations]
 
-- name: Set I/O scheduler to mq-deadline (or bfq for SSD if you want)
-  ansible.posix.sysctl:
-    name: block.{{ root_block_device }}.queue.scheduler
-    value: mq-deadline
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes-optimizations.conf
-    reload: true
+- name: Restart tuned to pick up new profile
+  ansible.builtin.systemd:
+    name: tuned
+    state: restarted
   become: true
-  ignore_errors: true # some kernels don't expose it this way
+  when: >
+    tuned_profile_created.changed or
+    'Current active profile: kubernetes-node' not in current_tuned_profile.stdout
+  tags: [optimizations]
+
+- name: Activate kubernetes-node profile
+  ansible.builtin.command: tuned-adm profile kubernetes-node
+  become: true
+  # Check if already active to avoid unnecessary changes/output
+  register: activation_result
+  changed_when: "'Switched to profile' in activation_result.stdout"
+  failed_when: 
+    - activation_result.rc != 0
+    - "'Current active profile: kubernetes-node' not in activation_result.stdout"
+  tags: [optimizations]
+
+- name: Determine root block device name
+  ansible.builtin.shell: |
+    dev=$(findmnt -n -o SOURCE /)
+    # Get the parent kernel name (e.g., vda1 -> vda). If no parent (e.g. vda), use the name itself.
+    parent=$(lsblk -no pkname "$dev" | head -n1)
+    if [ -z "$parent" ]; then
+      echo "${dev#/dev/}"
+    else
+      echo "$parent"
+    fi
+  register: root_device_cmd
+  changed_when: false
+  tags: [optimizations]
+
+- name: Set root_block_device variable
+  ansible.builtin.set_fact:
+    root_block_device: "{{ root_device_cmd.stdout | trim }}"
   tags: [optimizations]
 
 - name: Persist read_ahead_kb = 4096 and nr_requests via udev (recommended way)
