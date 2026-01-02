@@ -10,6 +10,7 @@
     src: config.yaml.j2
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
+  notify: restart k3s
 
 - name: Get k3s token from first master
   ansible.builtin.command: "cat /var/lib/rancher/k3s/server/node-token"

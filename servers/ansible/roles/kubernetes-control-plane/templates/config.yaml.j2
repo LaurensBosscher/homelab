@@ -6,11 +6,6 @@ prefer-bundled-bin: true
 
 node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
 
-# Swap support for ZRAM, this allows containers to spike above the configured memory limits safely
-# Since we're using ZRAM the performance impact is negligible for spikes.
-# We should monitor the pods and ensure that they're not constantly swapping.
-failSwapOn: false
-
 # Disable Traefik (use your own ingress controller)
 disable: traefik
 
@@ -39,8 +34,7 @@ kube-controller-manager-arg:
   - "node-monitor-grace-period=60s"
 
 kubelet-arg:
-  - "container-log-max-files=2"
-  - "container-log-max-size=10Mi"
+  - "config=/etc/rancher/k3s/kubelet-config.yaml"
 
 tls-san:
   - "k3s.bosscher.ch"

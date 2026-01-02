@@ -7,5 +7,4 @@ prefer-bundled-bin: true
 flannel-iface: eth0  # Binds Flannel CNI to eth0 interface for pod networking
 
 kubelet-arg:
-  - "container-log-max-files=2"
-  - "container-log-max-size=10Mi"
+  - "config=/etc/rancher/k3s/kubelet-config.yaml"

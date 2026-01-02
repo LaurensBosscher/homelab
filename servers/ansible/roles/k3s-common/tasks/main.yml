@@ -1,12 +1,18 @@
 ---
+- name: Ensure /etc/rancher/k3s directory exists
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: "0755"
+
 - name: Configure kubelet to use limited swap and resource constraints
-  ansible.builtin.blockinfile:
-    create: True
-    path: /var/lib/rancher/k3s/agent/etc/kubelet.conf.d/01-swap-and-constraints.conf
-    block: |
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/kubelet-config.yaml
+    content: |
       kind: KubeletConfiguration
       apiVersion: kubelet.config.k8s.io/v1beta1
 
+      failSwapOn: false
       memorySwap:
         swapBehavior: LimitedSwap
       systemReserved:
@@ -16,11 +22,18 @@
         cpu: 100m
         memory: 256Mi
 
+      containerLogMaxSize: 10Mi
+      containerLogMaxFiles: 2
+
       imageGCHighThresholdPercent: 85
       imageGCLowThresholdPercent: 80
       imageMaximumGCAge: "24h"
 
-      node-status-update-frequency: 10s
-      max-pods: 200
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - memorySwap"
+      nodeStatusUpdateFrequency: 10s
+      maxPods: 200
+    owner: root
+    group: root
     mode: "0644"
+  notify:
+    - restart k3s
+    - restart k3s-agent

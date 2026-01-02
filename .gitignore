@@ -6,3 +6,4 @@ __pycache__/
 .ruff_cache/
 .venv/
 credentials.env
+servers/ansible/group_vars/local.yml
