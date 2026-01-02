@@ -58,6 +58,7 @@
     - { role: kubecolor }
     - { role: zram }
     - { role: ssh }
+    - { role: crowdsec }
     - { role: k3s-oom-protection }
     - { role: k3s-install }
     # - { role: firewall }

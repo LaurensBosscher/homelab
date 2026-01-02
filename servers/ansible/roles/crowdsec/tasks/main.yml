@@ -1,0 +1,78 @@
+---
+- name: Check if CrowdSec repo file exists
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/crowdsec_crowdsec.repo
+  register: crowdsec_repo_file
+  tags: [crowdsec, security]
+
+- name: Add CrowdSec repositories
+  ansible.builtin.shell: curl -s https://install.crowdsec.net | sh
+  when: not crowdsec_repo_file.stat.exists
+  tags: [crowdsec, security]
+
+- name: Install CrowdSec
+  ansible.builtin.dnf:
+    name: crowdsec
+    state: present
+    update_cache: yes
+  notify: restart crowdsec
+  tags: [crowdsec, security]
+
+- name: Ensure CrowdSec service is enabled and started
+  ansible.builtin.systemd:
+    name: crowdsec
+    enabled: true
+    state: started
+  tags: [crowdsec, security]
+
+- name: Install CrowdSec firewall bouncer
+  ansible.builtin.dnf:
+    name: crowdsec-firewall-bouncer-nftables
+    state: present
+    update_cache: yes
+  notify: restart crowdsec-firewall-bouncer
+  when: crowdsec_repo_file.stat.exists
+  tags: [crowdsec, bouncers, firewall]
+
+- name: Enable and start CrowdSec firewall bouncer
+  ansible.builtin.systemd:
+    name: crowdsec-firewall-bouncer
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: crowdsec_firewall_bouncer | default(true)
+  tags: [crowdsec, bouncers, firewall]
+
+- name: Install CrowdSec Kubernetes bouncer
+  ansible.builtin.command: cscli bouncers install k8s
+  register: k8s_bouncer_install
+  changed_when: "'installed' in k8s_bouncer_install.stdout | default('')"
+  failed_when: false
+  when: true
+  tags: [crowdsec, bouncers, kubernetes]
+
+- name: Register K8s bouncer to local CrowdSec
+  ansible.builtin.command: cscli bouncers add k8s -h /etc/crowdsec/local_api_credentials.yaml
+  register: k8s_bouncer_register
+  changed_when: false
+  tags: [crowdsec, bouncers, kubernetes]
+
+- name: Install recommended CrowdSec collections
+  ansible.builtin.command: "cscli collections install {{ item }}"
+  register: collection_install
+  changed_when: "'installed' in collection_install.stdout | default('')"
+  failed_when: false
+  loop: "{{ crowdsec_collections }}"
+  when: crowdsec_collections is defined
+  notify:
+    - restart crowdsec-firewall-bouncer
+    - restart crowdsec
+  tags: [crowdsec, collections]
+
+- name: Enroll with CrowdSec Console
+  ansible.builtin.command: "cscli console enroll {{ crowdsec_console_enrollment_token }}"
+  register: console_enroll
+  changed_when: "'Successfully enrolled' in console_enroll.stdout | default('')"
+  failed_when: false
+  when: crowdsec_console_enrollment_token is defined
+  tags: [crowdsec, console]

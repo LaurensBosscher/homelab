@@ -5,6 +5,13 @@ configure_tailscale: true
 kubecolor_install: true
 zram_enable: true
 
+# CrowdSec collections
+crowdsec_collections:
+  - crowdsecurity/iptables
+  - crowdsecurity/kubernetes
+  - crowdsecurity/linux
+  - crowdsecurity/ssh
+
 # Firewall configuration
 firewall_enable: false
 firewall_default_zone: internal

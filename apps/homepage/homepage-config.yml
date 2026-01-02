@@ -347,6 +347,10 @@ data:
             href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
             description: Cloudflare Zero Trust & Tunnels
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
+        - CrowdSec Security Engines:
+            href: https://app.crowdsec.net/security-engines
+            description: CrowdSec Security Console
+            icon: https://lwfiles.mycourse.app/64672e16e486f630b28c1d77-public/1e5e214fc750145687a9ef60a80b4a8b.png
   bookmarks.yaml: |
     - Developer:
         - GitHub:
