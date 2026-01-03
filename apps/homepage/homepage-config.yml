@@ -175,11 +175,6 @@ data:
           icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
           siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
     - Search:
-        - SearchXNG:
-            href: https://searchxng.bosscher.ch
-            description: Self-Hosted Search Engine
-            icon: https://avatars.githubusercontent.com/u/80454229?s=200&v=4
-            siteMonitor: http://perplexica-searxng.perplexica.svc.cluster.local:8080
         - Perplexica:
             href: https://perplexica.bosscher.ch
             description: AI Search Engine

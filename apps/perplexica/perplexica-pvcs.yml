@@ -39,17 +39,3 @@ spec:
     requests:
       storage: 512Mi
   storageClassName: longhorn-2replicas-europe
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: perplexica-searxng-data
-  labels:
-    app: perplexica
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 512Mi
-  storageClassName: longhorn-2replicas-europe

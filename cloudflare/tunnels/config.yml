@@ -16,8 +16,6 @@
   service: http://wanderer.wanderer.svc.cluster.local:3000
 - hostname: norish.bosscher.ch
   service: http://norish.norish.svc.cluster.local:3000
-- hostname: searchxng.bosscher.ch
-  service: http://perplexica-searxng.perplexica.svc.cluster.local:8080
 - hostname: perplexica.bosscher.ch
   service: http://perplexica.perplexica.svc.cluster.local:3000
 - hostname: stacks.bosscher.ch

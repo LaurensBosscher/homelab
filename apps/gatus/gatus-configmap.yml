@@ -292,14 +292,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: searxng
-        group: productivity
-        url: "http://perplexica-searxng.perplexica.svc.cluster.local:8080"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: surfsense-frontend
         group: ai
         url: "http://surfsense-frontend.surfsense.svc.cluster.local:3000"
