@@ -197,14 +197,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: paperless
-        group: media
-        url: "http://paperless-web.paperless.svc.cluster.local:8000"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: stirling-pdf
         group: media
         url: "http://stirling-pdf.stirling-pdf.svc.cluster.local:8080"

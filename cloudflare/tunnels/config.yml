@@ -34,14 +34,10 @@
   service: http://stremio.stremio.svc.cluster.local:8080
 - hostname: aiostreams.bosscher.ch
   service: http://aiostreams.aiostreams.svc.cluster.local:3000
-- hostname: aiometadata.bosscher.ch
-  service: http://aiometadata.aiometadata.svc.cluster.local:3232
 - hostname: it-tools.bosscher.ch
   service: http://it-tools.it-tools.svc.cluster.local:8080
 - hostname: stirling-pdf.bosscher.ch
   service: http://stirling-pdf.stirling-pdf.svc.cluster.local:8080
-- hostname: paperless.bosscher.ch
-  service: http://paperless-web.paperless.svc.cluster.local:8000
 - hostname: docspell.bosscher.ch
   service: http://docspell-restserver.docspell.svc.cluster.local:7880
 - hostname: sabnzbd.bosscher.ch

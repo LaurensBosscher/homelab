@@ -252,11 +252,6 @@ data:
             description: PDF conversion tool
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bentopdf.png
             siteMonitor: http://bentopdf.bentopdf.svc.cluster.local:8080
-        - Paperless:
-            href: https://paperless.bosscher.ch/
-            description: Document management
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperless.png
-            siteMonitor: http://paperless-web.paperless.svc.cluster.local:8000
         - Docspell:
             href: https://docspell.bosscher.ch/
             description: Document management
