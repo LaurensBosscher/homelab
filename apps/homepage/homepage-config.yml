@@ -219,11 +219,7 @@ data:
             description: Automated audiobook downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
             siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
-        - Questarr:
-            href: https://questarr.bosscher.ch
-            description: Video game discovery & wishlist
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/joystick.png
-            siteMonitor: http://questarr.questarr.svc.cluster.local:5000
+
     - Stremio:
         - Stremio:
             href: https://stremio.bosscher.ch
@@ -251,22 +247,33 @@ data:
             description: Document management
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
             siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
+    - Media:
+        - Prowlarr:
+            href: https://prowlarr.bosscher.ch/
+            description: Indexer manager for *arr apps
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
+            siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
+        - Mydia:
+            href: https://mydia.bosscher.ch/
+            description: Media manager
+            icon: https://www.svgrepo.com/show/530376/movie.svg
+            siteMonitor: http://mydia.mydia.svc.cluster.local:4000
+        - Questarr:
+            href: https://questarr.bosscher.ch
+            description: Video game discovery & wishlist
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/joystick.png
+            siteMonitor: http://questarr.questarr.svc.cluster.local:5000
+        - Radarr:
+            href: https://radarr.bosscher.ch/
+            description: Movie downloader
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
+            siteMonitor: http://radarr.radarr.svc.cluster.local:7878
+        - Sonarr:
+            href: https://sonarr.bosscher.ch/
+            description: TV series downloader
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
+            siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
     - Downloads:
-      - Radarr:
-          href: https://radarr.bosscher.ch/
-          description: Movie downloader
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
-          siteMonitor: http://radarr.radarr.svc.cluster.local:7878
-      - Sonarr:
-          href: https://sonarr.bosscher.ch/
-          description: TV series downloader
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
-          siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
-      - Prowlarr:
-          href: https://prowlarr.bosscher.ch/
-          description: Indexer manager for *arr apps
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
-          siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
       - Sabnzbd:
           href: https://sabnzbd.bosscher.ch/
           description: Usenet downloader
@@ -282,11 +289,6 @@ data:
           description: Torrent client
           icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
           siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
-      - Mydia:
-          href: https://mydia.bosscher.ch/
-          description: Media manager
-          icon: https://www.svgrepo.com/show/530376/movie.svg
-          siteMonitor: http://mydia.mydia.svc.cluster.local:4000
       - Real-Debrid:
           href: https://real-debrid.com/torrents
           description: Torrent downloader
