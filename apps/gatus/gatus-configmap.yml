@@ -69,14 +69,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
-      - name: technitium-web
-        group: cluster
-        url: "http://technitium-web.technitium.svc.cluster.local:5380"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1000"
-
       - name: gatus
         group: cluster
         url: "http://gatus.gatus.svc.cluster.local:8080"
@@ -284,17 +276,6 @@ data:
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
-
-      - name: technitium-dns-query
-        group: networking
-        url: "technitium.technitium.svc.cluster.local"
-        interval: 5m
-        dns:
-          query-name: bosscher.ch
-          query-type: A
-        conditions:
-          - "[BODY] != ''"
-          - "[DNS_RCODE] == NOERROR"
 
       - name: cloudflare-icmp
         group: external

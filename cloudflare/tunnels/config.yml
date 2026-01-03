@@ -60,8 +60,6 @@
     noTLSVerify: true
 - hostname: longhorn.bosscher.ch
   service: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
-- hostname: technitium-web.bosscher.ch
-  service: http://technitium-web.technitium.svc.cluster.local:5380
 - hostname: gatus.bosscher.ch
   service: http://gatus.gatus.svc.cluster.local:8080
 - hostname: grafana.bosscher.ch
