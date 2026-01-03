@@ -236,16 +236,6 @@ data:
             description: Media streaming service
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
             siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
-        - AIOmetadata:
-            href: https://aiometadata.bosscher.ch/
-            description: Aiometadata for Stremio
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
-            siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
-        - AIOmetadata Dashboard:
-            href: https://aiometadata.bosscher.ch/dashboard
-            description: Usage dashboard for Aiometadata
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
-            siteMonitor: http://aiometadata.aiometadata.svc.cluster.local:3232
     - Documents:
         - IT-Tools:
             href: https://it-tools.bosscher.ch

@@ -165,14 +165,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: aiometadata
-        group: media
-        url: "http://aiometadata.aiometadata.svc.cluster.local:3232"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: radarr
         group: media
         url: "http://radarr.radarr.svc.cluster.local:7878"
