@@ -41,6 +41,8 @@ spec:
           ports:
             - containerPort: 5432
           env:
+            - name: TZ
+              value: Europe/Zurich
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -265,6 +267,8 @@ spec:
         - name: n8n-task-runners
           image: n8nio/runners:2.2.2
           env:
+            - name: TZ
+              value: Europe/Zurich
             - name: N8N_RUNNERS_TASK_BROKER_URI
               value: "http://n8n:5679"
             - name: N8N_RUNNERS_AUTH_TOKEN
