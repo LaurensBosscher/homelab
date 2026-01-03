@@ -242,11 +242,6 @@ data:
             description: Collection of handy online tools
             icon: https://it-tools.tech/favicon.ico
             siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
-        - Stirling PDF:
-            href: https://stirling-pdf.bosscher.ch
-            description: PDF tools and manipulation
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/stirling-pdf.png
-            siteMonitor: http://stirling-pdf.stirling-pdf.svc.cluster.local:8080
         - BentoPDF:
             href: https://bentopdf.bosscher.ch
             description: PDF conversion tool
