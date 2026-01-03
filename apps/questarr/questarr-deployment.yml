@@ -1,0 +1,194 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questarr-postgres
+  labels:
+    app: questarr-postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: questarr-postgres
+  template:
+    metadata:
+      labels:
+        app: questarr-postgres
+        app.kubernetes.io/part-of: questarr
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: questarr
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: postgres
+          image: postgres:18.1
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: postgres-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: postgres-password
+            - name: POSTGRES_DB
+              value: questarr
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -U
+                - postgres
+                - -d
+                - questarr
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -U
+                - postgres
+                - -d
+                - questarr
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: questarr-postgres-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questarr
+  labels:
+    app: questarr
+spec:
+  replicas: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: questarr
+  template:
+    metadata:
+      labels:
+        app: questarr
+        app.kubernetes.io/part-of: questarr
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: questarr
+                topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: questarr
+          image: ghcr.io/doezer/questarr:production-d7da8ec
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "5000"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: DATABASE_URL
+              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@questarr-postgres:5432/$questarr"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: postgres-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: postgres-password
+            - name: POSTGRES_DB
+              value: questarr
+            - name: IGDB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: igdb-client-id
+            - name: IGDB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: igdb-client-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 40
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3

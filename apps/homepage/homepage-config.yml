@@ -261,7 +261,7 @@ data:
         - Questarr:
             href: https://questarr.bosscher.ch
             description: Video game discovery & wishlist
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/joystick.png
+            icon: https://avatars.githubusercontent.com/u/11655673?s=48&v=4
             siteMonitor: http://questarr.questarr.svc.cluster.local:5000
         - Radarr:
             href: https://radarr.bosscher.ch/
