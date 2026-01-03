@@ -17,23 +17,6 @@ spec:
     spec:
       nodeSelector:
         city: zurich
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: city
-                    operator: In
-                    values:
-                      - zurich
-            - weight: 50
-              preference:
-                matchExpressions:
-                  - key: region
-                    operator: In
-                    values:
-                      - europe
       containers:
         - name: stremio
           image: tsaridas/stremio-docker:v1.2.7
@@ -75,5 +58,5 @@ spec:
             claimName: stremio-data
         - name: dri
           hostPath:
-            path: /dev/dri/card0
+            path: /dev/dri/card1
             type: CharDevice
