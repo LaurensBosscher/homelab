@@ -165,13 +165,13 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-       - name: sonarr
-         group: media
-         url: "http://sonarr.sonarr.svc.cluster.local:8989"
-         interval: 5m
-         conditions:
-           - "[STATUS] == 200"
-           - "[RESPONSE_TIME] < 2500"
+      - name: sonarr
+        group: media
+        url: "http://sonarr.sonarr.svc.cluster.local:8989"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: mydia
         group: media

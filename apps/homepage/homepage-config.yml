@@ -287,6 +287,14 @@ data:
           description: Media manager
           icon: https://www.svgrepo.com/show/530376/movie.svg
           siteMonitor: http://mydia.mydia.svc.cluster.local:4000
+      - Real-Debrid:
+          href: https://real-debrid.com/torrents
+          description: Torrent downloader
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/real-debrid.svg
+      - TorBox:
+          href: https://www.torbox.app/dashboard
+          description: Cloud torrenting service
+          icon: https://avatars.githubusercontent.com/u/144096078?s=200&v=4
     - Cluster:
         - Kite:
             href: https://kite.bosscher.ch
