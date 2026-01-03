@@ -277,6 +277,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: flaresolver
+        group: cluster
+        url: "http://flaresolver.flaresolver.svc.cluster.local:8191"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
       - name: grafana
         group: cluster
         url: "http://prometheus-grafana.monitoring.svc.cluster.local:80"

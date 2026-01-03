@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolver
+  namespace: flaresolver
+  labels:
+    app.kubernetes.io/name: flaresolver
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaresolver
+  template:
+    metadata:
+      labels:
+        app: flaresolver
+    spec:
+      containers:
+        - name: flaresolver
+          image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+          ports:
+            - containerPort: 8191
+              name: http
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi

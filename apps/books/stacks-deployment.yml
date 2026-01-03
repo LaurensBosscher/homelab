@@ -58,9 +58,9 @@ spec:
             - name: PASSWORD
               value: "stacks"
             - name: TZ
-              value: "Europe/Zurich"
+              value: Europe/Zurich
             - name: SOLVERR_URL
-              value: "localhost:8191"
+              value: "http://flaresolver.flaresolver.svc.cluster.local:8191"
           volumeMounts:
             - name: config
               mountPath: /opt/stacks/config
@@ -88,28 +88,6 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 60
             timeoutSeconds: 5
-
-        - name: flaresolverr
-          image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
-          ports:
-            - containerPort: 8191
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          env:
-            - name: LOG_LEVEL
-              value: "info"
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              memory: 512Mi
 
       volumes:
         - name: config
