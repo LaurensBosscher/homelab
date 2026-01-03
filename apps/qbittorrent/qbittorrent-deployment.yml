@@ -88,15 +88,15 @@ spec:
       containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:20.04.1
-          # securityContext:
-          #   allowPrivilegeEscalation: false
-          # runAsUser: 1000
-          # runAsGroup: 1000
+          securityContext:
+            allowPrivilegeEscalation: false
+          runAsUser: 1000
+          runAsGroup: 1000
           env:
-            # - name: PUID
-            #   value: "1000"
-            # - name: PGID
-            #   value: "1000"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
             - name: TZ
               value: "Europe/Zurich"
             - name: WEBUI_PORT
