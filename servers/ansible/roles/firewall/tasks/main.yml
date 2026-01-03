@@ -1,28 +1,15 @@
 ---
-- name: Ensure firewalld installed
-  ansible.builtin.dnf:
-    name: firewalld
-    state: present
-  tags: [firewall]
-
 - name: Stop and disable firewalld
   ansible.builtin.systemd:
     name: firewalld
     state: stopped
     enabled: false
+  ignore_errors: true
   tags: [firewall]
 
-- name: Set default zone
-  ansible.builtin.command: firewall-cmd --set-default-zone=internal
-  changed_when: false
-  tags: [firewall]
-
-- name: Add interface to drop zone
-  ansible.builtin.command: firewall-cmd --zone=drop --add-interface=eth0 --permanent
-  changed_when: false
-  tags: [firewall]
-
-- name: Reload firewall
-  ansible.builtin.command: firewall-cmd --reload
-  changed_when: false
+- name: Mask firewalld to prevent accidental start
+  ansible.builtin.systemd:
+    name: firewalld
+    masked: true
+  ignore_errors: true
   tags: [firewall]

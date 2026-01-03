@@ -1,9 +1,4 @@
 ---
-- name: Install ionice utility (util-linux package)
-  ansible.builtin.dnf:
-    name: util-linux
-    state: present
-
 - name: Create systemd drop-in directory for k3s
   ansible.builtin.file:
     path: /etc/systemd/system/k3s.service.d
@@ -22,25 +17,3 @@
     mode: "0644"
   notify: reload and restart k3s
 
-- name: Remove legacy etcd IO priority monitoring script
-  ansible.builtin.file:
-    path: /usr/local/bin/etcd-io-priority-check.sh
-    state: absent
-
-- name: Remove legacy etcd IO priority check timer
-  ansible.builtin.systemd:
-    name: etcd-io-priority-check.timer
-    state: stopped
-    enabled: no
-  ignore_errors: true
-
-- name: Remove legacy etcd IO priority check timer file
-  ansible.builtin.file:
-    path: /etc/systemd/system/etcd-io-priority-check.timer
-    state: absent
-
-- name: Remove legacy etcd IO priority check service file
-  ansible.builtin.file:
-    path: /etc/systemd/system/etcd-io-priority-check.service
-    state: absent
-  notify: reload and restart k3s

@@ -49,13 +49,6 @@
   become: true
   tags: [optimizations]
 
-- name: Remove old custom tuned profile directory
-  ansible.builtin.file:
-    path: /etc/tuned/kubernetes-node
-    state: absent
-  become: true
-  tags: [optimizations]
-
 - name: Create directory for custom tuned profile
   ansible.builtin.file:
     path: /etc/tuned/profiles/kubernetes-node

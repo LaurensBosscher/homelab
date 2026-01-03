@@ -61,7 +61,7 @@
     - { role: crowdsec }
     - { role: k3s-oom-protection }
     - { role: k3s-install }
-    # - { role: firewall }
+    - { role: firewall }
 
 - name: Kubernetes control plane configuration
   hosts: kubernetes-control-plane

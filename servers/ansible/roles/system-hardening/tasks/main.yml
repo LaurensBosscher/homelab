@@ -26,19 +26,6 @@
     enabled: true
   tags: [system-hardening, time-sync]
 
-- name: Verify time synchronization
-  ansible.builtin.command: chronyc tracking
-  register: chrony_status
-  changed_when: false
-  failed_when: false
-  tags: [system-hardening, time-sync]
-
-- name: Display time sync status
-  ansible.builtin.debug:
-    msg: "{{ chrony_status.stdout_lines }}"
-  when: chrony_status.stdout_lines is defined
-  tags: [system-hardening, time-sync]
-
 - name: Install CPU power management tools
   ansible.builtin.dnf:
     name: kernel-tools

@@ -16,13 +16,6 @@
   notify: reload systemd and restart k3s
   tags: [k3s-oom-protection]
 
-- name: Ensure memory limit override is removed (now using ZRAM and kernel tunings)
-  ansible.builtin.file:
-    path: /etc/systemd/system/k3s.service.d/memory-limit.conf
-    state: absent
-  notify: reload systemd and restart k3s
-  tags: [k3s-oom-protection]
-
 - name: Create systemd override directory for k3s-agent
   ansible.builtin.file:
     path: /etc/systemd/system/k3s-agent.service.d

@@ -31,7 +31,6 @@
     state: present
     update_cache: yes
   notify: restart crowdsec-firewall-bouncer
-  when: crowdsec_repo_file.stat.exists
   tags: [crowdsec, bouncers, firewall]
 
 - name: Enable and start CrowdSec firewall bouncer
@@ -40,7 +39,6 @@
     enabled: true
     state: started
     daemon_reload: true
-  when: crowdsec_firewall_bouncer | default(true)
   tags: [crowdsec, bouncers, firewall]
 
 - name: Install CrowdSec Kubernetes bouncer
@@ -48,7 +46,6 @@
   register: k8s_bouncer_install
   changed_when: "'installed' in k8s_bouncer_install.stdout | default('')"
   failed_when: false
-  when: true
   tags: [crowdsec, bouncers, kubernetes]
 
 - name: Register K8s bouncer to local CrowdSec
