@@ -29,7 +29,7 @@ spec:
                       - europe
       containers:
         - name: gatus
-          image: twinproduction/gatus:v5.33.1
+          image: twinproduction/gatus:v5.34.0
           env:
             - name: TZ
               value: Europe/Zurich
