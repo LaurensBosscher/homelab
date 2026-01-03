@@ -28,6 +28,8 @@
   service: http://bookshelf.bookshelf.svc.cluster.local:8787
 - hostname: listenarr.bosscher.ch
   service: http://listenarr.listenarr.svc.cluster.local:5000
+- hostname: questarr.bosscher.ch
+  service: http://questarr.questarr.svc.cluster.local:5000
 - hostname: stremio.bosscher.ch
   service: http://stremio.stremio.svc.cluster.local:8080
 - hostname: aiostreams.bosscher.ch
@@ -48,6 +50,8 @@
   service: http://radarr.radarr.svc.cluster.local:7878
 - hostname: sonarr.bosscher.ch
   service: http://sonarr.sonarr.svc.cluster.local:8989
+- hostname: mydia.bosscher.ch
+  service: http://mydia.mydia.svc.cluster.local:4000
 - hostname: kite.bosscher.ch
   service: http://kite.kube-system.svc.cluster.local:8080
 - hostname: argocd.bosscher.ch

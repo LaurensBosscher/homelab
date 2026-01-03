@@ -174,17 +174,16 @@ data:
           description: Recipe manager
           icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
           siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
-    - Search:
-        - Perplexica:
-            href: https://perplexica.bosscher.ch
-            description: AI Search Engine
-            icon: https://perplexica.io/favicon.ico
-            siteMonitor: http://perplexica.perplexica.svc.cluster.local:3000
     - AI:
         - Grok:
             href: https://grok.com/
             description: Truth seeker
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grok-dark.svg
+        - Perplexica:
+            href: https://perplexica.bosscher.ch
+            description: AI Search Engine
+            icon: https://perplexica.io/favicon.ico
+            siteMonitor: http://perplexica.perplexica.svc.cluster.local:3000
         - OpenRouter:
             href: https://openrouter.ai/chat
             description: OpenRouter AI Chat
@@ -220,6 +219,11 @@ data:
             description: Automated audiobook downloader
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
             siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
+        - Questarr:
+            href: https://questarr.bosscher.ch
+            description: Video game discovery & wishlist
+            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/joystick.png
+            siteMonitor: http://questarr.questarr.svc.cluster.local:5000
     - Stremio:
         - Stremio:
             href: https://stremio.bosscher.ch
@@ -248,36 +252,41 @@ data:
             icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
             siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
     - Downloads:
-        - Radarr:
-            href: https://radarr.bosscher.ch/
-            description: Movie downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
-            siteMonitor: http://radarr.radarr.svc.cluster.local:7878
-        - Sonarr:
-            href: https://sonarr.bosscher.ch/
-            description: TV series downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
-            siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
-        - Prowlarr:
-            href: https://prowlarr.bosscher.ch/
-            description: Indexer manager for *arr apps
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
-            siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
-        - Sabnzbd:
-            href: https://sabnzbd.bosscher.ch/
-            description: Usenet downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-            siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
-        - RDT-Client:
-            href: https://rdt-client.bosscher.ch/
-            description: Real-Debrid torrent client
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
-            siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
-        - Qbittorrent:
-            href: https://qbittorrent.bosscher.ch
-            description: Torrent client
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
-            siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
+      - Radarr:
+          href: https://radarr.bosscher.ch/
+          description: Movie downloader
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
+          siteMonitor: http://radarr.radarr.svc.cluster.local:7878
+      - Sonarr:
+          href: https://sonarr.bosscher.ch/
+          description: TV series downloader
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
+          siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
+      - Prowlarr:
+          href: https://prowlarr.bosscher.ch/
+          description: Indexer manager for *arr apps
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
+          siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
+      - Sabnzbd:
+          href: https://sabnzbd.bosscher.ch/
+          description: Usenet downloader
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
+          siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
+      - RDT-Client:
+          href: https://rdt-client.bosscher.ch/
+          description: Real-Debrid torrent client
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
+          siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
+      - Qbittorrent:
+          href: https://qbittorrent.bosscher.ch
+          description: Torrent client
+          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
+          siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
+      - Mydia:
+          href: https://mydia.bosscher.ch/
+          description: Media manager
+          icon: https://www.svgrepo.com/show/530376/movie.svg
+          siteMonitor: http://mydia.mydia.svc.cluster.local:4000
     - Cluster:
         - Kite:
             href: https://kite.bosscher.ch
