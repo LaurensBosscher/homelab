@@ -261,6 +261,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: playarr
+        group: media
+        url: "http://playarr.playarr.svc.cluster.local:2727"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: perplexica
         group: productivity
         url: "http://perplexica.perplexica.svc.cluster.local:3000"

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playarr
+  labels:
+    app.kubernetes.io/name: playarr
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: playarr
+  template:
+    metadata:
+      labels:
+        app: playarr
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: city
+                    operator: In
+                    values:
+                      - zurich
+      containers:
+        - name: playarr
+          image: maikboarder/playerr:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - containerPort: 2727
+              name: http
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Europe/Zurich
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: games
+              mountPath: /media
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 2727
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 2727
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: playarr-config
+        - name: games
+          hostPath:
+            path: /mnt/downloads/complete/games
+            type: DirectoryOrCreate

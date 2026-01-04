@@ -263,6 +263,11 @@ data:
             description: Video game discovery & wishlist
             icon: https://avatars.githubusercontent.com/u/11655673?s=48&v=4
             siteMonitor: http://questarr.questarr.svc.cluster.local:5000
+        - Playarr:
+            href: https://playarr.bosscher.ch
+            description: Video game downloader
+            icon: https://avatars.githubusercontent.com/u/125560274?s=48&v=4
+            siteMonitor: http://playarr.playarr.svc.cluster.local:2727
         - Radarr:
             href: https://radarr.bosscher.ch/
             description: Movie downloader

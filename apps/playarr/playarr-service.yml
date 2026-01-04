@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: playarr
+  labels:
+    app: playarr
+spec:
+  ports:
+    - port: 2727
+      targetPort: 2727
+      name: http
+  selector:
+    app: playarr
