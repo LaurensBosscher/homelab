@@ -102,7 +102,7 @@ metadata:
   labels:
     app: questarr
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -146,18 +146,11 @@ spec:
               value: "5000"
             - name: HOST
               value: "0.0.0.0"
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: questarr-secrets
-                  key: postgres-user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: questarr-secrets
-                  key: postgres-password
             - name: DATABASE_URL
-              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@questarr-postgres:5432/questarr"
+              valueFrom:
+                secretKeyRef:
+                  name: questarr-secrets
+                  key: database-url
             - name: IGDB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
