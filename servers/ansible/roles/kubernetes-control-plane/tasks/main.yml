@@ -12,16 +12,26 @@
     mode: "0644"
   notify: restart k3s
 
-- name: Get k3s token from first master
-  ansible.builtin.command: "cat /var/lib/rancher/k3s/server/node-token"
-  register: k3s_token
-  changed_when: false
-  when: inventory_hostname == groups['kubernetes-control-plane'][0]
+- name: Create the inet filter table (if it doesn't exist yet)
+  ansible.builtin.command:
+    cmd: |
+      nft add table inet filter
+  tags: etcd_firewall
 
-- name: Store k3s token
-  ansible.builtin.set_fact:
-    k3s_token: "{{ k3s_token.stdout }}"
-    cacheable: yes
-  when: inventory_hostname == groups['kubernetes-control-plane'][0]
+- name: Create the input base chain (hook=input is for incoming packets)
+  ansible.builtin.command:
+    cmd: |
+      nft add chain inet filter input '{ type filter hook input priority filter; policy accept; }'
+  tags: etcd_firewall
 
+- name: Allow etcd traffic from authorized IPs
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } ip saddr { {{ etcd_authorized_ips | join(', ') }} } accept
+  tags: etcd_firewall
 
+- name: Drop etcd traffic from unauthorized IPs
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } drop
+  tags: etcd_firewall
