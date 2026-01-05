@@ -41,7 +41,7 @@ spec:
               mountPath: /opt/stacks/download
       containers:
         - name: stacks
-          image: zelest/stacks:v1.1.2
+          image: zelest/stacks:v1.2.0
           ports:
             - containerPort: 7788
           securityContext:
