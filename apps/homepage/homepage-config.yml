@@ -28,19 +28,6 @@ data:
       searchDescriptions: true
       hideInternetSearch: false
       showSearchSuggestions: true
-    layout:
-      Media:
-        style: column
-      News:
-        style: column
-      Food:
-        style: column
-      Productivity:
-        style: column
-      Cluster:
-        style: column
-      Infrastructure:
-        style: column
     providers:
       longhorn:
         url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
@@ -116,8 +103,9 @@ data:
     ::-webkit-scrollbar-thumb:hover { background: rgba(160,160,170,.5); }
 
     @media (max-width: 900px) {
-      .service { backdrop-filter: blur(10px) saturate(130%); }
+      .service { backdrop-filter: blur(5px) saturate(130%); }
     }
+
   services.yaml: |
     - News:
       - Fusion:
@@ -387,7 +375,10 @@ data:
         format: # optional, Intl.NumberFormat options
           maximumFractionDigits: 1
     - longhorn:
-        fields: [total, used, replicas, volumes]
+        expanded: false
+        total: true
+        labels: false
+        nodes: false
     - search:
         provider: google
         target: _blank
