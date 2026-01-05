@@ -102,7 +102,7 @@ metadata:
   labels:
     app: questarr
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -136,7 +136,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: questarr
-          image: ghcr.io/doezer/questarr:production-6633e5d
+          image: ghcr.io/doezer/questarr:production-bcb8456
           ports:
             - containerPort: 5000
           env:
