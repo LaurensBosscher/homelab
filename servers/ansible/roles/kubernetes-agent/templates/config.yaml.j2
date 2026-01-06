@@ -8,3 +8,6 @@ flannel-iface: eth0  # Binds Flannel CNI to eth0 interface for pod networking
 
 kubelet-arg:
   - "config=/etc/rancher/k3s/kubelet-config.yaml"
+
+# SELinux support (set to true to enable enforcement after policies are installed)
+selinux: false

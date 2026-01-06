@@ -4,7 +4,20 @@
     path: /usr/local/bin/k3s
   register: k3s_binary
 
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s-install.sh
+    mode: "0755"
+    checksum: "sha256:https://update.k3s.io/v1-release/k3s.sha256sum"
+  when: not k3s_binary.stat.exists
+
 - name: Install k3s
-  ansible.builtin.shell: >
-    curl -sfL https://get.k3s.io | sh -
+  ansible.builtin.command: /tmp/k3s-install.sh
+  when: not k3s_binary.stat.exists
+
+- name: Clean up install script
+  ansible.builtin.file:
+    path: /tmp/k3s-install.sh
+    state: absent
   when: not k3s_binary.stat.exists

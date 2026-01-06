@@ -1,32 +1,75 @@
 ---
 - name: Get primary network interface
-  ansible.builtin.shell: ip -o route get 8.8.8.8 | cut -f5 -d' '
-  register: primary_network_interface
-  changed_when: false
+  ansible.builtin.set_fact:
+    primary_network_interface: "{{ ansible_default_ipv4.interface }}"
   tags: [network-optimizations]
 
 - name: Check current network interface features
-  ansible.builtin.command: ethtool -k {{ primary_network_interface.stdout }}
+  ansible.builtin.command: ethtool -k {{ primary_network_interface }}
   register: current_ethtool_features
   changed_when: false
   failed_when: false
-  when: primary_network_interface.stdout != ""
+  when: primary_network_interface != ""
   tags: [network-optimizations]
 
-- name: Apply network interface optimizations
-  ansible.builtin.shell: |
-    ethtool -K "{{ primary_network_interface.stdout }}" \
-      tx-udp-segmentation on \
-      rx-udp-gro-forwarding on \
-      rx-gro-list off \
-      tx-checksum-ip-generic on \
-      rx-checksum on
+- name: Apply network interface optimizations (tx-udp-segmentation)
+  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} tx-udp-segmentation on
   become: true
-  when: 
-    - primary_network_interface.stdout != ""
+  when:
+    - primary_network_interface != ""
     - current_ethtool_features.rc == 0
-  changed_when: false
-  failed_when: false
+    - "'tx-udp-segmentation: off' in current_ethtool_features.stdout"
+  register: tx_udp_segmentation
+  changed_when: true
+  ignore_errors: yes
+  tags: [network-optimizations]
+
+- name: Apply network interface optimizations (rx-udp-gro-forwarding)
+  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-udp-gro-forwarding on
+  become: true
+  when:
+    - primary_network_interface != ""
+    - current_ethtool_features.rc == 0
+    - "'rx-udp-gro-forwarding: off' in current_ethtool_features.stdout"
+  register: rx_udp_gro_forwarding
+  changed_when: true
+  ignore_errors: yes
+  tags: [network-optimizations]
+
+- name: Apply network interface optimizations (rx-gro-list)
+  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-gro-list off
+  become: true
+  when:
+    - primary_network_interface != ""
+    - current_ethtool_features.rc == 0
+    - "'rx-gro-list: on' in current_ethtool_features.stdout"
+  register: rx_gro_list
+  changed_when: true
+  ignore_errors: yes
+  tags: [network-optimizations]
+
+- name: Apply network interface optimizations (tx-checksum-ip-generic)
+  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} tx-checksum-ip-generic on
+  become: true
+  when:
+    - primary_network_interface != ""
+    - current_ethtool_features.rc == 0
+    - "'tx-checksum-ip-generic: off' in current_ethtool_features.stdout"
+  register: tx_checksum_ip_generic
+  changed_when: true
+  ignore_errors: yes
+  tags: [network-optimizations]
+
+- name: Apply network interface optimizations (rx-checksum)
+  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-checksum on
+  become: true
+  when:
+    - primary_network_interface != ""
+    - current_ethtool_features.rc == 0
+    - "'rx-checksum: off' in current_ethtool_features.stdout"
+  register: rx_checksum
+  changed_when: true
+  ignore_errors: yes
   tags: [network-optimizations]
 
 - name: Apply network kernel parameters for 1Gbps optimization
@@ -62,7 +105,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/bin/bash -c 'ethtool -K {{ primary_network_interface.stdout }} tx-udp-segmentation on rx-udp-gro-forwarding on rx-gro-list off tx-checksum-ip-generic on rx-checksum on || true'
+      ExecStart=/bin/bash -c 'ethtool -K {{ primary_network_interface }} tx-udp-segmentation on rx-udp-gro-forwarding on rx-gro-list off tx-checksum-ip-generic on rx-checksum on || true'
       RemainAfterExit=true
 
       [Install]
@@ -70,7 +113,8 @@
     dest: /etc/systemd/system/network-interface-optimizations.service
     mode: "0644"
   become: true
-  when: primary_network_interface.stdout != ""
+  when: primary_network_interface != ""
+  register: systemd_service_created
   tags: [network-optimizations]
 
 - name: Enable network interface optimizations service
@@ -79,5 +123,5 @@
     enabled: true
     daemon_reload: true
   become: true
-  when: primary_network_interface.stdout != ""
+  when: primary_network_interface != ""
   tags: [network-optimizations]

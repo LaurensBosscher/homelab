@@ -44,14 +44,22 @@
   become: true
   tags: [tailscale]
 
+- name: Check if udev rules need reloading
+  ansible.builtin.stat:
+    path: /etc/udev/rules.d/99-tailscale-mtu.rules
+  register: tailscale_udev_rule
+  tags: [tailscale]
+
 - name: Reload udev rules
   ansible.builtin.command: udevadm control --reload-rules
   become: true
+  when: tailscale_udev_rule.stat.exists
   tags: [tailscale]
 
 - name: Trigger udev rules for network subsystem
   ansible.builtin.command: udevadm trigger --subsystem-match=net --action=add
   become: true
+  when: tailscale_udev_rule.stat.exists
   tags: [tailscale]
 
 - name: Enable IP forwarding for Tailscale

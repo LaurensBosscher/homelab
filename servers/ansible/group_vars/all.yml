@@ -5,6 +5,9 @@ configure_tailscale: true
 kubecolor_install: true
 zram_enable: true
 
+ansible_ssh_private_key_file: ~/.ssh/id_rsa_kubernetes
+ansible_ssh_common_args: '-o StrictHostKeyChecking=accept-new'
+
 # CrowdSec collections
 crowdsec_collections:
   - crowdsecurity/iptables

@@ -10,42 +10,14 @@
         update_cache: yes
       tags: [always]
 
-    - name: Gather network interface facts
+    - name: Set network interface IPs
       ansible.builtin.set_fact:
-        tailscale_ip: "{{ hostvars[inventory_hostname]['ansible_tailscale0']['ipv4']['address'] }}"
-        eth0_ip: "{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}"
-      when:
-        - ansible_tailscale0 is defined
-        - ansible_eth0 is defined
-      tags: [always]
-
-    - name: Fallback - Get Tailscale IP via command
-      ansible.builtin.shell: ip -4 addr show tailscale0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
-      register: tailscale_ip_cmd
-      changed_when: false
-      failed_when: false
-      when: tailscale_ip is not defined
-      tags: [always]
-
-    - name: Fallback - Get eth0 IP via command
-      ansible.builtin.shell: ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
-      register: eth0_ip_cmd
-      changed_when: false
-      failed_when: false
-      when: eth0_ip is not defined
-      tags: [always]
-
-    - name: Set IP facts from command output
-      ansible.builtin.set_fact:
-        tailscale_ip: "{{ tailscale_ip_cmd.stdout }}"
-        eth0_ip: "{{ eth0_ip_cmd.stdout }}"
-      when:
-        - tailscale_ip is not defined
-        - tailscale_ip_cmd.stdout is defined
-        - eth0_ip_cmd.stdout is defined
+        tailscale_ip: "{{ ansible_tailscale0.ipv4.address | default(ansible_default_ipv4.address) }}"
+        eth0_ip: "{{ ansible_eth0.ipv4.address | default(ansible_default_ipv4.address) }}"
       tags: [always]
 
   roles:
+    - { role: ansible-user }
     - { role: security_updates }
     - { role: system-hardening }
     - { role: dotfiles }

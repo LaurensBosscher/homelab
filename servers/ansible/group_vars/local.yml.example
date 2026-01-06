@@ -1,0 +1,23 @@
+---
+# Local secrets - DO NOT COMMIT TO GIT
+# This file contains sensitive information that should never be committed
+# Make sure this file is encrypted with ansible-vault and listed in .gitignore
+#
+# To encrypt this file:
+#   ansible-vault encrypt servers/ansible/group_vars/local.yml
+#
+# To edit this file:
+#   ansible-vault edit servers/ansible/group_vars/local.yml
+#
+# To decrypt temporarily:
+#   ansible-vault decrypt servers/ansible/group_vars/local.yml --output=local.yml.decrypted
+
+# CrowdSec Console Enrollment
+crowdsec_console_enrollment_token: "YOUR_TOKEN_HERE"
+
+# etcd authorized IPs for control plane communication
+etcd_authorized_ips:
+  - "127.0.0.1"
+  - "YOUR_IP_1"
+  - "YOUR_IP_2"
+  - "YOUR_IP_3"

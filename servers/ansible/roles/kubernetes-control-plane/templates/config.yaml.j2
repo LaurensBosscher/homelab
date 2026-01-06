@@ -22,8 +22,6 @@ etcd-arg:
   - "grpc-keepalive-interval=30000"      # 30s keepalive for WAN connections
   - "grpc-keepalive-timeout=20000"       # 20s timeout
 
-  - "auto-compaction-retention=1h"       # keep only 1 hour of history (revision or periodic)
-  - "snapshot-count=5000"                # Reduce snapshot frequency for WAN
   # Optional: speeds up large snapshot transfers a lot (K3s ≥ v1.21.5)
   - "max-request-bytes=10485760"         # 10 MiB instead of ~1.5 MiB
 
@@ -36,8 +34,8 @@ kube-controller-manager-arg:
 kubelet-arg:
   - "config=/etc/rancher/k3s/kubelet-config.yaml"
 
-tls-san:
-  - "k3s.bosscher.ch"
+# SELinux support (set to true to enable enforcement after policies are installed)
+selinux: false
 
 {% if inventory_hostname == groups['kubernetes-control-plane'][0] %}
 cluster-init: true

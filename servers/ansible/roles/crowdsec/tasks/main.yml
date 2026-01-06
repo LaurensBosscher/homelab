@@ -5,8 +5,23 @@
   register: crowdsec_repo_file
   tags: [crowdsec, security]
 
+- name: Download CrowdSec install script
+  ansible.builtin.get_url:
+    url: https://install.crowdsec.net
+    dest: /tmp/crowdsec-install.sh
+    mode: "0755"
+  when: not crowdsec_repo_file.stat.exists
+  tags: [crowdsec, security]
+
 - name: Add CrowdSec repositories
-  ansible.builtin.shell: curl -s https://install.crowdsec.net | sh
+  ansible.builtin.command: /tmp/crowdsec-install.sh
+  when: not crowdsec_repo_file.stat.exists
+  tags: [crowdsec, security]
+
+- name: Clean up install script
+  ansible.builtin.file:
+    path: /tmp/crowdsec-install.sh
+    state: absent
   when: not crowdsec_repo_file.stat.exists
   tags: [crowdsec, security]
 
@@ -73,3 +88,28 @@
   failed_when: false
   when: crowdsec_console_enrollment_token is defined
   tags: [crowdsec, console]
+
+- name: Ensure CrowdSec whitelist parsers directory exists
+  ansible.builtin.file:
+    path: /etc/crowdsec/parsers/s01-whitelist
+    state: directory
+    mode: "0755"
+  tags: [crowdsec, whitelist]
+
+- name: Create CrowdSec whitelist configuration for cluster nodes
+  ansible.builtin.copy:
+    content: |
+      name: trusted-ips
+      description: Whitelist trusted IP addresses
+      whitelist:
+        reason: "Trusted IP addresses"
+        ip:
+      {% if crowdsec_whitelist_ips is defined %}
+      {% for ip in crowdsec_whitelist_ips %}
+          - {{ ip }}
+      {% endfor %}
+      {% endif %}
+    dest: /etc/crowdsec/parsers/s01-whitelist/trusted-ips.yaml
+    mode: "0644"
+  notify: restart crowdsec
+  tags: [crowdsec, whitelist]
