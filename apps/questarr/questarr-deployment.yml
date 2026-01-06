@@ -102,7 +102,7 @@ metadata:
   labels:
     app: questarr
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
