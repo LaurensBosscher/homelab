@@ -347,6 +347,12 @@ data:
         - Homelab Repo:
             - abbr: LAB
               href: https://github.com/LaurensBosscher/homelab
+        - OpenCode:
+            - abbr: OC
+              href: https://opencode.bosscher.ch
+              description: AI coding agent
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terminal.svg
+              siteMonitor: http://opencode.opencode.svc.cluster.local:4096
     - Documentation:
         - Kubernetes Docs:
             - abbr: K8S

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencode
+  labels:
+    app.kubernetes.io/name: opencode
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opencode
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opencode
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: opencode
+          image: ghcr.io/laurensbosscher/opencode:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 4096
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4096
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4096
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5

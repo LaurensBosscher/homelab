@@ -76,3 +76,5 @@
   service: http://linkwarden.linkwarden.svc.cluster.local:3000
 - hostname: termix.bosscher.ch
   service: http://termix.termix.svc.cluster.local:8080
+- hostname: opencode.bosscher.ch
+  service: http://opencode.opencode.svc.cluster.local:4096
