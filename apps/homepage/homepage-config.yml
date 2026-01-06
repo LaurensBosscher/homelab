@@ -181,6 +181,12 @@ data:
             description: RAG Pipeline UI
             icon: https://lh3.googleusercontent.com/p77jEHvydtr9PJsla4-UY-aIeSJbPAK0W04rMR9bffWCa7DHzuzXSXaSJu5IATEzh6PCap_aa3gtewUsvIIckHhxmA=s1280-w1280-h800
             siteMonitor: http://surfsense-frontend.surfsense.svc.cluster.local:3000
+    - Infrastructure:
+        - Termix:
+            href: https://termix.bosscher.ch
+            description: Tailscale SSH web interface
+            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/terminal.svg
+            siteMonitor: http://termix.termix.svc.cluster.local:8080
     - Books:
         - Stacks:
             href: https://stacks.bosscher.ch

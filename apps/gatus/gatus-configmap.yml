@@ -339,3 +339,11 @@ data:
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
+
+      - name: termix
+        group: infrastructure
+        url: "http://termix.termix.svc.cluster.local:8080"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"

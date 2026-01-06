@@ -74,3 +74,5 @@
   service: http://surfsense-backend.surfsense.svc.cluster.local:8000
 - hostname: linkwarden.bosscher.ch
   service: http://linkwarden.linkwarden.svc.cluster.local:3000
+- hostname: termix.bosscher.ch
+  service: http://termix.termix.svc.cluster.local:8080
