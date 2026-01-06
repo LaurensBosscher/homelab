@@ -257,7 +257,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: chrome
-          image: zenika/alpine-chrome:latest
+          image: zenika/alpine-chrome:124
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
