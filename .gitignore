@@ -1,9 +1,36 @@
 .history
 secret-notes.md
 
+# Python
 __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
+
+# Credentials and secrets
 credentials.env
 servers/ansible/group_vars/local.yml
+
+# Ansible
+.vault_pass
+.vault_password
+vault_password
+*.retry
+*.retry.*
+.ansible/
+ansible_facts/
+tmp/ansible_facts/
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.iml
