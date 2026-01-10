@@ -24,7 +24,7 @@ spec:
                   - key: region
                     operator: In
                     values:
-                      - us
+                      - europe
       securityContext:
         fsGroup: 1000
       containers:
@@ -91,6 +91,24 @@ spec:
               mountPath: /var/run/tailscale
             - name: dev-net-tun
               mountPath: /dev/net/tun
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - test -S /var/run/tailscale/tailscaled.sock
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - test -S /var/run/tailscale/tailscaled.sock
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             requests:
               cpu: 50m
