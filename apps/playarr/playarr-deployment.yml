@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: playarr
-          image: maikboarder/playerr:0.3.3
+          image: maikboarder/playerr:v0.3.8
           securityContext:
             allowPrivilegeEscalation: false
           ports:
