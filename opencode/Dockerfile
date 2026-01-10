@@ -1,6 +1,7 @@
 FROM oven/bun:1.3.5-debian
 
-RUN bun install -g opencode-ai oh-my-opencode@3.0.0-beta.2; bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
+USER bun
+RUN bun install opencode-ai oh-my-opencode@3.0.0-beta.2; bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
 
 WORKDIR /workspace
 
