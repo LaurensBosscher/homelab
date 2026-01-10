@@ -1,10 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: opencode
   labels:
     app.kubernetes.io/name: opencode
 spec:
+  serviceName: opencode
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: opencode
@@ -35,8 +37,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 500m
-              memory: 512Mi
+              memory: 4096Mi
           livenessProbe:
             httpGet:
               path: /
@@ -51,3 +52,17 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
+          volumeMounts:
+            - name: opencode-data
+              mountPath: /workspace
+  volumeClaimTemplates:
+    - metadata:
+        name: opencode-data
+        labels:
+          app.kubernetes.io/name: opencode
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "longhorn-2replicas-europe"
+        resources:
+          requests:
+            storage: 5Gi
