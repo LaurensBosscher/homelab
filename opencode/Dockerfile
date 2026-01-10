@@ -1,25 +1,8 @@
-# Use Node.js as base image
-FROM node:20-slim
+FROM oven/bun:1.3.5-debian
 
-# Install dependencies for Bun
-# Bun requires: curl (to download), unzip (to extract)
-RUN apt-get update && apt-get install -y curl unzip
+RUN bun install -g opencode-ai oh-my-opencode@3.0.0-beta.2; bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
 
-# Install OpenCode globally
-RUN npm install -g opencode-ai
-
-# Install oh-my-opencode globally
-RUN npm install -g oh-my-opencode
-
-# Create a working directory for the container
 WORKDIR /workspace
 
-# Expose port 4096 (default OpenCode web port)
-EXPOSE 4096
-
-# Set environment variables
 ENV NODE_ENV=production
-
-# Start OpenCode web server
-# Listening on all interfaces (0.0.0.0) and port 4096
 CMD ["opencode", "web", "--port", "4096", "--hostname", "0.0.0.0"]
