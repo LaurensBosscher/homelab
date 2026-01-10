@@ -7,7 +7,7 @@ WORKDIR /home/bun/
 
 RUN bun install opencode-ai oh-my-opencode@3.0.0-beta.2; bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
 
-RUN echo 'export PATH="$HOME/.bun/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+RUN echo 'export PATH="$HOME/node_modules/opencode-ai/bin/:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ENV NODE_ENV=production
 
 WORKDIR /workspace

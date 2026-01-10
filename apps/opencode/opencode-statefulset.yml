@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: opencode
 spec:
   serviceName: opencode
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: opencode
@@ -51,23 +51,25 @@ spec:
               memory: 4096Mi
           livenessProbe:
             httpGet:
-              path: /
+              path: /global/health
               port: 4096
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /global/health
               port: 4096
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
           volumeMounts:
             - name: opencode-data
-              mountPath: /workspace
+              mountPath: /home/bun/workspaces
             - name: tmp
               mountPath: /tmp
+            - name: opencode-config
+              mountPath: /home/bun/.local/share/opencode
       volumes:
         - name: tmp
           emptyDir: {}
@@ -82,3 +84,13 @@ spec:
         resources:
           requests:
             storage: 5Gi
+    - metadata:
+        name: opencode-config
+        labels:
+          app.kubernetes.io/name: opencode
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "longhorn-2replicas-europe"
+        resources:
+          requests:
+            storage: 512Mi
