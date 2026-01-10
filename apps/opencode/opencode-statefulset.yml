@@ -15,6 +15,9 @@ spec:
       labels:
         app.kubernetes.io/name: opencode
     spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +31,14 @@ spec:
         - name: opencode
           image: ghcr.io/laurensbosscher/opencode:latest
           imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: http
               containerPort: 4096
@@ -55,6 +66,11 @@ spec:
           volumeMounts:
             - name: opencode-data
               mountPath: /workspace
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: opencode-data
