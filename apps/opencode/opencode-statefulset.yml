@@ -15,9 +15,9 @@ spec:
       labels:
         app.kubernetes.io/name: opencode
     spec:
-      # securityContext:
-      #   fsGroup: 1000
-      #   fsGroupChangePolicy: "OnRootMismatch"
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -32,9 +32,9 @@ spec:
           image: ghcr.io/laurensbosscher/opencode:latest
           imagePullPolicy: Always
           securityContext:
-            # runAsUser: 1000
-            # runAsGroup: 1000
-            # runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
             capabilities:
               drop:
@@ -49,20 +49,20 @@ spec:
               memory: 256Mi
             limits:
               memory: 4096Mi
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 4096
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 4096
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4096
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4096
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
           volumeMounts:
             - name: opencode-data
               mountPath: /workspace
