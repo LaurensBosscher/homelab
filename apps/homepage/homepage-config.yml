@@ -207,6 +207,12 @@ data:
                 description: Automated audiobook downloader
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
                 siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
+            - Shelfarr:
+                href: https://shelfarr.bosscher.ch
+                description: Book collection manager
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/calibre-web.png
+                siteMonitor: http://shelfarr.shelfarr.svc.cluster.local:8084
+
         - Stremio:
             - Stremio:
                 href: https://stremio.bosscher.ch
