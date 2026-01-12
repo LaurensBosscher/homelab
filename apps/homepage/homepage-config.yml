@@ -1,397 +1,401 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: homepage
-  labels:
-    app.kubernetes.io/name: homepage
+    name: homepage
+    labels:
+        app.kubernetes.io/name: homepage
 data:
-  kubernetes.yaml: |
-    mode: cluster
-  settings.yaml: |
-    # Homepage - modern themed settings
-    title: Homelab Dashboard
-    theme: dark
-    favicon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/home-assistant.png
-    headerStyle: clean
-    statusStyle: dot
-    colorScheme:
-      primary: indigo       # Tailwind primary hue
-      accent: emerald       # Accent hue
-      neutral: zinc         # Neutral background hue
-    background:
-      image: https://images.unsplash.com/photo-1511884642898-4c92249e20b6?auto=format&fit=crop&w=2560&q=80
-      blur: md              # none | sm | md | lg | xl
-      brightness: 55        # 0-100
-      saturate: 120         # percentage
-      opacity: 70           # overlay darkness (0 transparent)
-    quicklaunch:
-      searchDescriptions: true
-      hideInternetSearch: false
-      showSearchSuggestions: true
-    providers:
-      longhorn:
-        url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
-      argocd:
-        url: http://argocd-server.argocd.svc.cluster.local
-    experimental:
-      showProductivity: true
-  custom.css: |
-    /* === Custom Modern Styling (Glassmorphism + Accent Hover) === */
-    :root {
-      --homepage-accent: #10b981; /* emerald */
-      --homepage-accent-rgb: 16,185,129;
-      --homepage-primary: #6366f1; /* indigo */
-    }
+    kubernetes.yaml: |
+        mode: cluster
+    settings.yaml: |
+        # Homepage - modern themed settings
+        title: Homelab Dashboard
+        theme: dark
+        favicon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/home-assistant.png
+        headerStyle: clean
+        statusStyle: dot
+        colorScheme:
+          primary: indigo       # Tailwind primary hue
+          accent: emerald       # Accent hue
+          neutral: zinc         # Neutral background hue
+        background:
+          image: https://images.unsplash.com/photo-1511884642898-4c92249e20b6?auto=format&fit=crop&w=2560&q=80
+          blur: md              # none | sm | md | lg | xl
+          brightness: 55        # 0-100
+          saturate: 120         # percentage
+          opacity: 70           # overlay darkness (0 transparent)
+        quicklaunch:
+          searchDescriptions: true
+          hideInternetSearch: false
+          showSearchSuggestions: true
+        providers:
+          longhorn:
+            url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
+          argocd:
+            url: http://argocd-server.argocd.svc.cluster.local
+        experimental:
+          showProductivity: true
+    custom.css: |
+        /* === Custom Modern Styling (Glassmorphism + Accent Hover) === */
+        :root {
+          --homepage-accent: #10b981; /* emerald */
+          --homepage-accent-rgb: 16,185,129;
+          --homepage-primary: #6366f1; /* indigo */
+        }
 
-    body {
-      background-attachment: fixed;
-      font-feature-settings: "cv02","cv03","cv04","ss01";
-    }
+        body {
+          background-attachment: fixed;
+          font-feature-settings: "cv02","cv03","cv04","ss01";
+        }
 
-    .section, .service {
-      backdrop-filter: blur(16px) saturate(140%);
-      -webkit-backdrop-filter: blur(16px) saturate(140%);
-      background: rgba(24,24,27,0.55) !important; /* zinc-900 @ ~55% */
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-    }
+        .section, .service {
+          backdrop-filter: blur(16px) saturate(140%);
+          -webkit-backdrop-filter: blur(16px) saturate(140%);
+          background: rgba(24,24,27,0.55) !important; /* zinc-900 @ ~55% */
+          border: 1px solid rgba(255,255,255,0.07);
+          transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
 
-    .service:hover {
-      transform: translateY(-4px);
-      border-color: rgba(var(--homepage-accent-rgb), .6);
-      box-shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 0 0 1px rgba(var(--homepage-accent-rgb), .15);
-    }
+        .service:hover {
+          transform: translateY(-4px);
+          border-color: rgba(var(--homepage-accent-rgb), .6);
+          box-shadow: 0 8px 24px -8px rgba(0,0,0,.6), 0 0 0 1px rgba(var(--homepage-accent-rgb), .15);
+        }
 
-    .service .name { font-weight: 600; letter-spacing: .25px; }
-    .service .description { opacity: .75; }
+        .service .name { font-weight: 600; letter-spacing: .25px; }
+        .service .description { opacity: .75; }
 
-    /* Accent underline animation */
-    .service .name::after {
-      content: "";
-      display: block;
-      height: 2px;
-      width: 0;
-      background: linear-gradient(90deg,var(--homepage-accent), var(--homepage-primary));
-      transition: width .35s ease;
-      border-radius: 2px;
-      margin-top: 2px;
-    }
-    .service:hover .name::after { width: 100%; }
+        /* Accent underline animation */
+        .service .name::after {
+          content: "";
+          display: block;
+          height: 2px;
+          width: 0;
+          background: linear-gradient(90deg,var(--homepage-accent), var(--homepage-primary));
+          transition: width .35s ease;
+          border-radius: 2px;
+          margin-top: 2px;
+        }
+        .service:hover .name::after { width: 100%; }
 
-    /* Widget cards */
-    .widget, .card {
-      backdrop-filter: blur(18px) saturate(160%);
-      background: rgba(17,17,20,0.55) !important;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
+        /* Widget cards */
+        .widget, .card {
+          backdrop-filter: blur(18px) saturate(160%);
+          background: rgba(17,17,20,0.55) !important;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
 
-    /* Search bar refinement */
-    .quick-launch input[type="search"], .search input[type="text"] {
-      background: rgba(255,255,255,0.07) !important;
-      border-radius: 14px !important;
-      transition: background .25s ease, box-shadow .25s ease;
-    }
-    .quick-launch input[type="search"]:focus {
-      background: rgba(255,255,255,0.12) !important;
-      box-shadow: 0 0 0 2px rgba(var(--homepage-accent-rgb), .35);
-    }
+        /* Search bar refinement */
+        .quick-launch input[type="search"], .search input[type="text"] {
+          background: rgba(255,255,255,0.07) !important;
+          border-radius: 14px !important;
+          transition: background .25s ease, box-shadow .25s ease;
+        }
+        .quick-launch input[type="search"]:focus {
+          background: rgba(255,255,255,0.12) !important;
+          box-shadow: 0 0 0 2px rgba(var(--homepage-accent-rgb), .35);
+        }
 
-    /* Scrollbar styling (webkit) */
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(120,120,130,.35); border-radius: 20px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(160,160,170,.5); }
+        /* Scrollbar styling (webkit) */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(120,120,130,.35); border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(160,160,170,.5); }
 
-    @media (max-width: 900px) {
-      .service { backdrop-filter: blur(5px) saturate(130%); }
-    }
+        @media (max-width: 900px) {
+          .service { backdrop-filter: blur(5px) saturate(130%); }
+        }
 
-  services.yaml: |
-    - News:
-      - Fusion:
-          href: https://fusion.bosscher.ch
-          description: Self-hosted RSS reader
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
-          siteMonitor: http://fusion.fusion.svc.cluster.local:8080
-      - X:
-          href: https://x.com
-          description: X (Formerly Twitter)
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
-      - HackersNews:
-          href: https://news.ycombinator.com/
-          description: Hacker News
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/hacker-news.svg
-      - NZZ:
-          href: https://nzz.ch
-          description: Neue Zürcher Zeitung
-          icon: https://play-lh.googleusercontent.com/l1VnOQVE44hK4cZ4aXecuOMjXwnT9RSyhSfgG_BuNAmsaTzSuZ6sKWXeWHWc4A18cyM
-    - Productivity:
-        - Shiori:
-            href: https://shiori.bosscher.ch
-            description: Bookmark manager
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
-            siteMonitor: http://shiori.shiori.svc.cluster.local:8080
-        - Linkwarden:
-            href: https://linkwarden.bosscher.ch
-            description: Collaborative bookmark manager
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png
-            siteMonitor: http://linkwarden.linkwarden.svc.cluster.local:3000
-        - n8n:
-            href: https://n8n.bosscher.ch
-            description: Workflow automation
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
-            siteMonitor: http://n8n.n8n.svc.cluster.local:5678
-        - Obsidian Live Sync:
-            href: https://obsidian-live-sync.bosscher.ch/_utils/
-            description: CouchDB for Obsidian sync
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
-            siteMonitor: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
-    - Personal & Dashboards:
-      - Your-Spotify:
-          href: https://your-spotify.bosscher.ch/
-          description: Your Spotify client
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/spotify.png
-          siteMonitor: http://your-spotify-web.your-spotify.svc.cluster.local:3000
-      - Wanderer:
-          href: https://wanderer.bosscher.ch
-          description: Self-hosted trail database
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
-          siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
-      - Norish:
-          href: https://norish.bosscher.ch
-          description: Recipe manager
-          icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
-          siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
-    - AI:
-        - Grok:
-            href: https://grok.com/
-            description: Truth seeker
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grok-dark.svg
-        - Perplexica:
-            href: https://perplexica.bosscher.ch
-            description: AI Search Engine
-            icon: https://perplexica.io/favicon.ico
-            siteMonitor: http://perplexica.perplexica.svc.cluster.local:3000
-        - OpenRouter:
-            href: https://openrouter.ai/chat
-            description: OpenRouter AI Chat
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-router-dark.svg
-        - Surfsense:
-            href: https://surfsense.bosscher.ch
-            description: RAG Pipeline UI
-            icon: https://lh3.googleusercontent.com/p77jEHvydtr9PJsla4-UY-aIeSJbPAK0W04rMR9bffWCa7DHzuzXSXaSJu5IATEzh6PCap_aa3gtewUsvIIckHhxmA=s1280-w1280-h800
-            siteMonitor: http://surfsense-frontend.surfsense.svc.cluster.local:3000
-    - Infrastructure:
-        - Termix:
-            href: https://termix.bosscher.ch
-            description: Tailscale SSH web interface
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/terminal.svg
-            siteMonitor: http://termix.termix.svc.cluster.local:8080
-    - Books:
-        - Stacks:
-            href: https://stacks.bosscher.ch
-            description: Download manager
-            icon: https://cdn-icons-png.flaticon.com/512/29/29302.png
-            siteMonitor: http://stacks.books.svc.cluster.local:7788
-        - Calibre-Web:
-            href: https://calibre-web.bosscher.ch
-            description: E-book library
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
-            siteMonitor: http://calibre-web.books.svc.cluster.local:8083
-        - Bookshelf:
-            href: https://bookshelf.bosscher.ch
-            description: Book library manager
-            icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAtOTSa9JJj3VwkEkAp1XM2zX1Eb9f01K7NA&s
-            siteMonitor: http://bookshelf.bookshelf.svc.cluster.local:8787
-        - Audiobookshelf:
-            href: https://audiobookshelf.bosscher.ch
-            description: Audiobook server
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
-            siteMonitor: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
-        - Listenarr:
-            href: https://listenarr.bosscher.ch
-            description: Automated audiobook downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
-            siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
+    services.yaml: |
+        - News:
+          - Fusion:
+              href: https://fusion.bosscher.ch
+              description: Self-hosted RSS reader
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
+              siteMonitor: http://fusion.fusion.svc.cluster.local:8080
+          - X:
+              href: https://x.com
+              description: X (Formerly Twitter)
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
+          - HackersNews:
+              href: https://news.ycombinator.com/
+              description: Hacker News
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/hacker-news.svg
+          - NZZ:
+              href: https://nzz.ch
+              description: Neue Zürcher Zeitung
+              icon: https://play-lh.googleusercontent.com/l1VnOQVE44hK4cZ4aXecuOMjXwnT9RSyhSfgG_BuNAmsaTzSuZ6sKWXeWHWc4A18cyM
+        - Productivity:
+            - Shiori:
+                href: https://shiori.bosscher.ch
+                description: Bookmark manager
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
+                siteMonitor: http://shiori.shiori.svc.cluster.local:8080
+            - Linkwarden:
+                href: https://linkwarden.bosscher.ch
+                description: Collaborative bookmark manager
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png
+                siteMonitor: http://linkwarden.linkwarden.svc.cluster.local:3000
+            - n8n:
+                href: https://n8n.bosscher.ch
+                description: Workflow automation
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
+                siteMonitor: http://n8n.n8n.svc.cluster.local:5678
+            - Obsidian Live Sync:
+                href: https://obsidian-live-sync.bosscher.ch/_utils/
+                description: CouchDB for Obsidian sync
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
+                siteMonitor: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
+        - Personal & Dashboards:
+          - Your-Spotify:
+              href: https://your-spotify.bosscher.ch/
+              description: Your Spotify client
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/spotify.png
+              siteMonitor: http://your-spotify-web.your-spotify.svc.cluster.local:3000
+          - Wanderer:
+              href: https://wanderer.bosscher.ch
+              description: Self-hosted trail database
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wanderer.png
+              siteMonitor: http://wanderer.wanderer.svc.cluster.local:3000
+          - Norish:
+              href: https://norish.bosscher.ch
+              description: Recipe manager
+              icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
+              siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
+        - AI:
+            - Grok:
+                href: https://grok.com/
+                description: Truth seeker
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grok-dark.svg
+            - Perplexica:
+                href: https://perplexica.bosscher.ch
+                description: AI Search Engine
+                icon: https://perplexica.io/favicon.ico
+                siteMonitor: http://perplexica.perplexica.svc.cluster.local:3000
+            - OpenRouter:
+                href: https://openrouter.ai/chat
+                description: OpenRouter AI Chat
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/open-router-dark.svg
+            - Surfsense:
+                href: https://surfsense.bosscher.ch
+                description: RAG Pipeline UI
+                icon: https://lh3.googleusercontent.com/p77jEHvydtr9PJsla4-UY-aIeSJbPAK0W04rMR9bffWCa7DHzuzXSXaSJu5IATEzh6PCap_aa3gtewUsvIIckHhxmA=s1280-w1280-h800
+                siteMonitor: http://surfsense-frontend.surfsense.svc.cluster.local:3000
+        - Books:
+            - Stacks:
+                href: https://stacks.bosscher.ch
+                description: Download manager
+                icon: https://cdn-icons-png.flaticon.com/512/29/29302.png
+                siteMonitor: http://stacks.books.svc.cluster.local:7788
+            - Calibre-Web:
+                href: https://calibre-web.bosscher.ch
+                description: E-book library
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
+                siteMonitor: http://calibre-web.books.svc.cluster.local:8083
+            - Bookshelf:
+                href: https://bookshelf.bosscher.ch
+                description: Book library manager
+                icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAtOTSa9JJj3VwkEkAp1XM2zX1Eb9f01K7NA&s
+                siteMonitor: http://bookshelf.bookshelf.svc.cluster.local:8787
+            - Audiobookshelf:
+                href: https://audiobookshelf.bosscher.ch
+                description: Audiobook server
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
+                siteMonitor: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
+            - Listenarr:
+                href: https://listenarr.bosscher.ch
+                description: Automated audiobook downloader
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
+                siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
 
-    - Stremio:
         - Stremio:
-            href: https://stremio.bosscher.ch
-            description: Media center
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
-            siteMonitor: http://stremio.stremio.svc.cluster.local:8080
-        - AIOstreams:
-            href: https://aiostreams.bosscher.ch/
-            description: Media streaming service
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
-            siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
-    - Documents:
-        - IT-Tools:
-            href: https://it-tools.bosscher.ch
-            description: Collection of handy online tools
-            icon: https://it-tools.tech/favicon.ico
-            siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
-        - BentoPDF:
-            href: https://bentopdf.bosscher.ch
-            description: PDF conversion tool
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bentopdf.png
-            siteMonitor: http://bentopdf.bentopdf.svc.cluster.local:8080
-        - Docspell:
-            href: https://docspell.bosscher.ch/
-            description: Document management
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
-            siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
-    - Media:
-        - Prowlarr:
-            href: https://prowlarr.bosscher.ch/
-            description: Indexer manager for *arr apps
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
-            siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
-        - Mydia:
-            href: https://mydia.bosscher.ch/
-            description: Media manager
-            icon: https://www.svgrepo.com/show/530376/movie.svg
-            siteMonitor: http://mydia.mydia.svc.cluster.local:4000
-        - Questarr:
-            href: https://questarr.bosscher.ch
-            description: Video game discovery & wishlist
-            icon: https://avatars.githubusercontent.com/u/11655673?s=48&v=4
-            siteMonitor: http://questarr.questarr.svc.cluster.local:5000
-        - Playarr:
-            href: https://playarr.bosscher.ch
-            description: Video game downloader
-            icon: https://avatars.githubusercontent.com/u/125560274?s=48&v=4
-            siteMonitor: http://playarr.playarr.svc.cluster.local:2727
-        - Radarr:
-            href: https://radarr.bosscher.ch/
-            description: Movie downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
-            siteMonitor: http://radarr.radarr.svc.cluster.local:7878
-        - Sonarr:
-            href: https://sonarr.bosscher.ch/
-            description: TV series downloader
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
-            siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
-    - Downloads:
-      - Sabnzbd:
-          href: https://sabnzbd.bosscher.ch/
-          description: Usenet downloader
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
-          siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
-      - RDT-Client:
-          href: https://rdt-client.bosscher.ch/
-          description: Real-Debrid torrent client
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
-          siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
-      - Qbittorrent:
-          href: https://qbittorrent.bosscher.ch
-          description: Torrent client
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
-          siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
-      - Real-Debrid:
-          href: https://real-debrid.com/torrents
-          description: Torrent downloader
-          icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/real-debrid.svg
-      - TorBox:
-          href: https://www.torbox.app/dashboard
-          description: Cloud torrenting service
-          icon: https://avatars.githubusercontent.com/u/144096078?s=200&v=4
-    - Cluster:
-        - Kite:
-            href: https://kite.bosscher.ch
-            description: Modern Kubernetes dashboard
-            icon: https://raw.githubusercontent.com/zxh326/kite/refs/heads/main/docs/assets/logo.svg
-            siteMonitor: http://kite.kube-system.svc.cluster.local:8080
-        - ArgoCD:
-            href: https://argocd.bosscher.ch
-            description: GitOps continuous delivery
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
-            siteMonitor: https://argocd-server.argocd.svc.cluster.local
-        - Longhorn:
-            href: https://longhorn.bosscher.ch
-            description: Storage management
-            icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
-            siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
-        - Gatus:
-            href: https://gatus.bosscher.ch
-            description: Synthetic uptime monitoring
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
-            siteMonitor: http://gatus.gatus.svc.cluster.local:8080
-        - Grafana:
-            href: https://grafana.bosscher.ch
-            description: Monitoring & Dashboards
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
-            siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
-    - Infrastructure:
-        - Homelab Repo:
-            href: https://github.com/LaurensBosscher/homelab
-            description: Infrastructure as Code
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github-light.svg
-        - Backblaze B2 Backups:
-            href: https://secure.backblaze.com/b2_buckets.htm
-            description: Backblaze B2 Cloud Storage
-            icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzEdnx7N_7Fcc2kUpfaeOA0YrZeQfMPpdg7g&s
-        - Cloudflare Tunnels:
-            href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
-            description: Cloudflare Zero Trust & Tunnels
-            icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
-        - CrowdSec Security Engines:
-            href: https://app.crowdsec.net/security-engines
-            description: CrowdSec Security Console
-            icon: https://lwfiles.mycourse.app/64672e16e486f630b28c1d77-public/1e5e214fc750145687a9ef60a80b4a8b.png
-  bookmarks.yaml: |
-    - Developer:
-        - GitHub:
-            - abbr: GH
-              href: https://github.com/
-        - Homelab Repo:
-            - abbr: LAB
-              href: https://github.com/LaurensBosscher/homelab
-        - OpenCode:
-            - abbr: OC
-              href: https://opencode.bosscher.ch
-              description: AI coding agent
-              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terminal.svg
-              siteMonitor: http://opencode.opencode.svc.cluster.local:4096
-    - Documentation:
-        - Kubernetes Docs:
-            - abbr: K8S
-              href: https://kubernetes.io/docs/home/
-        - Argo CD Docs:
-            - abbr: ACD
-              href: https://argo-cd.readthedocs.io/
-        - Longhorn Docs:
-            - abbr: LH
-              href: https://longhorn.io/docs/
-  widgets.yaml: |
-    - greeting:
-        text_size: xl
-    - kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-          label: "cluster"
-        nodes:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-    - openmeteo:
-        latitude: 47.3769
-        longitude: 8.5417
-        timezone: Europe/Zurich
-        units: metric # or imperial
-        cache: 5 # Time in minutes to cache API responses, to stay within limits
-        format: # optional, Intl.NumberFormat options
-          maximumFractionDigits: 1
-    - longhorn:
-        expanded: false
-        total: true
-        labels: false
-        nodes: false
-    - search:
-        provider: google
-        target: _blank
-  docker.yaml: ""
+            - Stremio:
+                href: https://stremio.bosscher.ch
+                description: Media center
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
+                siteMonitor: http://stremio.stremio.svc.cluster.local:8080
+            - AIOstreams:
+                href: https://aiostreams.bosscher.ch/
+                description: Media streaming service
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/streama.png
+                siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
+        - Documents:
+            - IT-Tools:
+                href: https://it-tools.bosscher.ch
+                description: Collection of handy online tools
+                icon: https://it-tools.tech/favicon.ico
+                siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
+            - BentoPDF:
+                href: https://bentopdf.bosscher.ch
+                description: PDF conversion tool
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bentopdf.png
+                siteMonitor: http://bentopdf.bentopdf.svc.cluster.local:8080
+            - Docspell:
+                href: https://docspell.bosscher.ch/
+                description: Document management
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
+                siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
+        - Media:
+            - Prowlarr:
+                href: https://prowlarr.bosscher.ch/
+                description: Indexer manager for *arr apps
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
+                siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
+            - Mydia:
+                href: https://mydia.bosscher.ch/
+                description: Media manager
+                icon: https://www.svgrepo.com/show/530376/movie.svg
+                siteMonitor: http://mydia.mydia.svc.cluster.local:4000
+            - Questarr:
+                href: https://questarr.bosscher.ch
+                description: Video game discovery & wishlist
+                icon: https://avatars.githubusercontent.com/u/11655673?s=48&v=4
+                siteMonitor: http://questarr.questarr.svc.cluster.local:5000
+            - Playarr:
+                href: https://playarr.bosscher.ch
+                description: Video game downloader
+                icon: https://avatars.githubusercontent.com/u/125560274?s=48&v=4
+                siteMonitor: http://playarr.playarr.svc.cluster.local:2727
+            - Radarr:
+                href: https://radarr.bosscher.ch/
+                description: Movie downloader
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
+                siteMonitor: http://radarr.radarr.svc.cluster.local:7878
+            - Sonarr:
+                href: https://sonarr.bosscher.ch/
+                description: TV series downloader
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
+                siteMonitor: http://sonarr.sonarr.svc.cluster.local:8989
+        - Downloads:
+          - Sabnzbd:
+              href: https://sabnzbd.bosscher.ch/
+              description: Usenet downloader
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sabnzbd.png
+              siteMonitor: http://sabnzbd.sabnzbd.svc.cluster.local:8085
+          - RDT-Client:
+              href: https://rdt-client.bosscher.ch/
+              description: Real-Debrid torrent client
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/real-debrid.png
+              siteMonitor: http://rdt-client.rdt-client.svc.cluster.local:6500
+          - Qbittorrent:
+              href: https://qbittorrent.bosscher.ch
+              description: Torrent client
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
+              siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
+          - Real-Debrid:
+              href: https://real-debrid.com/torrents
+              description: Torrent downloader
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/real-debrid.svg
+          - TorBox:
+              href: https://www.torbox.app/dashboard
+              description: Cloud torrenting service
+              icon: https://avatars.githubusercontent.com/u/144096078?s=200&v=4
+        - Cluster:
+            - Kite:
+                href: https://kite.bosscher.ch
+                description: Modern Kubernetes dashboard
+                icon: https://raw.githubusercontent.com/zxh326/kite/refs/heads/main/docs/assets/logo.svg
+                siteMonitor: http://kite.kube-system.svc.cluster.local:8080
+            - ArgoCD:
+                href: https://argocd.bosscher.ch
+                description: GitOps continuous delivery
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
+                siteMonitor: https://argocd-server.argocd.svc.cluster.local
+            - Longhorn:
+                href: https://longhorn.bosscher.ch
+                description: Storage management
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
+                siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
+            - Gatus:
+                href: https://gatus.bosscher.ch
+                description: Synthetic uptime monitoring
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
+                siteMonitor: http://gatus.gatus.svc.cluster.local:8080
+             - Grafana:
+                href: https://grafana.bosscher.ch
+                description: Monitoring & Dashboards
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
+                siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
+            - Portwatcher:
+                href: https://portwatcher.bosscher.ch
+                description: Port scanning & monitoring
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/nmap.svg
+                siteMonitor: http://portwatcher.portwatcher.svc.cluster.local:8000
+        - Infrastructure:
+            - Termix:
+                href: https://termix.bosscher.ch
+                description: Tailscale SSH web interface
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/terminal.svg
+                siteMonitor: http://termix.termix.svc.cluster.local:8080
+            - Homelab Repo:
+                href: https://github.com/LaurensBosscher/homelab
+                description: Infrastructure as Code
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github-light.svg
+            - Backblaze B2 Backups:
+                href: https://secure.backblaze.com/b2_buckets.htm
+                description: Backblaze B2 Cloud Storage
+                icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzEdnx7N_7Fcc2kUpfaeOA0YrZeQfMPpdg7g&s
+            - Cloudflare Tunnels:
+                href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
+                description: Cloudflare Zero Trust & Tunnels
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
+            - Crowdsec:
+                href: https://app.crowdsec.net/
+                description: CrowdSec Security Console
+                icon: https://lwfiles.mycourse.app/64672e16e486f630b28c1d77-public/1e5e214fc750145687a9ef60a80b4a8b.png
+    bookmarks.yaml: |
+        - Developer:
+            - GitHub:
+                - abbr: GH
+                  href: https://github.com/
+            - Homelab Repo:
+                - abbr: LAB
+                  href: https://github.com/LaurensBosscher/homelab
+            - OpenCode:
+                - abbr: OC
+                  href: https://opencode.bosscher.ch
+                  description: AI coding agent
+                  icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terminal.svg
+                  siteMonitor: http://opencode.opencode.svc.cluster.local:4096
+        - Documentation:
+            - Kubernetes Docs:
+                - abbr: K8S
+                  href: https://kubernetes.io/docs/home/
+            - Argo CD Docs:
+                - abbr: ACD
+                  href: https://argo-cd.readthedocs.io/
+            - Longhorn Docs:
+                - abbr: LH
+                  href: https://longhorn.io/docs/
+    widgets.yaml: |
+        - greeting:
+            text_size: xl
+        - kubernetes:
+            cluster:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
+              label: "cluster"
+            nodes:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
+        - openmeteo:
+            latitude: 47.3769
+            longitude: 8.5417
+            timezone: Europe/Zurich
+            units: metric # or imperial
+            cache: 5 # Time in minutes to cache API responses, to stay within limits
+            format: # optional, Intl.NumberFormat options
+              maximumFractionDigits: 1
+        - longhorn:
+            expanded: false
+            total: true
+            labels: false
+            nodes: false
+        - search:
+            provider: google
+            target: _blank
+    docker.yaml: ""
