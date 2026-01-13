@@ -43,6 +43,7 @@ spec:
             - name: http
               containerPort: 4096
               protocol: TCP
+          workingDir: /home/bun/workspaces
           resources:
             requests:
               cpu: 100m
