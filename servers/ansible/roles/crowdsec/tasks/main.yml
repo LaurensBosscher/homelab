@@ -33,27 +33,12 @@
   notify: restart crowdsec
   tags: [crowdsec, security]
 
-- name: Ensure CrowdSec service is enabled and started
-  ansible.builtin.systemd:
-    name: crowdsec
-    enabled: true
-    state: started
-  tags: [crowdsec, security]
-
 - name: Install CrowdSec firewall bouncer
   ansible.builtin.dnf:
     name: crowdsec-firewall-bouncer-nftables
     state: present
     update_cache: yes
   notify: restart crowdsec-firewall-bouncer
-  tags: [crowdsec, bouncers, firewall]
-
-- name: Enable and start CrowdSec firewall bouncer
-  ansible.builtin.systemd:
-    name: crowdsec-firewall-bouncer
-    enabled: true
-    state: started
-    daemon_reload: true
   tags: [crowdsec, bouncers, firewall]
 
 - name: Install CrowdSec Kubernetes bouncer
@@ -113,3 +98,18 @@
     mode: "0644"
   notify: restart crowdsec
   tags: [crowdsec, whitelist]
+
+- name: Enable and start CrowdSec firewall bouncer
+  ansible.builtin.systemd:
+    name: crowdsec-firewall-bouncer
+    enabled: true
+    state: started
+    daemon_reload: true
+  tags: [crowdsec, bouncers, firewall]
+
+- name: Ensure CrowdSec service is enabled and started
+  ansible.builtin.systemd:
+    name: crowdsec
+    enabled: true
+    state: started
+  tags: [crowdsec, security]
