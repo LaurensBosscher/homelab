@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portwatcher{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+    <style>
+        :root {
+            --pico-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: var(--pico-success-background);
+            color: var(--pico-success);
+        }
+
+        .status-warning {
+            background: var(--pico-warning-background);
+            color: var(--pico-warning);
+        }
+
+        .status-error {
+            background: var(--pico-error-background);
+            color: var(--pico-error);
+        }
+
+        .host-card {
+            border: 1px solid var(--pico-muted-border-color);
+            border-radius: var(--pico-border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .host-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .port-table {
+            font-size: 0.9rem;
+        }
+
+        .port-open {
+            color: var(--pico-success);
+        }
+
+        .port-closed {
+            color: var(--pico-muted-color);
+        }
+
+        .port-filtered {
+            color: var(--pico-warning);
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>🔍 Portwatcher</strong></li>
+        </ul>
+        <ul>
+            <li><a href="{% url 'overview' %}">Overview</a></li>
+            <li><a href="/admin/">Admin</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container">
+        <small>Portwatcher v0.1.0 | Scanning every {{ scan_interval }} minutes</small>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
