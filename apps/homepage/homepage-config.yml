@@ -207,7 +207,6 @@ data:
                 description: Automated audiobook downloader
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
                 siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
-
         - Stremio:
             - Stremio:
                 href: https://stremio.bosscher.ch
@@ -311,7 +310,7 @@ data:
                 description: Synthetic uptime monitoring
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
                 siteMonitor: http://gatus.gatus.svc.cluster.local:8080
-             - Grafana:
+            - Grafana:
                 href: https://grafana.bosscher.ch
                 description: Monitoring & Dashboards
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
