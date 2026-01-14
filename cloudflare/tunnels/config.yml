@@ -28,6 +28,8 @@
   service: http://bookshelf.bookshelf.svc.cluster.local:8787
 - hostname: listenarr.bosscher.ch
   service: http://listenarr.listenarr.svc.cluster.local:5000
+- hostname: shelfarr.bosscher.ch
+  service: http://shelfarr.shelfarr.svc.cluster.local:8084
 - hostname: questarr.bosscher.ch
   service: http://questarr.questarr.svc.cluster.local:5000
 - hostname: playarr.bosscher.ch

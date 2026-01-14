@@ -253,6 +253,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: shelfarr
+        group: media
+        url: "http://shelfarr.shelfarr.svc.cluster.local:8084"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: questarr
         group: media
         url: "http://questarr.questarr.svc.cluster.local:5000/api/health"
