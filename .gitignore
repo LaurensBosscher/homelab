@@ -6,10 +6,12 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
+.ruff_cache/
 
 # Credentials and secrets
 credentials.env
-servers/ansible/group_vars/local.yml
+servers/ansible/group_vars/kubernetes-agent.yml
+servers/ansible/group_vars/kubernetes-control-plane.yml
 
 # Ansible
 .vault_pass

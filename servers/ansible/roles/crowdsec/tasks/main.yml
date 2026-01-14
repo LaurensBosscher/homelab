@@ -89,8 +89,8 @@
       whitelist:
         reason: "Trusted IP addresses"
         ip:
-      {% if crowdsec_whitelist_ips is defined %}
-      {% for ip in crowdsec_whitelist_ips %}
+      {% if cluster_ips is defined %}
+      {% for ip in cluster_ips %}
           - {{ ip }}
       {% endfor %}
       {% endif %}

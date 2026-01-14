@@ -13,3 +13,61 @@
     masked: true
   ignore_errors: true
   tags: [firewall]
+
+- name: Create the inet filter table (if it doesn't exist yet)
+  ansible.builtin.command:
+    cmd: |
+      nft add table inet filter
+  register: nft_table_created
+  changed_when: "'Error' not in nft_table_created.stderr | default('')"
+  failed_when: false
+  tags: [firewall, k8s_ports]
+
+- name: Create the input base chain (hook=input is for incoming packets)
+  ansible.builtin.command:
+    cmd: |
+      nft add chain inet filter input '{ type filter hook input priority filter; policy accept; }'
+  register: nft_chain_created
+  changed_when: "'Error' not in nft_chain_created.stderr | default('')"
+  failed_when: false
+  tags: [firewall, k8s_ports]
+
+- name: Allow K8s ports (10250, 9100) from Cluster IPs whitelist
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 10250, 9100 } ip saddr { {{ cluster_ips | join(', ') }} } accept
+  when: cluster_ips is defined
+  register: nft_k8s_whitelist_rule
+  changed_when: "'Error' not in nft_k8s_whitelist_rule.stderr | default('')"
+  failed_when: false
+  tags: [firewall, k8s_ports]
+
+- name: Drop K8s ports (10250, 9100) from unauthorized IPs
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 10250, 9100 } drop
+  when: cluster_ips is defined
+  register: nft_k8s_drop_rule
+  changed_when: "'Error' not in nft_k8s_drop_rule.stderr | default('')"
+  failed_when: false
+  tags: [firewall, k8s_ports]
+
+- name: Allow etcd traffic from authorized IPs
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } ip saddr { {{ etcd_authorized_ips | join(', ') }} } accept
+  when: etcd_authorized_ips is defined
+  register: nft_etcd_whitelist_rule
+  changed_when: "'Error' not in nft_etcd_whitelist_rule.stderr | default('')"
+  failed_when: false
+  tags: [firewall, etcd_firewall]
+
+- name: Drop etcd traffic from unauthorized IPs
+  ansible.builtin.command:
+    cmd: |
+      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } drop
+  when: etcd_authorized_ips is defined
+  register: nft_etcd_drop_rule
+  changed_when: "'Error' not in nft_etcd_drop_rule.stderr | default('')"
+  failed_when: false
+  tags: [firewall, etcd_firewall]

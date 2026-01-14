@@ -11,27 +11,3 @@
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
   notify: restart k3s
-
-- name: Create the inet filter table (if it doesn't exist yet)
-  ansible.builtin.command:
-    cmd: |
-      nft add table inet filter
-  tags: etcd_firewall
-
-- name: Create the input base chain (hook=input is for incoming packets)
-  ansible.builtin.command:
-    cmd: |
-      nft add chain inet filter input '{ type filter hook input priority filter; policy accept; }'
-  tags: etcd_firewall
-
-- name: Allow etcd traffic from authorized IPs
-  ansible.builtin.command:
-    cmd: |
-      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } ip saddr { {{ etcd_authorized_ips | join(', ') }} } accept
-  tags: etcd_firewall
-
-- name: Drop etcd traffic from unauthorized IPs
-  ansible.builtin.command:
-    cmd: |
-      nft add rule inet filter input meta l4proto { tcp, udp } th dport { 2379, 2380 } drop
-  tags: etcd_firewall
