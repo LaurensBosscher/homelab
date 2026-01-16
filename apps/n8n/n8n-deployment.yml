@@ -265,7 +265,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: n8n-task-runners
-          image: n8nio/runners:2.4.3
+          image: n8nio/runners:2.4.4
           env:
             - name: TZ
               value: Europe/Zurich
