@@ -54,7 +54,7 @@ spec:
             runAsNonRoot: false
       containers:
         - name: norish
-          image: norishapp/norish:v0.15.5-beta
+          image: norishapp/norish:v0.15.6-beta
           ports:
             - containerPort: 3000
           securityContext:
