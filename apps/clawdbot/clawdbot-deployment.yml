@@ -29,7 +29,7 @@ spec:
                       - us
       containers:
         - name: clawdbot-gateway
-          image: ghcr.io/clawdbot/clawdbot:latest
+          image: ghcr.io/clawdbot/clawdbot:2026.1.22
           ports:
             - containerPort: 18789
               name: gateway
