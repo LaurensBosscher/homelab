@@ -80,3 +80,5 @@
   service: http://termix.termix.svc.cluster.local:8080
 - hostname: opencode.bosscher.ch
   service: http://opencode.opencode.svc.cluster.local:4096
+- hostname: clawdbot.bosscher.ch
+  service: http://clawdbot.clawdbot.svc.cluster.local:18789

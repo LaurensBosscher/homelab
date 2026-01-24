@@ -285,6 +285,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: clawdbot
+        group: productivity
+        url: "http://clawdbot.clawdbot.svc.cluster.local:18789"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: norish
         group: food
         url: "http://norish.norish.svc.cluster.local:3000/api/health"

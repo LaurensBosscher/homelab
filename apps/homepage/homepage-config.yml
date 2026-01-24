@@ -181,6 +181,11 @@ data:
                 description: RAG Pipeline UI
                 icon: https://lh3.googleusercontent.com/p77jEHvydtr9PJsla4-UY-aIeSJbPAK0W04rMR9bffWCa7DHzuzXSXaSJu5IATEzh6PCap_aa3gtewUsvIIckHhxmA=s1280-w1280-h800
                 siteMonitor: http://surfsense-frontend.surfsense.svc.cluster.local:3000
+            - Clawdbot:
+                href: https://clawdbot.bosscher.ch
+                description: Personal AI Assistant
+                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/anthropic.png
+                siteMonitor: http://clawdbot.clawdbot.svc.cluster.local:18789
         - Books:
             - Stacks:
                 href: https://stacks.bosscher.ch
