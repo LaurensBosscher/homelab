@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: shelfarr
-          image: ghcr.io/calibrain/shelfmark:v1.0.1
+          image: ghcr.io/calibrain/shelfmark:v1.0.2
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
