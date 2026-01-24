@@ -66,6 +66,8 @@
   service: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
 - hostname: gatus.bosscher.ch
   service: http://gatus.gatus.svc.cluster.local:8080
+- hostname: ignidash.bosscher.ch
+  service: http://ignidash.ignidash.svc.cluster.local:3000
 - hostname: grafana.bosscher.ch
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
 - hostname: bentopdf.bosscher.ch

@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ignidash
+  labels:
+    app.kubernetes.io/name: ignidash
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ignidash
+  template:
+    metadata:
+      labels:
+        app: ignidash
+        app.kubernetes.io/name: ignidash
+        app.kubernetes.io/part-of: homelab
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: ignidash
+          image: ghcr.io/schelskedevco/ignidash:stable
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: SELF_HOSTED
+              value: "true"
+            - name: BETTER_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ignidash-secrets
+                  key: better-auth-secret
+            - name: CONVEX_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ignidash-secrets
+                  key: convex-api-secret
+            - name: NEXT_PUBLIC_CONVEX_URL
+              value: "http://ignidash-convex:3210"
+            - name: NEXT_PUBLIC_CONVEX_SITE_URL
+              value: "http://ignidash-convex:3211"
+            - name: SELF_HOSTED_CONVEX_URL
+              value: "http://ignidash-convex:3210"
+            - name: SITE_URL
+              value: "https://ignidash.bosscher.ch"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ignidash-convex
+  labels:
+    app.kubernetes.io/name: ignidash-convex
+    app.kubernetes.io/part-of: ignidash
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ignidash-convex
+  template:
+    metadata:
+      labels:
+        app: ignidash-convex
+        app.kubernetes.io/name: ignidash-convex
+        app.kubernetes.io/part-of: ignidash
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: convex-backend
+          image: ghcr.io/get-convex/convex-backend:latest
+          ports:
+            - containerPort: 3210
+            - containerPort: 3211
+          env:
+            - name: RUST_LOG
+              value: "info"
+            - name: RUST_BACKTRACE
+              value: "1"
+            - name: CONVEX_CLOUD_ORIGIN
+              value: "http://ignidash-convex:3210"
+            - name: CONVEX_SITE_ORIGIN
+              value: "http://ignidash-convex:3211"
+          volumeMounts:
+            - name: convex-data
+              mountPath: /convex/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /version
+              port: 3210
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /version
+              port: 3210
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: convex-data
+          persistentVolumeClaim:
+            claimName: ignidash-convex-data
