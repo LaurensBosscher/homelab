@@ -111,7 +111,7 @@ spec:
                       - us
       containers:
         - name: convex-backend
-          image: ghcr.io/get-convex/convex-backend:latest
+          image: ghcr.io/get-convex/convex-backend:feffea8258fd0461962d86a735bcaa9778a686bb
           ports:
             - containerPort: 3210
             - containerPort: 3211
