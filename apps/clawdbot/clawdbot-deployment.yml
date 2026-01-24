@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clawdbot
+  labels:
+    app.kubernetes.io/name: clawdbot
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: clawdbot
+  template:
+    metadata:
+      labels:
+        app: clawdbot
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - us
+      containers:
+        - name: clawdbot-gateway
+          image: ghcr.io/clawdbot/clawdbot:latest
+          ports:
+            - containerPort: 18789
+              name: gateway
+            - containerPort: 18790
+              name: bridge
+          env:
+            - name: HOME
+              value: /home/node
+            - name: TERM
+              value: xterm-256color
+            - name: CLAWDBOT_GATEWAY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: clawdbot-secrets
+                  key: gateway-token
+            - name: CLAUDE_AI_SESSION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: clawdbot-secrets
+                  key: claude-ai-session-key
+                  optional: true
+            - name: CLAUDE_WEB_SESSION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: clawdbot-secrets
+                  key: claude-web-session-key
+                  optional: true
+            - name: CLAUDE_WEB_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: clawdbot-secrets
+                  key: claude-web-cookie
+                  optional: true
+          command:
+            - node
+            - dist/index.js
+            - gateway
+            - --bind
+            - lan
+            - --port
+            - "18789"
+          volumeMounts:
+            - name: config
+              mountPath: /home/node/.clawdbot
+            - name: workspace
+              mountPath: /home/node/clawd
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 18789
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 18789
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: clawdbot-config
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: clawdbot-workspace
