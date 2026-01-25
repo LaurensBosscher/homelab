@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clawdbot-pvc
+  labels:
+    app.kubernetes.io/name: clawdbot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-2replicas-europe
+  resources:
+    requests:
+      storage: 5Gi

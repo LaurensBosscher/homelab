@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clawdbot-gateway
+  labels:
+    app.kubernetes.io/name: clawdbot
+    component: gateway
+spec:
+  selector:
+    app.kubernetes.io/name: clawdbot
+    component: gateway
+  ports:
+    - port: 18789
+      targetPort: 18789
+    - port: 18790
+      targetPort: 18790
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clawdbot-chrome
+  labels:
+    app.kubernetes.io/name: clawdbot
+    component: chrome
+spec:
+  selector:
+    app.kubernetes.io/name: clawdbot
+    component: chrome
+  ports:
+    - port: 3000
+      targetPort: 3000
