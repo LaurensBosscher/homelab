@@ -6,7 +6,7 @@ kubecolor_install: true
 zram_enable: true
 
 ansible_ssh_private_key_file: ~/.ssh/id_rsa_kubernetes
-ansible_ssh_common_args: '-o StrictHostKeyChecking=accept-new'
+ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new"
 
 # CrowdSec collections
 crowdsec_collections:
@@ -16,9 +16,7 @@ crowdsec_collections:
   - crowdsecurity/ssh
 
 # Firewall configuration
-firewall_enable: false
-firewall_default_zone: internal
-firewall_block_interface: eth0
+firewall_enable: true
 
 # Tool versions
 k9s_version: "v0.32.7"
