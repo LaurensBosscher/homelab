@@ -162,6 +162,11 @@ data:
               description: Recipe manager
               icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
               siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
+          - Ignidash:
+              href: https://ignidash.bosscher.ch
+              description: Financial planning with AI
+              icon: https://raw.githubusercontent.com/schelskedevco/ignidash/main/public/favicon-96x96.png
+              siteMonitor: http://ignidash.ignidash.svc.cluster.local:3000
         - AI:
             - Grok:
                 href: https://grok.com/

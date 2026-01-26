@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ignidash
+spec:
+  selector:
+    app: ignidash
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ignidash-convex
+spec:
+  selector:
+    app: ignidash-convex
+  ports:
+    - protocol: TCP
+      port: 3210
+      targetPort: 3210
+      name: backend
+    - protocol: TCP
+      port: 3211
+      targetPort: 3211
+      name: site
