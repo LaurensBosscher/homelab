@@ -180,7 +180,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: mongo
-          image: "mongo:8.2.3"
+          image: "mongo:8.2.4"
           ports:
             - name: mongo
               containerPort: 27017
