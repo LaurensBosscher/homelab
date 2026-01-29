@@ -340,9 +340,9 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: clawdbot
+      - name: moltbot
         group: ai
-        url: "http://clawdbot-gateway.clawdbot.svc.cluster.local:18789"
+        url: "http://moltbot-gateway.moltbot.svc.cluster.local:18789"
         interval: 5m
         conditions:
           - "[STATUS] == 200"

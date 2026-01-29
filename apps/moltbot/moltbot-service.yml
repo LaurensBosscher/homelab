@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: clawdbot-gateway
+  name: moltbot-gateway
   labels:
-    app.kubernetes.io/name: clawdbot
+    app.kubernetes.io/name: moltbot
     component: gateway
 spec:
   selector:
-    app.kubernetes.io/name: clawdbot
+    app.kubernetes.io/name: moltbot
     component: gateway
   ports:
     - name: gateway-18789
@@ -20,13 +20,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: clawdbot-chrome
+  name: moltbot-chrome
   labels:
-    app.kubernetes.io/name: clawdbot
+    app.kubernetes.io/name: moltbot
     component: chrome
 spec:
   selector:
-    app.kubernetes.io/name: clawdbot
+    app.kubernetes.io/name: moltbot
     component: chrome
   ports:
     - port: 3000

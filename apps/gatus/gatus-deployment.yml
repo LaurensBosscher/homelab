@@ -9,6 +9,8 @@ metadata:
     app.kubernetes.io/part-of: homelab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: gatus
