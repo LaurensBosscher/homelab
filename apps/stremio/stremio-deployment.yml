@@ -58,5 +58,5 @@ spec:
             claimName: stremio-data
         - name: dri
           hostPath:
-            path: /dev/dri/card1
+            path: /dev/dri/card0
             type: CharDevice
