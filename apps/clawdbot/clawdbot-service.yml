@@ -10,9 +10,11 @@ spec:
     app.kubernetes.io/name: clawdbot
     component: gateway
   ports:
-    - port: 18789
+    - name: gateway-18789
+      port: 18789
       targetPort: 18789
-    - port: 18790
+    - name: gateway-18790
+      port: 18790
       targetPort: 18790
 ---
 apiVersion: v1
