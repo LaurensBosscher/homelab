@@ -44,6 +44,7 @@
     - { role: k3s-common }
     - { role: kubernetes-control-plane }
     - { role: etcd-io-priority }
+    - { role: etcd-maintenance }
 
 - name: Kubernetes agent node configuration
   hosts: kubernetes-agent

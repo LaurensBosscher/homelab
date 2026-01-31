@@ -37,3 +37,51 @@
   notify:
     - restart k3s
     - restart k3s-agent
+
+- name: Upgrade K3s to specified version
+  when: k3s_version is defined
+  block:
+    - name: Check current K3s version
+      ansible.builtin.command: k3s --version
+      register: k3s_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: Download K3s binary
+      ansible.builtin.get_url:
+        url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/k3s"
+        dest: /tmp/k3s-{{ k3s_version }}
+        mode: "0755"
+        checksum: "sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-amd64.txt"
+      when: k3s_version not in k3s_current_version.stdout | default('')
+
+    - name: Stop K3s service before upgrade
+      ansible.builtin.systemd:
+        name: "{{ 'k3s' if inventory_hostname in groups['kubernetes-control-plane'] else 'k3s-agent' }}"
+        state: stopped
+      when: k3s_version not in k3s_current_version.stdout | default('')
+
+    - name: Install new K3s binary
+      ansible.builtin.copy:
+        src: /tmp/k3s-{{ k3s_version }}
+        dest: /usr/local/bin/k3s
+        mode: "0755"
+        owner: root
+        group: root
+        remote_src: true
+      when: k3s_version not in k3s_current_version.stdout | default('')
+      notify:
+        - restart k3s
+        - restart k3s-agent
+
+    - name: Remove temporary K3s binary
+      ansible.builtin.file:
+        path: /tmp/k3s-{{ k3s_version }}
+        state: absent
+      when: k3s_version not in k3s_current_version.stdout | default('')
+
+    - name: Verify K3s version after upgrade
+      ansible.builtin.command: k3s --version
+      register: k3s_new_version
+      changed_when: false
+      failed_when: k3s_version not in k3s_new_version.stdout

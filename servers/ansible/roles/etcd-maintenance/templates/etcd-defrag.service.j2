@@ -1,0 +1,10 @@
+[Unit]
+Description=etcd defragmentation for K3s
+After=k3s.service
+Wants=k3s.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/etcd-defrag.sh
+StandardOutput=journal
+StandardError=journal

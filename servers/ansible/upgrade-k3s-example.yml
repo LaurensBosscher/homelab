@@ -1,0 +1,19 @@
+---
+# Example playbook to upgrade K3s to a specific version
+# Usage: ansible-playbook -i hosts.ini upgrade-k3s-example.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
+
+- name: Upgrade K3s to specified version
+  hosts: kubernetes-control-plane:kubernetes-agent
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    k3s_version: v1.35.0+k3s1  # Change this to your desired version
+  
+  tasks:
+    - name: Display target version
+      ansible.builtin.debug:
+        msg: "Upgrading K3s to version {{ k3s_version }}"
+    
+    - name: Include k3s-common role for upgrade
+      ansible.builtin.include_role:
+        name: k3s-common

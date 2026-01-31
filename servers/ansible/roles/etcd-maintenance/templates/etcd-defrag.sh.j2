@@ -1,0 +1,51 @@
+#!/bin/bash
+# etcd defragmentation script for K3s embedded etcd
+# Run on control plane nodes to reclaim space after compaction
+# Safe for multi-node clusters - defrag is local to each member
+
+set -euo pipefail
+
+# Configuration
+ETCD_ENDPOINTS="https://127.0.0.1:2379"
+ETCD_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
+ETCD_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
+ETCD_CACERT="/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt"
+
+# Only defrag if DB size > 1GB (saves I/O for small databases)
+MAX_SIZE_BYTES=1073741824
+
+# Export for etcdctl
+export ETCDCTL_ENDPOINTS="${ETCD_ENDPOINTS}"
+export ETCDCTL_CERT="${ETCD_CERT}"
+export ETCDCTL_KEY="${ETCD_KEY}"
+export ETCDCTL_CACERT="${ETCD_CACERT}"
+
+# Check if etcdctl exists
+if ! command -v etcdctl &> /dev/null; then
+    echo "etcdctl not found, skipping defrag"
+    exit 0
+fi
+
+# Get current DB size
+DB_SIZE=$(etcdctl endpoint status --write-out=json 2>/dev/null | \
+    python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['status']['dbSize'])" 2>/dev/null || echo "0")
+
+if [ "$DB_SIZE" -lt "$MAX_SIZE_BYTES" ]; then
+    echo "DB size (${DB_SIZE} bytes) under threshold (${MAX_SIZE_BYTES}), skipping defrag"
+    exit 0
+fi
+
+echo "DB size is ${DB_SIZE} bytes, running defrag..."
+
+# Perform defrag
+if etcdctl defrag; then
+    echo "Defrag completed successfully"
+    
+    # Log new size for monitoring
+    NEW_SIZE=$(etcdctl endpoint status --write-out=json 2>/dev/null | \
+        python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['status']['dbSize'])" 2>/dev/null || echo "unknown")
+    echo "New DB size: ${NEW_SIZE} bytes"
+else
+    echo "Defrag failed"
+    exit 1
+fi

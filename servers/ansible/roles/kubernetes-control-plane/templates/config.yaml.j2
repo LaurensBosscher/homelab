@@ -24,8 +24,20 @@ etcd-arg:
 
   # Optional: speeds up large snapshot transfers a lot (K3s ≥ v1.21.5)
   - "max-request-bytes=10485760"         # 10 MiB instead of ~1.5 MiB
-
   - "warning-apply-duration=750000000"   # 750ms warning threshold
+
+  # PREVENTS DATABASE BLOAT: Auto-compact revisions older than 1 hour
+  # Without this, etcd keeps ALL historical revisions forever
+  # 1h = good balance for hobby cluster (keeps history for debugging, prevents unbounded growth)
+  - "auto-compaction-retention=1h"
+  - "auto-compaction-mode=periodic"
+
+  # Keep default 2GB quota - you hit 900MB, so 2GB gives 2x headroom
+  # Only increase if you consistently hit quota alarms
+
+# Automated etcd snapshots (backup + size management)
+etcd-snapshot-schedule-cron: "0 */12 * * *"  # Every 12 hours (reasonable for hobby)
+etcd-snapshot-retention: 5
 
 kube-controller-manager-arg:
   - "node-monitor-period=10s"
@@ -37,8 +49,4 @@ kubelet-arg:
 # SELinux support (set to true to enable enforcement after policies are installed)
 selinux: false
 
-{% if inventory_hostname == groups['kubernetes-control-plane'][0] %}
-cluster-init: true
-{% else %}
-server: https://{{ hostvars[groups['kubernetes-control-plane'][0]].inventory_hostname }}:6443
-{% endif %}
+

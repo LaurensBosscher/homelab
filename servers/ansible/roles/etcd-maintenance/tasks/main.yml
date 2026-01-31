@@ -1,0 +1,29 @@
+---
+- name: Create etcd defragmentation script
+  ansible.builtin.template:
+    src: etcd-defrag.sh.j2
+    dest: /usr/local/bin/etcd-defrag.sh
+    mode: "0750"
+    owner: root
+    group: root
+
+- name: Create systemd service for etcd defrag
+  ansible.builtin.template:
+    src: etcd-defrag.service.j2
+    dest: /etc/systemd/system/etcd-defrag.service
+    mode: "0644"
+  notify: reload systemd
+
+- name: Create systemd timer for etcd defrag
+  ansible.builtin.template:
+    src: etcd-defrag.timer.j2
+    dest: /etc/systemd/system/etcd-defrag.timer
+    mode: "0644"
+  notify: reload systemd
+
+- name: Enable and start etcd defrag timer
+  ansible.builtin.systemd:
+    name: etcd-defrag.timer
+    enabled: true
+    state: started
+    daemon_reload: true

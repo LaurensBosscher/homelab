@@ -19,9 +19,11 @@
     - name: Build dynamic allowlists from inventory (eth0)
       ansible.builtin.set_fact:
         firewall_cluster_eth0_ips: >-
-          {{ (groups['kubernetes-control-plane'] | default([]) + groups['kubernetes-agent'] | default([]))
+          {{ ((groups['kubernetes-control-plane'] | default([])) + (groups['kubernetes-agent'] | default([])))
              | map('extract', hostvars, 'eth0_ip')
              | select('defined')
+             | list
+             + ['84.226.19.128']
              | unique
              | list }}
         firewall_control_plane_eth0_ips: >-
@@ -29,176 +31,26 @@
              | map('extract', hostvars, 'eth0_ip')
              | select('defined')
              | unique
+             | list
+             + ['84.226.19.128']
+             | unique
              | list }}
       tags: [firewall]
 
-    - name: Ensure nftables table exists (inet homelab)
-      ansible.builtin.command:
-        cmd: nft add table inet homelab
-      register: nft_table_homelab
-      changed_when: nft_table_homelab.rc == 0
-      failed_when: false
-
-    - name: Ensure nftables forward base chain exists (inet homelab forward)
-      ansible.builtin.command:
-        cmd: nft add chain inet homelab forward '{ type filter hook forward priority 100; policy accept; }'
-      register: nft_chain_forward
-      changed_when: nft_chain_forward.rc == 0
-      failed_when: false
-
-    - name: Ensure nftables input base chain exists (inet homelab input)
-      ansible.builtin.command:
-        cmd: nft add chain inet homelab input '{ type filter hook input priority 100; policy accept; }'
-      register: nft_chain_input
-      changed_when: nft_chain_input.rc == 0
-      failed_when: false
-
-    - name: Flush homelab input chain (avoid duplicate rules)
-      ansible.builtin.command:
-        cmd: nft flush chain inet homelab input
-      changed_when: false
-      failed_when: false
-
-    # === ENHANCED SECURITY RULES ===
-
-    - name: Drop invalid TCP flag combinations (port scan protection)
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "nft add rule inet homelab input tcp flags & (fin|syn|rst|psh|ack|urg) == 0 counter drop comment 'NULL scan'"
-        - "nft add rule inet homelab input tcp flags & (fin|syn) == (fin|syn) counter drop comment 'SYN-FIN scan'"
-        - "nft add rule inet homelab input tcp flags & (syn|rst) == (syn|rst) counter drop comment 'SYN-RST scan'"
-        - "nft add rule inet homelab input tcp flags & (fin|rst) == (fin|rst) counter drop comment 'FIN-RST scan'"
-      changed_when: true
-      failed_when: false
-      tags: [firewall, security]
-
-    # === BASELINE RULES ===
-
-    - name: Install baseline input rules (established, loopback, invalid)
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "nft add rule inet homelab input iifname lo accept"
-        - "nft add rule inet homelab input ct state { established, related } accept"
-        - "nft add rule inet homelab input ct state invalid drop"
-      changed_when: true
-      failed_when: false
-
-    - name: Allow ICMP with rate limiting (prevent ping floods)
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "nft add rule inet homelab input ip protocol icmp limit rate 10/second burst 20 packets accept"
-        - "nft add rule inet homelab input ip protocol icmp drop"
-        - "nft add rule inet homelab input meta l4proto ipv6-icmp limit rate 10/second burst 20 packets accept"
-        - "nft add rule inet homelab input meta l4proto ipv6-icmp drop"
-      changed_when: true
-      failed_when: false
-      tags: [firewall, rate-limit]
-
-    - name: Block spoofed loopback traffic (IPv4 and IPv6)
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "nft add rule inet homelab input ip saddr 127.0.0.0/8 counter drop comment 'Spoofed loopback IPv4'"
-        - "nft add rule inet homelab input ip6 saddr ::1 counter drop comment 'Spoofed loopback IPv6'"
-      changed_when: true
-      failed_when: false
-      tags: [firewall, security]
-
-    # === MANAGEMENT ACCESS ===
-
-    - name: Allow Tailscale WireGuard UDP (public eth0)
-      ansible.builtin.command:
-        cmd: nft add rule inet homelab input udp dport 41641 accept comment "Tailscale WireGuard"
-      changed_when: true
-      failed_when: false
-
-    - name: Allow SSH (we're limiting to tailscale through the SSH config)
-      ansible.builtin.command:
-        cmd: nft add rule inet homelab input tcp dport 22 accept
-
-      changed_when: true
-      failed_when: false
-      tags: [firewall, rate-limit]
-
-    # === KUBERNETES CLUSTER TRAFFIC ===
-
-    - name: Allow Flannel WireGuard (assume default port 51820/udp) from cluster nodes
-      ansible.builtin.command:
-        cmd: >-
-          nft add rule inet homelab input udp dport 51820 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "Flannel WireGuard"
-      when: firewall_cluster_eth0_ips | length > 0
-      changed_when: true
-      failed_when: false
-
-    - name: Allow node-exporter (9100/tcp) from cluster nodes
-      ansible.builtin.command:
-        cmd: >-
-          nft add rule inet homelab input tcp dport 9100 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "Prometheus node-exporter"
-      when: firewall_cluster_eth0_ips | length > 0
-      changed_when: true
-      failed_when: false
-
-    - name: Allow kubelet (10250/tcp) from control-plane nodes
-      ansible.builtin.command:
-        cmd: >-
-          nft add rule inet homelab input tcp dport 10250 ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "Kubelet API"
-      when: firewall_control_plane_eth0_ips | length > 0
-      changed_when: true
-      failed_when: false
-
-    - name: Allow K3s server API (6443/tcp) and supervisor (9345/tcp) from cluster nodes (control-plane only)
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "nft add rule inet homelab input tcp dport 6443 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment 'K3s API'"
-        - "nft add rule inet homelab input tcp dport 9345 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment 'K3s supervisor'"
-      when:
-        - inventory_hostname in groups['kubernetes-control-plane']
-        - firewall_cluster_eth0_ips | length > 0
-      changed_when: true
-      failed_when: false
-
-    - name: Allow embedded etcd (2379-2380/tcp) from control-plane nodes (control-plane only)
-      ansible.builtin.command:
-        cmd: >-
-          nft add rule inet homelab input tcp dport { 2379, 2380 } ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "etcd cluster"
-      when:
-        - inventory_hostname in groups['kubernetes-control-plane']
-        - firewall_control_plane_eth0_ips | length > 0
-      changed_when: true
-      failed_when: false
-
-    # === LOGGING AND FINAL DROP ===
-
-    - name: Log dropped NEW connections (rate-limited for visibility)
-      ansible.builtin.command:
-        cmd: >-
-          nft add rule inet homelab input ct state new limit rate 10/minute burst 20 packets log prefix "nft-drop: " level info
-      changed_when: true
-      failed_when: false
-      tags: [firewall, logging]
-
-    - name: Drop everything else (explicit final rule)
-      ansible.builtin.command:
-        cmd: nft add rule inet homelab input counter drop
-      changed_when: true
-      failed_when: false
-
-    # === PERSISTENCE ===
-
-    - name: Save nftables ruleset to configuration file
-      ansible.builtin.shell:
-        cmd: nft list ruleset > /etc/nftables.conf
-      changed_when: true
-      failed_when: false
-      tags: [firewall, persistence]
+    - name: Deploy nftables configuration from template
+      ansible.builtin.template:
+        src: nftables.conf.j2
+        dest: /etc/nftables.conf
+        owner: root
+        group: root
+        mode: "0644"
+        validate: nft -c -f %s
+      notify: reload nftables
+      tags: [firewall, config]
 
     - name: Ensure nftables service is enabled and started
       ansible.builtin.systemd:
         name: nftables
-        enabled: true
-        state: started
+        enabled: false
+        state: stopped
       tags: [firewall, persistence]

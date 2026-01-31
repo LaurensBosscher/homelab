@@ -1,0 +1,12 @@
+[Unit]
+Description=Run etcd defragmentation weekly
+
+[Timer]
+# Run every Sunday at 3 AM (low activity time)
+OnCalendar=Sun *-*-* 03:00:00
+# Randomize start by 30 min to avoid all nodes hitting at once
+RandomizedDelaySec=30m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

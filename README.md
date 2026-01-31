@@ -224,6 +224,41 @@ export ETCDCTL_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
 export ETCDCTL_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
 etcdctl member list
 ```
+
+## etcd Maintenance (Automated)
+
+The cluster now has automated etcd maintenance configured via Ansible:
+
+- **Auto-compaction**: Revisions older than 1 hour are automatically compacted
+- **Automated snapshots**: Taken every 12 hours, 5 snapshots retained
+- **Weekly defrag**: Runs Sundays at 3 AM (with 30 min random delay) if DB > 1GB
+
+### Manual defrag (if needed)
+
+```bash
+# Check current DB size
+etcdctl endpoint status --write-out table
+
+# Defrag this node only (safe to run on live cluster)
+etcdctl defrag
+```
+
+## Offline compaction and defrag (Emergency only)
+
+Use only if cluster is unhealthy and automated maintenance failed:
+
+```bash
+sudo etcd \
+  --data-dir /var/lib/rancher/k3s/server/db/etcd \
+  --force-new-cluster \
+  --listen-client-urls http://127.0.0.1:2379 \
+  --advertise-client-urls http://127.0.0.1:2379
+
+ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" rev=$(etcdctl endpoint status --write-out fields | grep Revision | awk '{print $3}')
+ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl compact "$rev" --physical   # --physical forces immediate application
+ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl defrag
+```
+
 ## Add debug container to pod
 
 ```bash

@@ -1,0 +1,96 @@
+#!/usr/sbin/nft -f
+
+# IMPORTANT ON K3S:
+# - Avoid `flush ruleset` on nodes that use iptables-nft (common on modern distros).
+#   It can wipe kube-proxy/CNI rules and break cluster networking on reload.
+# - Manage only this table (delete/replace via a wrapper or ExecStartPre if needed).
+
+table inet homelab {
+
+  chain input {
+    type filter hook input priority -10; policy drop;
+
+    # --- Baseline hygiene ---
+    iifname "lo" accept comment "Loopback"
+    ct state { established, related } accept comment "Established/related"
+    ct state invalid drop comment "Drop invalid conntrack state"
+
+    # --- Drop common scan flag patterns (new TCP only) ---
+    ct state new tcp flags & (fin|syn|rst|psh|ack|urg) == 0 counter drop comment "Drop NULL scan"
+    ct state new tcp flags & (fin|syn) == (fin|syn) counter drop comment "Drop SYN-FIN scan"
+    ct state new tcp flags & (syn|rst) == (syn|rst) counter drop comment "Drop SYN-RST scan"
+    ct state new tcp flags & (fin|rst) == (fin|rst) counter drop comment "Drop FIN-RST scan"
+
+    # --- Anti-spoofing (never accept loopback sources off lo) ---
+    iifname != "lo" ip saddr 127.0.0.0/8 counter drop comment "Drop spoofed loopback IPv4"
+    iifname != "lo" ip6 saddr ::1 counter drop comment "Drop spoofed loopback IPv6"
+
+    # --- ICMP (keep PMTU + IPv6 ND working; rate-limit only echo) ---
+    ip protocol icmp icmp type { destination-unreachable, time-exceeded, parameter-problem } accept comment "ICMPv4 essential"
+    ip protocol icmp icmp type echo-request limit rate 5/second burst 10 packets accept comment "ICMPv4 ping (limited)"
+
+    ip6 nexthdr icmpv6 icmpv6 type {
+      destination-unreachable, packet-too-big, time-exceeded, parameter-problem,
+      nd-router-solicit, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert
+    } accept comment "ICMPv6 essential + ND"
+    ip6 nexthdr icmpv6 icmpv6 type echo-request limit rate 5/second burst 10 packets accept comment "ICMPv6 ping (limited)"
+
+    # --- Tailscale transport (UDP on the underlay) ---
+    udp dport 41641 accept comment "Tailscale WireGuard (tailscaled underlay UDP)"
+
+    # Trust traffic that arrives via the encrypted overlay interface.
+    # If you want stricter tailnet segmentation, replace this with per-port rules.
+    iifname "tailscale0" accept comment "Allow all from tailnet"
+
+    # --- Defense-in-depth: never allow SSH from non-tailscale ---
+    iifname != "tailscale0" tcp dport 22 drop comment "Deny SSH off-tailnet"
+
+    # --- Kubernetes / K3s node-to-node traffic over eth0/WAN ---
+{% if firewall_cluster_eth0_ips | length > 0 %}
+    udp dport 51820 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "Flannel WireGuard (node-to-node)"
+    tcp dport 9100  ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "node-exporter (cluster only)"
+{% endif %}
+
+{% if firewall_control_plane_eth0_ips | length > 0 %}
+    tcp dport 10250 ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "Kubelet API (from control-plane only)"
+{% endif %}
+
+{% if inventory_hostname in groups['kubernetes-control-plane'] and firewall_cluster_eth0_ips | length > 0 %}
+    tcp dport 6443 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "K3s API (from cluster nodes)"
+    tcp dport 9345 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "K3s supervisor (from cluster nodes)"
+{% endif %}
+
+{% if inventory_hostname in groups['kubernetes-control-plane'] and firewall_control_plane_eth0_ips | length > 0 %}
+    tcp dport { 2379, 2380 } ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "etcd (control-plane only)"
+{% endif %}
+
+    # --- Log and drop everything else (rate-limited) ---
+    limit rate 10/minute burst 20 packets log prefix "nft-drop input: " level info
+    drop
+  }
+
+  chain forward {
+    type filter hook forward priority -10; policy drop;
+
+    ct state { established, related } accept comment "Established/related"
+    ct state invalid drop comment "Drop invalid conntrack state"
+
+    # Allow Kubernetes pod/service forwarding via common CNI/flannel interfaces.
+    # If your interface names differ, adjust these.
+    iifname { "cni0", "flannel.1", "flannel-wg" } accept comment "From CNI/flannel"
+    oifname { "cni0", "flannel.1", "flannel-wg" } accept comment "To CNI/flannel"
+
+    # Pod egress (interface-based rules above usually cover this; this is a safety net)
+    ip saddr 10.42.0.0/16 accept comment "Pods egress"
+
+    # Default: block new inbound WAN -> pods (prevents accidental NodePort exposure on eth0).
+    # If you intentionally expose services via NodePort/MetalLB on eth0, add explicit allows above.
+
+    limit rate 10/minute burst 20 packets log prefix "nft-drop forward: " level info
+    drop
+  }
+
+  chain output {
+    type filter hook output priority -10; policy accept;
+  }
+}
