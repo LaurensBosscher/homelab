@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: openclaw
     component: gateway
 spec:
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: openclaw
     component: gateway
@@ -25,6 +26,7 @@ metadata:
     app.kubernetes.io/name: openclaw
     component: chrome
 spec:
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: openclaw
     component: chrome
