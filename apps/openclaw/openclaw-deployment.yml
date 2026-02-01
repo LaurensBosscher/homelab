@@ -38,7 +38,7 @@ spec:
             runAsNonRoot: false
       containers:
         - name: gateway
-          image: openclaw/openclaw:2026.1.24
+          image: moltbot/moltbot:2026.1.24
           command:
             - node
             - dist/index.js
@@ -47,6 +47,7 @@ spec:
             - lan
             - --port
             - "18789"
+            - "--allow-unconfigured"
           ports:
             - containerPort: 18789
             - containerPort: 18790
