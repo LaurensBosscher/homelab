@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: moltbot-gateway
+  name: openclaw-gateway
   labels:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: gateway
 spec:
   selector:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: gateway
   ports:
     - name: gateway-18789
@@ -20,13 +20,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: moltbot-chrome
+  name: openclaw-chrome
   labels:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: chrome
 spec:
   selector:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: chrome
   ports:
     - port: 3000

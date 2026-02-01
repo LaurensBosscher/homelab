@@ -340,9 +340,9 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: moltbot
+      - name: openclaw
         group: ai
-        url: "http://moltbot-gateway.moltbot.svc.cluster.local:18789"
+        url: "http://openclaw-gateway.openclaw.svc.cluster.local:18789"
         interval: 5m
         conditions:
           - "[STATUS] == 200"

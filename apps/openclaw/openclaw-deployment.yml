@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: moltbot-gateway
+  name: openclaw-gateway
   labels:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: moltbot
+      app.kubernetes.io/name: openclaw
       component: gateway
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: moltbot
+        app.kubernetes.io/name: openclaw
         component: gateway
     spec:
       affinity:
@@ -29,7 +29,7 @@ spec:
       initContainers:
         - name: init
           image: busybox:1.37
-          command: ["sh", "-c", "mkdir -p /data/.clawdbot /data/clawd"]
+          command: ["sh", "-c", "mkdir -p /data/.openclaw /data/clawd"]
           volumeMounts:
             - name: data
               mountPath: /data
@@ -38,7 +38,7 @@ spec:
             runAsNonRoot: false
       containers:
         - name: gateway
-          image: moltbot/moltbot:2026.1.24
+          image: openclaw/openclaw:2026.1.24
           command:
             - node
             - dist/index.js
@@ -54,19 +54,19 @@ spec:
             - name: CLAWDBOT_GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: moltbot-secret
+                  name: openclaw-secret
                   key: CLAWDBOT_GATEWAY_TOKEN
             - name: ZAI_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: moltbot-secret
+                  name: openclaw-secret
                   key: ZAI_API_KEY
             - name: ZAI_BASE_URL
               value: https://api.z.ai/api/paas/v4
             - name: TZ
               value: Europe/Zurich
             - name: CHROME_WS_ENDPOINT
-              value: ws://moltbot-chrome:3000
+              value: ws://openclaw-chrome:3000
           volumeMounts:
             - name: data
               mountPath: /home/node/.clawdbot
@@ -80,40 +80,40 @@ spec:
               cpu: 100m
             limits:
               memory: 4Gi
-          # livenessProbe:
-          #   tcpSocket:
-          #     port: 18789
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   tcpSocket:
-          #     port: 18789
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 18789
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 18789
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: moltbot-pvc
+            claimName: openclaw-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: moltbot-chrome
+  name: openclaw-chrome
   labels:
-    app.kubernetes.io/name: moltbot
+    app.kubernetes.io/name: openclaw
     component: chrome
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: moltbot
+      app.kubernetes.io/name: openclaw
       component: chrome
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: moltbot
+        app.kubernetes.io/name: openclaw
         component: chrome
     spec:
       affinity:
