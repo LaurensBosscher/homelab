@@ -1,108 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: questarr-postgres
-  labels:
-    app: questarr-postgres
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: questarr-postgres
-  template:
-    metadata:
-      labels:
-        app: questarr-postgres
-        app.kubernetes.io/part-of: questarr
-    spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
-                    operator: In
-                    values:
-                      - us
-        podAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/part-of: questarr
-                topologyKey: kubernetes.io/hostname
-      containers:
-        - name: postgres
-          image: postgres:18.1
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: questarr-secrets
-                  key: postgres-user
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: questarr-secrets
-                  key: postgres-password
-            - name: POSTGRES_DB
-              value: questarr
-            - name: PGDATA
-              value: "/var/lib/postgresql/data/pgdata"
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              memory: 512Mi
-          livenessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -h
-                - localhost
-                - -U
-                - postgres
-                - -d
-                - questarr
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -h
-                - localhost
-                - -U
-                - postgres
-                - -d
-                - questarr
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 5
-      volumes:
-        - name: postgres-data
-          persistentVolumeClaim:
-            claimName: questarr-postgres-data
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: questarr
   labels:
     app: questarr
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -136,7 +39,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: questarr
-          image: ghcr.io/doezer/questarr:production-bcb8456
+          image: ghcr.io/doezer/questarr:v1.1.0
           ports:
             - containerPort: 5000
           env:
@@ -146,11 +49,8 @@ spec:
               value: "5000"
             - name: HOST
               value: "0.0.0.0"
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: questarr-secrets
-                  key: database-url
+            - name: SQLITE_DB_PATH
+              value: "/app/data/sqlite.db"
             - name: IGDB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -161,6 +61,9 @@ spec:
                 secretKeyRef:
                   name: questarr-secrets
                   key: igdb-client-secret
+          volumeMounts:
+            - name: questarr-data
+              mountPath: /app/data
           resources:
             requests:
               cpu: 100m
@@ -183,3 +86,7 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
+      volumes:
+        - name: questarr-data
+          persistentVolumeClaim:
+            claimName: questarr-data

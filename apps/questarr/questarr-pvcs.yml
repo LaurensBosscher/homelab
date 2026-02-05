@@ -9,15 +9,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: questarr-postgres-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn-2replicas-compressed-us
-  resources:
-    requests:
-      storage: 2Gi
