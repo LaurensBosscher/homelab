@@ -19,7 +19,7 @@ spec:
         city: zurich
       containers:
         - name: stremio
-          image: tsaridas/stremio-docker:v1.2.9
+          image: tsaridas/stremio-docker:v1.2.10
           ports:
             - containerPort: 8080
           env:
