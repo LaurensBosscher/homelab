@@ -29,10 +29,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: city
                     operator: In
                     values:
-                      - europe
+                      - zurich
       containers:
         - name: gateway
           image: alpine/openclaw:2026.2.2
@@ -127,10 +127,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: city
                     operator: In
                     values:
-                      - europe
+                      - zurich
       containers:
         - name: chrome
           image: zenika/alpine-chrome:124
