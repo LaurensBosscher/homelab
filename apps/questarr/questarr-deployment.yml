@@ -39,7 +39,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: questarr
-          image: ghcr.io/doezer/questarr:v1.1.0
+          image: ghcr.io/doezer/questarr:v1.2.0
           ports:
             - containerPort: 5000
           env:
