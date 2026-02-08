@@ -140,7 +140,6 @@ I'm currently running the following apps:
 - [opencode](https://github.com/OpenCode-Org/opencode) - AI-powered development environment
 - [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
 - [playarr](https://github.com/maikboarder/playerr) - Audiobook manager for Plex
-- [portwatcher](https://github.com/laurensbosscher/portwatcher) - Port monitoring tool
 - [prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer manager
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client
 - [questarr](https://github.com/doezer/questarr) - Quest manager for audiobooks

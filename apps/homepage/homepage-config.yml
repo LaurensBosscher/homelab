@@ -331,11 +331,6 @@ data:
                 description: Monitoring & Dashboards
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
                 siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
-            - Portwatcher:
-                href: https://portwatcher.bosscher.ch
-                description: Port scanning & monitoring
-                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/nmap.svg
-                siteMonitor: http://portwatcher.portwatcher.svc.cluster.local:8000
         - Infrastructure:
             - Termix:
                 href: https://termix.bosscher.ch
