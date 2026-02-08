@@ -40,7 +40,7 @@
     - name: Deploy nftables configuration from template
       ansible.builtin.template:
         src: nftables.conf.j2
-        dest: /etc/nftables.conf
+        dest: "{{ '/etc/sysconfig/nftables.conf' if ansible_os_family == 'RedHat' else '/etc/nftables.conf' }}"
         owner: root
         group: root
         mode: "0644"
@@ -51,6 +51,6 @@
     - name: Ensure nftables service is enabled and started
       ansible.builtin.systemd:
         name: nftables
-        enabled: false
-        state: stopped
+        enabled: true
+        state: started
       tags: [firewall, persistence]

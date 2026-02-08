@@ -31,6 +31,13 @@
 
       nodeStatusUpdateFrequency: 10s
       maxPods: 200
+
+      # Enable NodeSwap for controlled swap usage (Beta in 1.34+)
+      featureGates:
+        NodeSwap: true
+
+      # Enable SeccompDefault for enhanced container security
+      seccompDefault: true
     owner: root
     group: root
     mode: "0644"

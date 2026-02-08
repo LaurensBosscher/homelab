@@ -71,6 +71,10 @@ Critical services are protected against OOM (Out of Memory) kills:
 - **Time Synchronization**: Chrony NTP client ensures accurate time across all nodes
 - **CPU Governor**: Set to performance mode for consistent performance
 
+### Mandatory Access Control (SELinux)
+- **SELinux Enforcing**: SELinux is configured in enforcing mode with targeted policy on supported nodes
+- **Per-Node Exception Support**: Hosts with known compatibility issues can opt out via inventory variable (currently used for `k3s-london-3`)
+
 ## Kubernetes Security
 
 ### Secrets Management
@@ -82,6 +86,9 @@ Critical services are protected against OOM (Out of Memory) kills:
 - **RBAC**: Role-based access control enabled by default
 - **Network Policies**: Flannel CNI provides network segmentation
 - **Pod Security**: Security contexts enforced on all deployments
+
+### Runtime Sandboxing
+- **Seccomp Default Enabled**: Kubelet runs with `seccompDefault: true`, applying RuntimeDefault seccomp profiles by default
 
 # Screenshots
 
@@ -209,10 +216,12 @@ Ansible configures the nodes with the following:
 - Automatic security updates enabled and services are automatically restarted (if needed) 
 - SSH secured by only listening on the tailscale interface
 - Firewall pre-configured (not yet enabled due to issues with K8s egress)
+- SELinux enforcing enabled on compatible hosts (with per-node exception support)
+- Kubernetes kubelet `seccompDefault` enabled
 - ZRAM activated
 - Network and other tweaks applied to optimize for Kubernetes usage
 - K9S, Kubecolor and useful aliases automatically applied
-- 
+
 # Tips & Tricks
 
 ## ETCDL

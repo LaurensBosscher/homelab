@@ -67,3 +67,33 @@
     daemon_reload: true
   become: true
   tags: [system-hardening, cpu-optimization]
+
+- name: Install SELinux packages
+  ansible.builtin.dnf:
+    name:
+      - selinux-policy
+      - selinux-policy-targeted
+      - policycoreutils
+      - policycoreutils-python-utils
+    state: present
+  when: k3s_selinux_enabled | default(true) | bool
+  tags: [system-hardening, selinux]
+
+- name: Ensure SELinux is set to enforcing mode
+  ansible.builtin.lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=enforcing'
+    state: present
+    backup: yes
+  when: k3s_selinux_enabled | default(true) | bool
+  tags: [system-hardening, selinux]
+
+- name: Ensure SELinux policy type is targeted
+  ansible.builtin.lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUXTYPE='
+    line: 'SELINUXTYPE=targeted'
+    state: present
+  when: k3s_selinux_enabled | default(true) | bool
+  tags: [system-hardening, selinux]

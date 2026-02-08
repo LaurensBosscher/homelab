@@ -130,12 +130,10 @@
 - name: Activate kubernetes-node profile
   ansible.builtin.command: tuned-adm profile kubernetes-node
   become: true
-  # Check if already active to avoid unnecessary changes/output
   register: activation_result
   changed_when: "'Switched to profile' in activation_result.stdout"
-  failed_when: 
-    - activation_result.rc != 0
-    - "'Current active profile: kubernetes-node' not in activation_result.stdout"
+  failed_when: activation_result.rc != 0
+  when: "'Current active profile: kubernetes-node' not in current_tuned_profile.stdout"
   tags: [optimizations]
 
 - name: Determine root block device name
@@ -150,6 +148,7 @@
     fi
   register: root_device_cmd
   changed_when: false
+  failed_when: root_device_cmd.rc != 0 or (root_device_cmd.stdout | trim) == ""
   tags: [optimizations]
 
 - name: Set root_block_device variable
@@ -171,7 +170,17 @@
   tags: [optimizations]
 
 - name: Apply udev rules now (without reboot)
-  ansible.builtin.shell: udevadm control --reload-rules && udevadm trigger
+  ansible.builtin.command:
+    argv: ["udevadm", "control", "--reload-rules"]
+  changed_when: false
+  become: true
+  when: udev_rules.changed
+  tags: [optimizations]
+
+- name: Trigger udev rules now (without reboot)
+  ansible.builtin.command:
+    argv: ["udevadm", "trigger"]
+  changed_when: false
   become: true
   when: udev_rules.changed
   tags: [optimizations]
@@ -179,8 +188,8 @@
 - name: Add noatime to root filesystem in fstab (safest persistent way)
   ansible.builtin.replace:
     path: /etc/fstab
-    regexp: '(\s+/+\s+{{ ansible_mounts | selectattr("mount","equalto","/") | map(attribute="fstype") | first }}\s+.*\s)(defaults)(,)'
-    replace: '\1defaults,noatime\3'
+    regexp: '(\s+/+\s+{{ ansible_mounts | selectattr("mount","equalto","/") | map(attribute="fstype") | first }}\s+.*\s)(defaults)(,)(?!noatime)'
+    replace: '\1\2,noatime\3'
   become: true
   register: fstab_noatime
   tags: [optimizations]

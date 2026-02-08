@@ -43,10 +43,14 @@ kube-controller-manager-arg:
   - "node-monitor-period=10s"
   - "node-monitor-grace-period=60s"
 
+# Enable SchedulerAsyncAPICalls for higher scheduler throughput (Beta in 1.34+)
+# Better responsiveness in clusters with heavy scheduling load
+kube-scheduler-arg:
+  - "feature-gates=SchedulerAsyncAPICalls=true"
+
 kubelet-arg:
   - "config=/etc/rancher/k3s/kubelet-config.yaml"
 
 # SELinux support (set to true to enable enforcement after policies are installed)
-selinux: false
-
+selinux: {{ k3s_selinux_enabled | default(true) | bool | lower }}
 

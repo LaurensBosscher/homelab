@@ -1,75 +1,89 @@
 ---
 - name: Get primary network interface
   ansible.builtin.set_fact:
-    primary_network_interface: "{{ ansible_default_ipv4.interface }}"
+    primary_network_interface: >-
+      {{
+        ansible_default_ipv4.interface
+          | default(ansible_default_ipv6.interface | default(''))
+      }}
+  when: network_optimizations_enable | default(true)
   tags: [network-optimizations]
 
-- name: Check current network interface features
-  ansible.builtin.command: ethtool -k {{ primary_network_interface }}
+- name: Ensure detected network interface exists
+  ansible.builtin.stat:
+    path: "/sys/class/net/{{ primary_network_interface }}"
+  register: primary_interface_path
+  when:
+    - network_optimizations_enable | default(true)
+    - primary_network_interface | length > 0
+  tags: [network-optimizations]
+
+- name: Check ethtool availability
+  ansible.builtin.command:
+    argv: ["ethtool", "--version"]
+  register: ethtool_check
+  changed_when: false
+  failed_when: false
+  when: network_optimizations_enable | default(true)
+  tags: [network-optimizations]
+
+- name: Read current network interface features
+  ansible.builtin.command:
+    argv: ["ethtool", "-k", "{{ primary_network_interface }}"]
   register: current_ethtool_features
   changed_when: false
   failed_when: false
-  when: primary_network_interface != ""
+  when:
+    - network_optimizations_enable | default(true)
+    - primary_network_interface | length > 0
+    - primary_interface_path.stat.exists
+    - ethtool_check.rc == 0
   tags: [network-optimizations]
 
-- name: Apply network interface optimizations (tx-udp-segmentation)
-  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} tx-udp-segmentation on
-  become: true
-  when:
-    - primary_network_interface != ""
-    - current_ethtool_features.rc == 0
-    - "'tx-udp-segmentation: off' in current_ethtool_features.stdout"
-  register: tx_udp_segmentation
-  changed_when: true
-  ignore_errors: yes
+- name: Define desired ethtool feature states
+  ansible.builtin.set_fact:
+    network_ethtool_features:
+      - { cmd: "tx-udp-segmentation", check: "tx-udp-segmentation", state: "on" }
+      - { cmd: "rx-udp-gro-forwarding", check: "rx-udp-gro-forwarding", state: "on" }
+      - { cmd: "rx-gro-list", check: "rx-gro-list", state: "off" }
+      - { cmd: "tx-checksum-ip-generic", check: "tx-checksum-ip-generic", state: "on" }
+      - { cmd: "rx-checksum", check: "rx-checksumming", state: "on" }
+  when: network_optimizations_enable | default(true)
   tags: [network-optimizations]
 
-- name: Apply network interface optimizations (rx-udp-gro-forwarding)
-  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-udp-gro-forwarding on
+- name: Apply ethtool feature optimizations when needed
+  ansible.builtin.command:
+    argv:
+      - ethtool
+      - -K
+      - "{{ primary_network_interface }}"
+      - "{{ item.cmd }}"
+      - "{{ item.state }}"
+  register: ethtool_optimize
+  changed_when: ethtool_optimize.rc == 0
+  failed_when: >-
+    ethtool_optimize.rc != 0 and
+    (ethtool_optimize.stderr | default('')) is not search('Operation not supported|Cannot change|Invalid argument|not supported')
   become: true
+  loop: "{{ network_ethtool_features }}"
   when:
-    - primary_network_interface != ""
+    - network_optimizations_enable | default(true)
+    - primary_network_interface | length > 0
+    - primary_interface_path.stat.exists
+    - ethtool_check.rc == 0
     - current_ethtool_features.rc == 0
-    - "'rx-udp-gro-forwarding: off' in current_ethtool_features.stdout"
-  register: rx_udp_gro_forwarding
-  changed_when: true
-  ignore_errors: yes
+    - "{{ (item.check ~ ':') in current_ethtool_features.stdout }}"
+    - "{{ current_ethtool_features.stdout is not search(item.check ~ ':.*\\[fixed\\]') }}"
+    - "{{ (item.check ~ ': ' ~ ('off' if item.state == 'on' else 'on')) in current_ethtool_features.stdout }}"
   tags: [network-optimizations]
 
-- name: Apply network interface optimizations (rx-gro-list)
-  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-gro-list off
-  become: true
-  when:
-    - primary_network_interface != ""
-    - current_ethtool_features.rc == 0
-    - "'rx-gro-list: on' in current_ethtool_features.stdout"
-  register: rx_gro_list
-  changed_when: true
-  ignore_errors: yes
-  tags: [network-optimizations]
-
-- name: Apply network interface optimizations (tx-checksum-ip-generic)
-  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} tx-checksum-ip-generic on
-  become: true
-  when:
-    - primary_network_interface != ""
-    - current_ethtool_features.rc == 0
-    - "'tx-checksum-ip-generic: off' in current_ethtool_features.stdout"
-  register: tx_checksum_ip_generic
-  changed_when: true
-  ignore_errors: yes
-  tags: [network-optimizations]
-
-- name: Apply network interface optimizations (rx-checksum)
-  ansible.builtin.shell: ethtool -K {{ primary_network_interface }} rx-checksum on
-  become: true
-  when:
-    - primary_network_interface != ""
-    - current_ethtool_features.rc == 0
-    - "'rx-checksum: off' in current_ethtool_features.stdout"
-  register: rx_checksum
-  changed_when: true
-  ignore_errors: yes
+- name: Check available TCP congestion controls
+  ansible.builtin.command:
+    argv: ["sysctl", "-n", "net.ipv4.tcp_available_congestion_control"]
+  register: tcp_cc_available
+  changed_when: false
+  failed_when: false
+  when: network_optimizations_enable | default(true)
   tags: [network-optimizations]
 
 - name: Apply network kernel parameters for 1Gbps optimization
@@ -90,10 +104,83 @@
     - { name: "net.ipv4.tcp_keepalive_time", value: "60" }
     - { name: "net.ipv4.tcp_keepalive_intvl", value: "10" }
     - { name: "net.ipv4.tcp_keepalive_probes", value: "6" }
-    # Multi-region WAN optimizations
     - { name: "net.ipv4.tcp_window_scaling", value: "1" }
     - { name: "net.ipv4.tcp_timestamps", value: "1" }
     - { name: "net.ipv4.tcp_sack", value: "1" }
+  when:
+    - network_optimizations_enable | default(true)
+    - item.name != 'net.ipv4.tcp_congestion_control' or ('bbr' in (tcp_cc_available.stdout | default('')))
+  tags: [network-optimizations]
+
+- name: Install persistent network optimization script
+  ansible.builtin.copy:
+    dest: /usr/local/sbin/network-interface-optimizations
+    mode: "0755"
+    owner: root
+    group: root
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      iface="${1:-}"
+
+      if [[ -z "${iface}" || ! -e "/sys/class/net/${iface}" ]]; then
+        exit 0
+      fi
+
+      if ! command -v ethtool >/dev/null 2>&1; then
+        exit 0
+      fi
+
+      features="$(ethtool -k "${iface}" 2>/dev/null || true)"
+      if [[ -z "${features}" ]]; then
+        exit 0
+      fi
+
+      apply_feature() {
+        local cmd_feature="$1"
+        local check_feature="$2"
+        local desired_state="$3"
+        local current_state
+        local target_state
+        local output
+
+        if ! grep -q "${check_feature}:" <<<"${features}"; then
+          return 0
+        fi
+
+        if grep -Eq "${check_feature}:.*\[fixed\]" <<<"${features}"; then
+          return 0
+        fi
+
+        if [[ "${desired_state}" == "on" ]]; then
+          current_state="off"
+          target_state="on"
+        else
+          current_state="on"
+          target_state="off"
+        fi
+
+        if ! grep -q "${check_feature}: ${current_state}" <<<"${features}"; then
+          return 0
+        fi
+
+        if ! output="$(ethtool -K "${iface}" "${cmd_feature}" "${target_state}" 2>&1)"; then
+          if grep -Eq "Operation not supported|Cannot change|Invalid argument|not supported" <<<"${output}"; then
+            return 0
+          fi
+          echo "${output}" >&2
+          return 1
+        fi
+      }
+
+      apply_feature "tx-udp-segmentation" "tx-udp-segmentation" "on"
+      apply_feature "rx-udp-gro-forwarding" "rx-udp-gro-forwarding" "on"
+      apply_feature "rx-gro-list" "rx-gro-list" "off"
+      apply_feature "tx-checksum-ip-generic" "tx-checksum-ip-generic" "on"
+      apply_feature "rx-checksum" "rx-checksumming" "on"
+  become: true
+  when: network_optimizations_enable | default(true)
   tags: [network-optimizations]
 
 - name: Create systemd service to persist network interface optimizations
@@ -101,11 +188,12 @@
     content: |
       [Unit]
       Description=Apply network interface optimizations after boot
-      After=network.target
+      After=network-online.target
+      Wants=network-online.target
 
       [Service]
       Type=oneshot
-      ExecStart=/bin/bash -c 'ethtool -K {{ primary_network_interface }} tx-udp-segmentation on rx-udp-gro-forwarding on rx-gro-list off tx-checksum-ip-generic on rx-checksum on || true'
+      ExecStart=/usr/local/sbin/network-interface-optimizations {{ primary_network_interface }}
       RemainAfterExit=true
 
       [Install]
@@ -113,15 +201,21 @@
     dest: /etc/systemd/system/network-interface-optimizations.service
     mode: "0644"
   become: true
-  when: primary_network_interface != ""
-  register: systemd_service_created
+  when:
+    - network_optimizations_enable | default(true)
+    - primary_network_interface | length > 0
+    - primary_interface_path.stat.exists
   tags: [network-optimizations]
 
-- name: Enable network interface optimizations service
+- name: Enable and start network interface optimizations service
   ansible.builtin.systemd:
     name: network-interface-optimizations
     enabled: true
+    state: started
     daemon_reload: true
   become: true
-  when: primary_network_interface != ""
+  when:
+    - network_optimizations_enable | default(true)
+    - primary_network_interface | length > 0
+    - primary_interface_path.stat.exists
   tags: [network-optimizations]

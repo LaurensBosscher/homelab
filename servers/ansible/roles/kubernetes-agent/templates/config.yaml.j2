@@ -10,4 +10,4 @@ kubelet-arg:
   - "config=/etc/rancher/k3s/kubelet-config.yaml"
 
 # SELinux support (set to true to enable enforcement after policies are installed)
-selinux: false
+selinux: {{ k3s_selinux_enabled | default(true) | bool | lower }}
