@@ -151,7 +151,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: n8n
-          image: docker.n8n.io/n8nio/n8n:2.7.2
+          image: docker.n8n.io/n8nio/n8n:2.7.3
           ports:
             - containerPort: 5678
             - containerPort: 5679
@@ -265,7 +265,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: n8n-task-runners
-          image: n8nio/runners:2.7.2
+          image: n8nio/runners:2.7.3
           env:
             - name: TZ
               value: Europe/Zurich
