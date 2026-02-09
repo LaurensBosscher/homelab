@@ -29,7 +29,7 @@ spec:
                       - zurich
       containers:
         - name: aiostreams
-          image: ghcr.io/viren070/aiostreams:v2.22.0
+          image: ghcr.io/viren070/aiostreams:v2.23.0
           ports:
             - containerPort: 3000
           env:
