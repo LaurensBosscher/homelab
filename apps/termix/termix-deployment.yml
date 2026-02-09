@@ -62,19 +62,15 @@ spec:
             failureThreshold: 3
         - name: tailscale
           image: tailscale/tailscale:v1.94.1
-          imagePullPolicy: Always
           command:
             [
               "/bin/sh",
               "-c",
               "tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock & sleep 5 && tailscale up --accept-routes --authkey=$TS_AUTHKEY && tail -f /dev/null",
             ]
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-                - NET_RAW
           env:
+            - name: TS_USERSPACE
+              value: "true"
             - name: TS_AUTHKEY
               valueFrom:
                 secretKeyRef:
