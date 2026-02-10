@@ -349,7 +349,7 @@ spec:
               mountPath: /data
       containers:
         - name: redis
-          image: redis:8.4.0-alpine
+          image: redis:8.6.0-alpine
           ports:
             - containerPort: 6379
           securityContext:
