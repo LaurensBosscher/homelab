@@ -61,7 +61,7 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
         - name: tailscale
-          image: tailscale/tailscale:v1.94.1
+          image: tailscale/tailscale:v1.94.2
           command:
             [
               "/bin/sh",
