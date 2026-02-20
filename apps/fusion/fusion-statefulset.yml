@@ -29,7 +29,7 @@ spec:
                       - bazzite
       containers:
         - name: fusion
-          image: ghcr.io/0x2e/fusion:0.9.8
+          image: ghcr.io/0x2e/fusion:1.0.0
           ports:
             - containerPort: 8080
           securityContext:
