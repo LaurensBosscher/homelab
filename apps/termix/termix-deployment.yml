@@ -6,6 +6,8 @@ metadata:
     app.kubernetes.io/name: termix
     app.kubernetes.io/part-of: homelab
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -66,7 +68,7 @@ spec:
             [
               "/bin/sh",
               "-c",
-              "tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock & sleep 5 && tailscale up --accept-routes --authkey=$TS_AUTHKEY && tail -f /dev/null",
+              "tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock & sleep 5 && tailscale --socket=/var/run/tailscale/tailscaled.sock up --accept-routes --netfilter-mode=off --authkey=$TS_AUTHKEY && wait",
             ]
           env:
             - name: TS_USERSPACE
@@ -85,8 +87,6 @@ spec:
               mountPath: /var/lib/tailscale
             - name: tailscale-socket
               mountPath: /var/run/tailscale
-            - name: dev-net-tun
-              mountPath: /dev/net/tun
           livenessProbe:
             exec:
               command:
@@ -119,7 +119,3 @@ spec:
           emptyDir: {}
         - name: tailscale-socket
           emptyDir: {}
-        - name: dev-net-tun
-          hostPath:
-            path: /dev/net/tun
-            type: CharDevice
