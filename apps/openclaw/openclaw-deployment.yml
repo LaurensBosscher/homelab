@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: alpine/openclaw:2026.2.15
+          image: alpine/openclaw:2026.2.26
           imagePullPolicy: IfNotPresent
           command:
             - node
@@ -96,6 +96,35 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
+        - name: debug-tools
+          image: alpine:3.21.3
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - apk add --no-cache nano bash curl wget bind-tools iputils busybox-extras net-tools procps && sleep infinity
+          env:
+            - name: TERM
+              value: xterm-256color
+            - name: TZ
+              value: Europe/Zurich
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+          volumeMounts:
+            - name: data
+              mountPath: /home/node/
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 25m
+            limits:
+              memory: 256Mi
       volumes:
         - name: data
           persistentVolumeClaim:
