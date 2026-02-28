@@ -97,7 +97,7 @@ spec:
             periodSeconds: 60
             timeoutSeconds: 5
         - name: debug-tools
-          image: alpine:3.21.3
+          image: alpine:3.23.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
