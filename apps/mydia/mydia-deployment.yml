@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: mydia
-          image: ghcr.io/getmydia/mydia:0.8.1
+          image: ghcr.io/getmydia/mydia:0.9.0
           securityContext:
             allowPrivilegeEscalation: false
           ports:
