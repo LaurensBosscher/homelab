@@ -47,7 +47,7 @@ spec:
                       - us
       serviceAccountName: kite
       containers:
-        - image: ghcr.io/zxh326/kite:v0.8.0
+        - image: ghcr.io/zxh326/kite:v0.8.1
           name: kite
           resources:
             limits:

@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: alpine/openclaw:2026.3.7
+          image: alpine/openclaw:2026.3.8
           imagePullPolicy: IfNotPresent
           command:
             - node
