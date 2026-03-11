@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nullclaw
+  labels:
+    app.kubernetes.io/name: nullclaw
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nullclaw
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nullclaw
+    spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: region
+                    operator: In
+                    values:
+                      - europe
+      containers:
+        - name: nullclaw
+          image: ghcr.io/nullclaw/nullclaw:v2026.3.10
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: NULLCLAW_GATEWAY_PORT
+              value: "3000"
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nullclaw-secret
+                  key: OPENROUTER_API_KEY
+            - name: ZAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nullclaw-secret
+                  key: ZAI_API_KEY
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: data
+              mountPath: /nullclaw-data
+            - name: config
+              mountPath: /nullclaw-data/.nullclaw/config.json
+              subPath: config.json
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: nullclaw-pvc
+        - name: config
+          configMap:
+            name: nullclaw-config
