@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: rdt-client
-          image: rogerfar/rdtclient:2.0.126
+          image: rogerfar/rdtclient:2.0.127
           securityContext:
             allowPrivilegeEscalation: false
           ports:
