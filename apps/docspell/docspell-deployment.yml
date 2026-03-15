@@ -394,7 +394,7 @@ spec:
         fsGroup: 8983
       containers:
         - name: solr
-          image: docker.io/library/solr:9
+          image: docker.io/library/solr:10
           ports:
             - containerPort: 8983
           command:
