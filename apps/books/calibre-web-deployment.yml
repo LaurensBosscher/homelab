@@ -32,7 +32,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: calibre-web
-          image: crocodilestick/calibre-web-automated:V4.0.6
+          image: ghcr.io/crocodilestick/calibre-web-automated:V4.0.6
           ports:
             - containerPort: 8083
           env:
