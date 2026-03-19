@@ -133,7 +133,6 @@ I'm currently running the following apps:
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
 - [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
 - [mydia](https://github.com/getmydia/mydia) - Self-hosted media manager
-- [n8n](https://n8n.io/) - Workflow automation tool
 - [Norish](https://github.com/norish-recipes/norish) - Real-time, self-hosted recipe app for families & friends
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
