@@ -138,7 +138,6 @@ I'm currently running the following apps:
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
 - [opencode](https://github.com/OpenCode-Org/opencode) - AI-powered development environment
-- [Perplexica](https://github.com/ItzCrazyKns/Perplexica) - AI-powered search engine
 - [playarr](https://github.com/maikboarder/playerr) - Audiobook manager for Plex
 - [prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer manager
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client
@@ -151,7 +150,6 @@ I'm currently running the following apps:
 - [sonarr](https://github.com/Sonarr/Sonarr) - TV show collection manager
 - [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
 - [Stremio](https://www.stremio.com/) - Media streaming platform
-- [surfsense](https://github.com/surfsense/surfsense) - Self-hosted news aggregation
 - [termix](https://github.com/willdoescode/termix) - Terminal-based matrix client
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
 - [your-spotify](https://github.com/Yooooomi/your_spotify) - Self-hosted Spotify statistics and analytics
@@ -256,12 +254,15 @@ etcdctl defrag
 Use only if cluster is unhealthy and automated maintenance failed:
 
 ```bash
-sudo etcd \
+sudo /usr/local/bin/etcd \
   --data-dir /var/lib/rancher/k3s/server/db/etcd \
   --force-new-cluster \
   --listen-client-urls http://127.0.0.1:2379 \
   --advertise-client-urls http://127.0.0.1:2379
+```bash
 
+In a separate terminal:
+```
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" rev=$(etcdctl endpoint status --write-out fields | grep Revision | awk '{print $3}')
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl compact "$rev" --physical   # --physical forces immediate application
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl defrag

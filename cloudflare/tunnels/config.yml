@@ -16,8 +16,6 @@
   service: http://wanderer.wanderer.svc.cluster.local:3000
 - hostname: norish.bosscher.ch
   service: http://norish.norish.svc.cluster.local:3000
-- hostname: perplexica.bosscher.ch
-  service: http://perplexica.perplexica.svc.cluster.local:3000
 - hostname: stacks.bosscher.ch
   service: http://stacks.books.svc.cluster.local:7788
 - hostname: calibre-web.bosscher.ch
@@ -70,10 +68,6 @@
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
 - hostname: bentopdf.bosscher.ch
   service: http://bentopdf.bentopdf.svc.cluster.local:8080
-- hostname: surfsense.bosscher.ch
-  service: http://surfsense-frontend.surfsense.svc.cluster.local:3000
-- hostname: surfsense-backend.bosscher.ch
-  service: http://surfsense-backend.surfsense.svc.cluster.local:8000
 - hostname: linkwarden.bosscher.ch
   service: http://linkwarden.linkwarden.svc.cluster.local:3000
 - hostname: termix.bosscher.ch

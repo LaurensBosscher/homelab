@@ -277,14 +277,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: perplexica
-        group: productivity
-        url: "http://perplexica.perplexica.svc.cluster.local:3000"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: norish
         group: food
         url: "http://norish.norish.svc.cluster.local:3000/api/health"
@@ -332,25 +324,9 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: surfsense-frontend
-        group: ai
-        url: "http://surfsense-frontend.surfsense.svc.cluster.local:3000"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: openclaw
         group: ai
         url: "http://openclaw-gateway.openclaw.svc.cluster.local:18789"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
-      - name: surfsense-backend
-        group: ai
-        url: "http://surfsense-backend.surfsense.svc.cluster.local:8000/docs"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
