@@ -101,14 +101,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: n8n
-        group: productivity
-        url: "http://n8n.n8n.svc.cluster.local:5678"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: linkwarden
         group: productivity
         url: "http://linkwarden.linkwarden.svc.cluster.local:3000"

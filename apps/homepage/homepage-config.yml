@@ -136,11 +136,6 @@ data:
                 description: Collaborative bookmark manager
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png
                 siteMonitor: http://linkwarden.linkwarden.svc.cluster.local:3000
-            - n8n:
-                href: https://n8n.bosscher.ch
-                description: Workflow automation
-                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/n8n.png
-                siteMonitor: http://n8n.n8n.svc.cluster.local:5678
             - Obsidian Live Sync:
                 href: https://obsidian-live-sync.bosscher.ch/_utils/
                 description: CouchDB for Obsidian sync
@@ -162,6 +157,14 @@ data:
               description: Recipe manager
               icon: https://avatars.githubusercontent.com/u/247553455?s=48&v=4
               siteMonitor: http://norish.norish.svc.cluster.local:3000/api/health
+          - Portfolio:
+              href: https://portfolio.bosscher.ch
+              description: Investment dashboard
+              icon: https://img.freepik.com/premium-vector/investment-money-illustration-investment-plant-growing-business-finance-icon-concept-white-isolated_138676-624.jpg
+          - Weekend:
+              href: https://weekend.bosscher.ch
+              description: Weekend dashboard
+              icon: https://cdn-icons-png.flaticon.com/512/1090/1090663.png
         - AI:
             - Grok:
                 href: https://grok.com/
