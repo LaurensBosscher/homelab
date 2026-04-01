@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: ghcr.io/openclaw/openclaw:2026.3.31
+          image: ghcr.io/openclaw/openclaw:2026.4.1
           imagePullPolicy: IfNotPresent
           command:
             - node
