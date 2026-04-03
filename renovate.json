@@ -40,7 +40,7 @@
     {
       "matchPackageNames": [
         "getmeili/meilisearch",
-        "openclaw/openclaw"
+        "ghcr.io/openclaw/openclaw"
       ],
       "enabled": false,
       "description": "Meilisearch needs to be updated manually, Every OpenClaw release breaks something new"
