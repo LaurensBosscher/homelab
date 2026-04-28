@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: audiobookshelf
-          image: ghcr.io/advplyr/audiobookshelf:2.33.2
+          image: ghcr.io/advplyr/audiobookshelf:2.34.0
           securityContext:
             allowPrivilegeEscalation: false
           ports:
