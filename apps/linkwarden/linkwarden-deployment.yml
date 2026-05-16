@@ -209,7 +209,7 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: postgres:18.3
+          image: postgres:18.4
           env:
             - name: POSTGRES_USER
               valueFrom:
