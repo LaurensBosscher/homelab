@@ -45,6 +45,11 @@ spec:
                 secretKeyRef:
                   name: aiostreams-secret
                   key: addon-password
+            - name: AIOSTREAMS_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: aiostreams-auth-secret
+                  key: aiostreams-auth
             - name: STREAM_CACHE_TTL
               value: "3600"
             - name: LOG_FORMAT
