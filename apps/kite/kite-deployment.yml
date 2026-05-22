@@ -36,10 +36,6 @@ data:
     superUser:
       username: "admin"
       password: "${KITE_PASSWORD}"
-    clusters:
-      - name: local
-        inCluster: true
-        default: true
 ---
 apiVersion: apps/v1
 kind: Deployment
