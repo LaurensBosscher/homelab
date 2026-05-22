@@ -1,6 +1,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app: kite
+    app.kubernetes.io/name: kite
   name: kite
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -14,14 +17,36 @@ subjects:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
+  labels:
+    app: kite
+    app.kubernetes.io/name: kite
   name: kite
   namespace: kube-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: kite
+    app.kubernetes.io/name: kite
+  name: kite-config
+  namespace: kube-system
+data:
+  config.yaml: |
+    superUser:
+      username: "admin"
+      password: "${KITE_PASSWORD}"
+    clusters:
+      - name: local
+        inCluster: true
+        default: true
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: kite
+    app.kubernetes.io/name: kite
   name: kite
   namespace: kube-system
 spec:
@@ -34,6 +59,7 @@ spec:
     metadata:
       labels:
         app: kite
+        app.kubernetes.io/name: kite
     spec:
       affinity:
         nodeAffinity:
@@ -49,6 +75,28 @@ spec:
       containers:
         - image: ghcr.io/zxh326/kite:v0.12.1
           name: kite
+          env:
+            - name: KITE_CONFIG_FILE
+              value: /etc/kite/config.yaml
+            - name: DB_TYPE
+              value: sqlite
+            - name: DB_DSN
+              value: /data/kite.db?_journal_mode=WAL&_busy_timeout=5000
+            - name: KITE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kite-secrets
+                  key: KITE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kite-secrets
+                  key: JWT_SECRET
+            - name: KITE_ENCRYPT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kite-secrets
+                  key: KITE_ENCRYPT_KEY
           resources:
             limits:
               cpu: 1000m
@@ -71,3 +119,20 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
+          volumeMounts:
+            - name: kite-config
+              mountPath: /etc/kite/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: kite-data
+              mountPath: /data
+      volumes:
+        - name: kite-config
+          configMap:
+            name: kite-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: kite-data
+          persistentVolumeClaim:
+            claimName: kite-data

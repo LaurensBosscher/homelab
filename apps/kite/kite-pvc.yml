@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kite-data
+  namespace: kube-system
+  labels:
+    app: kite
+    app.kubernetes.io/name: kite
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-2replicas-compressed-us
+  resources:
+    requests:
+      storage: 256Mi
