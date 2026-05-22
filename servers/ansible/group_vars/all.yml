@@ -18,6 +18,11 @@ crowdsec_collections:
 # Firewall configuration
 firewall_enable: true
 
+# Public clients allowed to bootstrap/join K3s over the WAN API endpoint.
+# Keep this narrow: these IPs only get 6443/tcp, not node-to-node ports.
+firewall_k3s_api_extra_allowed_ips:
+  - 84.226.17.204
+
 # Tool versions
 k9s_version: "v0.32.7"
 

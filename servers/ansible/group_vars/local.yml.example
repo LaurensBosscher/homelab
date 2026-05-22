@@ -21,3 +21,8 @@ etcd_authorized_ips:
   - "YOUR_IP_1"
   - "YOUR_IP_2"
   - "YOUR_IP_3"
+
+# Optional: public client IPs allowed to join K3s via control-plane:6443.
+# Prefer static IPs or update this before joining from a dynamic residential IP.
+firewall_k3s_api_extra_allowed_ips:
+  - "YOUR_PUBLIC_JOIN_CLIENT_IP"

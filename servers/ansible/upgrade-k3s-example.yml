@@ -3,7 +3,7 @@
 # Usage: ansible-playbook -i hosts.ini upgrade-k3s-example.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
 
 - name: Upgrade K3s to specified version
-  hosts: kubernetes-control-plane:kubernetes-agent
+  hosts: kubernetes_control_plane:kubernetes_agent
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3

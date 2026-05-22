@@ -81,6 +81,11 @@
     mode: "0755"
   tags: [crowdsec, whitelist]
 
+- name: Build CrowdSec trusted IP list
+  ansible.builtin.set_fact:
+    crowdsec_trusted_ips: "{{ ((cluster_ips | default([])) + (groups['all'] | map('extract', hostvars, 'ansible_host') | select('defined') | list) + (groups['all'] | map('extract', hostvars, 'cluster_network_ip') | select('defined') | list)) | unique | list }}"
+  tags: [crowdsec, whitelist]
+
 - name: Create CrowdSec whitelist configuration for cluster nodes
   ansible.builtin.copy:
     content: |
@@ -89,13 +94,20 @@
       whitelist:
         reason: "Trusted IP addresses"
         ip:
-      {% if cluster_ips is defined %}
-      {% for ip in cluster_ips %}
+      {% for ip in crowdsec_trusted_ips | unique | sort %}
           - {{ ip }}
       {% endfor %}
-      {% endif %}
     dest: /etc/crowdsec/parsers/s01-whitelist/trusted-ips.yaml
     mode: "0644"
+  when: crowdsec_trusted_ips | length > 0
+  notify: restart crowdsec
+  tags: [crowdsec, whitelist]
+
+- name: Remove CrowdSec whitelist configuration when no trusted IPs are defined
+  ansible.builtin.file:
+    path: /etc/crowdsec/parsers/s01-whitelist/trusted-ips.yaml
+    state: absent
+  when: crowdsec_trusted_ips | length == 0
   notify: restart crowdsec
   tags: [crowdsec, whitelist]
 

@@ -64,7 +64,7 @@
 
     - name: Stop K3s service before upgrade
       ansible.builtin.systemd:
-        name: "{{ 'k3s' if inventory_hostname in groups['kubernetes-control-plane'] else 'k3s-agent' }}"
+        name: "{{ 'k3s' if inventory_hostname in groups['kubernetes_control_plane'] else 'k3s-agent' }}"
         state: stopped
       when: k3s_version not in k3s_current_version.stdout | default('')
 

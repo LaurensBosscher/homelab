@@ -45,23 +45,26 @@ table inet homelab {
     # --- Defense-in-depth: never allow SSH from non-tailscale ---
     iifname != "tailscale0" tcp dport 22 drop comment "Deny SSH off-tailnet"
 
-    # --- Kubernetes / K3s node-to-node traffic over eth0/WAN ---
-{% if firewall_cluster_eth0_ips | length > 0 %}
-    udp dport 51820 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "Flannel WireGuard (node-to-node)"
-    tcp dport 9100  ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "node-exporter (cluster only)"
+    # --- Kubernetes / K3s node-to-node traffic over cluster network/WAN ---
+{% if firewall_cluster_network_ips | length > 0 %}
+    udp dport 51820 ip saddr { {{ firewall_cluster_network_ips | join(', ') }} } accept comment "Flannel WireGuard (node-to-node)"
+    tcp dport 9100  ip saddr { {{ firewall_cluster_network_ips | join(', ') }} } accept comment "node-exporter (cluster only)"
 {% endif %}
 
-{% if firewall_control_plane_eth0_ips | length > 0 %}
-    tcp dport 10250 ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "Kubelet API (from control-plane only)"
+{% if firewall_control_plane_network_ips | length > 0 %}
+    tcp dport 10250 ip saddr { {{ firewall_control_plane_network_ips | join(', ') }} } accept comment "Kubelet API (from control-plane only)"
 {% endif %}
 
-{% if inventory_hostname in groups['kubernetes-control-plane'] and firewall_cluster_eth0_ips | length > 0 %}
-    tcp dport 6443 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "K3s API (from cluster nodes)"
-    tcp dport 9345 ip saddr { {{ firewall_cluster_eth0_ips | join(', ') }} } accept comment "K3s supervisor (from cluster nodes)"
+{% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_k3s_api_allowed_ips | length > 0 %}
+    tcp dport 6443 ip saddr { {{ firewall_k3s_api_allowed_ips | join(', ') }} } accept comment "K3s API (from cluster nodes and approved join clients)"
 {% endif %}
 
-{% if inventory_hostname in groups['kubernetes-control-plane'] and firewall_control_plane_eth0_ips | length > 0 %}
-    tcp dport { 2379, 2380 } ip saddr { {{ firewall_control_plane_eth0_ips | join(', ') }} } accept comment "etcd (control-plane only)"
+{% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_cluster_network_ips | length > 0 %}
+    tcp dport 9345 ip saddr { {{ firewall_cluster_network_ips | join(', ') }} } accept comment "K3s supervisor (from cluster nodes)"
+{% endif %}
+
+{% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_control_plane_network_ips | length > 0 %}
+    tcp dport { 2379, 2380 } ip saddr { {{ firewall_control_plane_network_ips | join(', ') }} } accept comment "etcd (control-plane only)"
 {% endif %}
 
     # --- Log and drop everything else (rate-limited) ---

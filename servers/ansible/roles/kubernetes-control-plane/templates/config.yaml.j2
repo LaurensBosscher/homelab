@@ -1,10 +1,10 @@
 flannel-backend: wireguard-native
 flannel-external-ip: true
-flannel-iface: eth0
+flannel-iface: {{ cluster_network_interface }}
 
 prefer-bundled-bin: true
 
-node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
+node-external-ip: {{ cluster_network_ip }}  # Advertises cluster network IP for external access
 
 # Disable Traefik (use your own ingress controller)
 disable: traefik
@@ -53,4 +53,3 @@ kubelet-arg:
 
 # SELinux support (set to true to enable enforcement after policies are installed)
 selinux: {{ k3s_selinux_enabled | default(true) | bool | lower }}
-

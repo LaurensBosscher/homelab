@@ -6,8 +6,8 @@
 
 - name: Set memory-related variables
   ansible.builtin.set_fact:
-    total_mem_kb: "{{ ansible_memtotal_mb * 1024 | int }}"
-    total_mem_gb: "{{ ansible_memtotal_mb // 1024 | int }}"
+    total_mem_kb: "{{ ansible_facts.memtotal_mb * 1024 | int }}"
+    total_mem_gb: "{{ ansible_facts.memtotal_mb // 1024 | int }}"
     k8s_low_mem_threshold_gb: 12
   tags: [optimizations]
 
@@ -188,7 +188,7 @@
 - name: Add noatime to root filesystem in fstab (safest persistent way)
   ansible.builtin.replace:
     path: /etc/fstab
-    regexp: '(\s+/+\s+{{ ansible_mounts | selectattr("mount","equalto","/") | map(attribute="fstype") | first }}\s+.*\s)(defaults)(,)(?!noatime)'
+    regexp: '(\s+/+\s+{{ ansible_facts.mounts | selectattr("mount","equalto","/") | map(attribute="fstype") | first }}\s+.*\s)(defaults)(,)(?!noatime)'
     replace: '\1\2,noatime\3'
   become: true
   register: fstab_noatime

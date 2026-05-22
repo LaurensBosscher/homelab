@@ -90,13 +90,13 @@
       export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
       # etcdctl configuration for K3s embedded etcd
-      export ETCDCTL_ENDPOINTS="{% for host in groups['kubernetes-control-plane'] %}https://{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+      export ETCDCTL_ENDPOINTS="{% for host in groups['kubernetes_control_plane'] | default([]) if hostvars[host]['cluster_network_ip'] is defined %}https://{{ hostvars[host]['cluster_network_ip'] }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
       export ETCDCTL_CACERT="/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt"
       export ETCDCTL_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
       export ETCDCTL_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
 
-    owner: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
-    group: "{{ dotfiles_user | default(ansible_user_id | default('root')) }}"
+    owner: "{{ dotfiles_user | default(ansible_facts.user_id | default('root')) }}"
+    group: "{{ dotfiles_user | default(ansible_facts.user_id | default('root')) }}"
     mode: "0644"
     backup: yes
   tags: [dotfiles]

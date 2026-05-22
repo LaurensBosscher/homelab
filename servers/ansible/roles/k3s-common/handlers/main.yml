@@ -4,7 +4,7 @@
     name: k3s
     state: restarted
     daemon_reload: true
-  when: inventory_hostname in groups['kubernetes-control-plane']
+  when: inventory_hostname in groups['kubernetes_control_plane']
   listen:
     - restart k3s
     - reload and restart k3s
@@ -15,7 +15,7 @@
     name: k3s-agent
     state: restarted
     daemon_reload: true
-  when: inventory_hostname in groups['kubernetes-agent']
+  when: inventory_hostname in groups['kubernetes_agent']
   listen:
     - restart k3s-agent
     - reload systemd and restart k3s-agent

@@ -10,14 +10,19 @@
         update_cache: yes
       tags: [always]
 
+    - name: Select cluster network interface
+      ansible.builtin.set_fact:
+        cluster_network_interface: >-
+          {{ 'eth0' if 'eth0' in ansible_facts.interfaces else ('ens192' if 'ens192' in ansible_facts.interfaces else ansible_facts.default_ipv4.interface) }}
+      tags: [always]
+
     - name: Set network interface IPs
       ansible.builtin.set_fact:
-        tailscale_ip: "{{ ansible_tailscale0.ipv4.address | default(ansible_default_ipv4.address) }}"
-        eth0_ip: "{{ ansible_eth0.ipv4.address | default(ansible_default_ipv4.address) }}"
+        tailscale_ip: "{{ ansible_facts.get('tailscale0', {}).get('ipv4', {}).get('address', ansible_facts.default_ipv4.address) }}"
+        cluster_network_ip: "{{ ansible_facts.get(cluster_network_interface, {}).get('ipv4', {}).get('address', ansible_facts.default_ipv4.address) }}"
       tags: [always]
 
   roles:
-    - { role: ansible-user }
     - { role: security_updates }
     - { role: system-hardening }
     - { role: dotfiles }
@@ -36,7 +41,7 @@
     - { role: firewall }
 
 - name: Kubernetes control plane configuration
-  hosts: kubernetes-control-plane
+  hosts: kubernetes_control_plane
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -47,7 +52,7 @@
     - { role: etcd-maintenance }
 
 - name: Kubernetes agent node configuration
-  hosts: kubernetes-agent
+  hosts: kubernetes_agent
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3

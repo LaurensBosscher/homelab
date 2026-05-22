@@ -36,6 +36,7 @@ A comprehensive firewall configuration is available via Ansible, it provides:
   - Flannel WireGuard (51820/udp) between all nodes
   - Kubelet API (10250/tcp) from control-plane to worker nodes
   - K3s API (6443/tcp) and supervisor (9345/tcp) between control-plane nodes
+  - K3s API (6443/tcp) from explicitly approved public join clients in `firewall_k3s_api_extra_allowed_ips`
   - etcd (2379-2380/tcp) between control-plane nodes
 - **Logging**: Rate-limited logging of dropped NEW connections (10/minute)
 
@@ -205,6 +206,12 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_TOKEN=<TOKEN> sh -
 ### Agent
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_URL=<IP_ADDRESS_OF_NODE> K3S_TOKEN=<TOKEN> sh -
+```
+
+Example public-WAN join, after adding the client IP to `firewall_k3s_api_extra_allowed_ips`:
+
+```bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_URL=https://46.33.10.93:6443 K3S_TOKEN=<TOKEN> sh -
 ```
 
 Ansible configures the nodes with the following:

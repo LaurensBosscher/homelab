@@ -1,10 +1,10 @@
-bind-address: {{ eth0_ip }}
-node-external-ip: {{ eth0_ip }}  # Advertises eth0 IP for external access
+bind-address: {{ cluster_network_ip }}
+node-external-ip: {{ cluster_network_ip }}  # Advertises cluster network IP for external access
 # node-ip: {{ tailscale_ip }}  # Sets internal node IP to Tailscale address
 
 prefer-bundled-bin: true
 
-flannel-iface: eth0  # Binds Flannel CNI to eth0 interface for pod networking
+flannel-iface: {{ cluster_network_interface }}  # Binds Flannel CNI to the cluster network interface for pod networking
 
 kubelet-arg:
   - "config=/etc/rancher/k3s/kubelet-config.yaml"

@@ -3,8 +3,8 @@
   ansible.builtin.set_fact:
     primary_network_interface: >-
       {{
-        ansible_default_ipv4.interface
-          | default(ansible_default_ipv6.interface | default(''))
+        ansible_facts.default_ipv4.interface
+          | default(ansible_facts.default_ipv6.interface | default(''))
       }}
   when: network_optimizations_enable | default(true)
   tags: [network-optimizations]
@@ -72,9 +72,9 @@
     - primary_interface_path.stat.exists
     - ethtool_check.rc == 0
     - current_ethtool_features.rc == 0
-    - "{{ (item.check ~ ':') in current_ethtool_features.stdout }}"
-    - "{{ current_ethtool_features.stdout is not search(item.check ~ ':.*\\[fixed\\]') }}"
-    - "{{ (item.check ~ ': ' ~ ('off' if item.state == 'on' else 'on')) in current_ethtool_features.stdout }}"
+    - "(item.check ~ ':') in current_ethtool_features.stdout"
+    - "current_ethtool_features.stdout is not search(item.check ~ ':.*\\[fixed\\]')"
+    - "(item.check ~ ': ' ~ ('off' if item.state == 'on' else 'on')) in current_ethtool_features.stdout"
   tags: [network-optimizations]
 
 - name: Check available TCP congestion controls

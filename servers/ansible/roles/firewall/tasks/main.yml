@@ -16,23 +16,26 @@
         masked: true
       ignore_errors: true
 
-    - name: Build dynamic allowlists from inventory (eth0)
+    - name: Build dynamic allowlists from inventory
       ansible.builtin.set_fact:
-        firewall_cluster_eth0_ips: >-
-          {{ ((groups['kubernetes-control-plane'] | default([])) + (groups['kubernetes-agent'] | default([])))
-             | map('extract', hostvars, 'eth0_ip')
+        firewall_cluster_network_ips: >-
+          {{ ((groups['kubernetes_control_plane'] | default([])) + (groups['kubernetes_agent'] | default([])))
+             | map('extract', hostvars, 'cluster_network_ip')
              | select('defined')
-             | list
-             + ['84.226.19.128']
              | unique
              | list }}
-        firewall_control_plane_eth0_ips: >-
-          {{ (groups['kubernetes-control-plane'] | default([]))
-             | map('extract', hostvars, 'eth0_ip')
+        firewall_k3s_api_allowed_ips: >-
+          {{ ((groups['kubernetes_control_plane'] | default([])) + (groups['kubernetes_agent'] | default([])))
+             | map('extract', hostvars, 'cluster_network_ip')
              | select('defined')
-             | unique
              | list
-             + ['84.226.19.128']
+             + (firewall_k3s_api_extra_allowed_ips | default([]))
+             | unique
+             | list }}
+        firewall_control_plane_network_ips: >-
+          {{ (groups['kubernetes_control_plane'] | default([]))
+             | map('extract', hostvars, 'cluster_network_ip')
+             | select('defined')
              | unique
              | list }}
       tags: [firewall]
@@ -40,7 +43,7 @@
     - name: Deploy nftables configuration from template
       ansible.builtin.template:
         src: nftables.conf.j2
-        dest: "{{ '/etc/sysconfig/nftables.conf' if ansible_os_family == 'RedHat' else '/etc/nftables.conf' }}"
+        dest: "{{ '/etc/sysconfig/nftables.conf' if ansible_facts.os_family == 'RedHat' else '/etc/nftables.conf' }}"
         owner: root
         group: root
         mode: "0644"
