@@ -191,7 +191,7 @@ tailscale up
 4. Deploy:
 
 ```bash
-ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
+uv run ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
 ```
 
 5. Reboot (to ensure that the new mainline kernel is loaded)
