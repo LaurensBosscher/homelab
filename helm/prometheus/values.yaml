@@ -16,5 +16,14 @@ kube-prometheus-stack:
         memory: 256Mi
       limits:
         memory: 512Mi
+  kube-state-metrics:
+    image:
+      tag: v2.19.1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
   alertmanager:
     enabled: false
