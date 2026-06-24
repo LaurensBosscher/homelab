@@ -136,6 +136,8 @@ spec:
         app: norish
         component: db
     spec:
+      securityContext:
+        fsGroup: 999
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
