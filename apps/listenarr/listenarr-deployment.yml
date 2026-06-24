@@ -39,7 +39,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
           ports:
-            - containerPort: 5000
+            - containerPort: 4545
               name: http
           env:
             - name: PUID
@@ -65,15 +65,15 @@ spec:
               memory: 1Gi
           readinessProbe:
             httpGet:
-              path: /api/system/health
-              port: 5000
+              path: /api/v1/system/ready
+              port: 4545
             initialDelaySeconds: 20
             periodSeconds: 60
             timeoutSeconds: 5
           livenessProbe:
             httpGet:
-              path: /api/system/health
-              port: 5000
+              path: /api/v1/system/ready
+              port: 4545
             initialDelaySeconds: 60
             periodSeconds: 60
             timeoutSeconds: 5

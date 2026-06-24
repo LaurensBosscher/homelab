@@ -8,8 +8,8 @@ spec:
   type: ClusterIP
   ports:
     - name: http
-      port: 5000
-      targetPort: 5000
+      port: 4545
+      targetPort: 4545
       protocol: TCP
   selector:
     app: listenarr
