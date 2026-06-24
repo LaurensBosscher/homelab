@@ -310,7 +310,10 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: postgres
-          image: docker.io/library/postgres:18.4
+          image: reg.mini.dev/postgres:18.4
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           ports:
             - containerPort: 5432
           envFrom:
