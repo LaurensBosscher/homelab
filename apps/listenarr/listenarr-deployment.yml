@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: listenarr
-          image: docker.io/therobbiedavis/listenarr:canary-0.2.40
+          image: ghcr.io/listenarrs/listenarr:canary-1.1.1
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
