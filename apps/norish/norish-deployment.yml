@@ -156,7 +156,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: postgres
-          image: postgres:18.4-alpine
+          image: reg.mini.dev/postgres:18.4
           ports:
             - containerPort: 5432
           securityContext:

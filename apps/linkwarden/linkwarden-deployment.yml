@@ -209,7 +209,10 @@ spec:
                       - us
       containers:
         - name: postgres
-          image: postgres:18.4
+          image: reg.mini.dev/postgres:18.4
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           env:
             - name: POSTGRES_USER
               valueFrom:
