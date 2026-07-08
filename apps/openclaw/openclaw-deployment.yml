@@ -38,14 +38,14 @@ spec:
           image: ghcr.io/openclaw/openclaw:2026.4.1
           imagePullPolicy: IfNotPresent
           command:
-            - node
-            - dist/index.js
-            - gateway
-            - --bind
-            - lan
-            - --port
-            - "18789"
-            - --allow-unconfigured
+            - /bin/sh
+            - -c
+            - |
+              # Self-heal config/state/plugin drift before the gateway boots.
+              # Runs on every (re)start so upgrade breakage auto-repairs.
+              # Doctor is best-effort: a failure must not brick the gateway.
+              openclaw doctor --yes --fix || echo "openclaw doctor --fix failed (non-fatal), starting gateway anyway"
+              exec node dist/index.js gateway --bind lan --port 18789 --allow-unconfigured
           ports:
             - containerPort: 18789
             - containerPort: 18790
