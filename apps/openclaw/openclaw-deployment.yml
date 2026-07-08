@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: ghcr.io/openclaw/openclaw:2026.4.1
+          image: ghcr.io/openclaw/openclaw:2026.6.11
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -85,13 +85,15 @@ spec:
             limits:
               memory: 4Gi
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /healthz
               port: 18789
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /readyz
               port: 18789
             initialDelaySeconds: 10
             periodSeconds: 60
