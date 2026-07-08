@@ -10,4 +10,4 @@ spec:
   storageClassName: longhorn-2replicas-europe
   resources:
     requests:
-      storage: 5Gi
+      storage: 20Gi
