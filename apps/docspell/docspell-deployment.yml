@@ -403,7 +403,7 @@ spec:
           command:
             - bash
             - -c
-            - precreate-core docspell; exec solr-foreground -Dsolr.modules=analysis-extras
+            - precreate-core docspell; exec solr-foreground -Dsolr.modules=analysis-extras -Dsolr.cloud.enabled=false
           securityContext:
             runAsUser: 8983
             runAsGroup: 8983
