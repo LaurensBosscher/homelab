@@ -12,7 +12,11 @@ RUN if command -v apk >/dev/null; then \
       apk add --no-cache bind-tools curl git github-cli jq kubectl openssh-client ripgrep; \
     elif command -v apt-get >/dev/null; then \
       apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl dnsutils gh git jq kubernetes-client openssh-client ripgrep && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
+      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+      apt-get update && \
+      apt-get install -y gh=2.96.0 && \
       rm -rf /var/lib/apt/lists/*; \
     else \
       echo "Unsupported package manager" >&2; \
