@@ -9,10 +9,10 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
 
 RUN if command -v apk >/dev/null; then \
-      apk add --no-cache git ripgrep; \
+      apk add --no-cache bind-tools curl git jq kubectl openssh-client ripgrep; \
     elif command -v apt-get >/dev/null; then \
       apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git ripgrep && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
       rm -rf /var/lib/apt/lists/*; \
     else \
       echo "Unsupported package manager" >&2; \
