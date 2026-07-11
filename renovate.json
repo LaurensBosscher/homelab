@@ -43,7 +43,6 @@
       "matchStrings": [
         "apt-get install -y gh=(?<currentValue>[\\d.]+)"
       ],
-      "depName": "cli/cli",
       "datasourceTemplate": "github-tags",
       "extractVersionTemplate": "^v(?<version>.*)$"
     }
