@@ -5,8 +5,36 @@
   ],
   "enabledManagers": [
     "argocd",
+    "dockerfile",
     "kustomize",
     "kubernetes"
+  ],
+  "dockerfile": {
+    "managerFilePatterns": [
+      "/(^|/)Dockerfile$/"
+    ]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)openclaw/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "(?:RUN bun install\\s+|\\s+)(?<depName>(?:@[\\w.-]+/)?[\\w.-]+)@(?<currentValue>[^\\s&]+)"
+      ],
+      "datasourceTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)openclaw/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "uv tool install (?<depName>[\\w.-]+)==(?<currentValue>[^\\s&]+)"
+      ],
+      "datasourceTemplate": "pypi"
+    }
   ],
   "argocd": {
     "managerFilePatterns": [
@@ -39,11 +67,10 @@
     },
     {
       "matchPackageNames": [
-        "getmeili/meilisearch",
-        "ghcr.io/openclaw/openclaw"
+        "getmeili/meilisearch"
       ],
       "enabled": false,
-      "description": "Meilisearch needs to be updated manually, Every OpenClaw release breaks something new"
+      "description": "Meilisearch needs to be updated manually"
     }
   ]
 }
