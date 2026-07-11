@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.5-debian
+FROM oven/bun:1.3.14-debian
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh && mkdir -p /home/bun/ && chown bun:bun /home/bun/
 
