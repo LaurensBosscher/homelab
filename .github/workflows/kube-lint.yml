@@ -1,0 +1,114 @@
+name: Kubernetes Deployment Linter
+
+on:
+  pull_request:
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '.github/workflows/kube-lint.yml'
+  workflow_dispatch:
+
+jobs:
+  k8s-lint:
+    name: Lint Kubernetes manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.31.0'
+
+      - name: Install kubeval
+        run: |
+          curl -L https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
+          sudo mv kubeval /usr/local/bin
+
+      - name: Find Kubernetes manifests
+        id: find-manifests
+        run: |
+          # Find all YAML files that look like Kubernetes manifests
+          MANIFESTS=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -E "(deployment|service|configmap|secret|ingress|statefulset|daemonset|job|cronjob)" | tr '\n' ' ')
+          echo "manifests=$MANIFESTS" >> $GITHUB_OUTPUT
+
+          if [ -z "$MANIFESTS" ]; then
+            echo "No Kubernetes manifests found to lint"
+            exit 0
+          fi
+          
+          echo "Found manifests: $MANIFESTS"
+
+      - name: Validate manifests with kubeval
+        if: steps.find-manifests.outputs.manifests != ''
+        run: |
+          # Validate each manifest
+          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
+            echo "Validating $manifest..."
+            kubeval "$manifest" --ignore-missing-schemas || {
+              echo "❌ Validation failed for $manifest"
+              exit 1
+            }
+            echo "✅ Validation passed for $manifest"
+          done
+        continue-on-error: false
+
+      - name: Check for deprecated API versions
+        if: steps.find-manifests.outputs.manifests != ''
+        run: |
+          # Check for commonly deprecated API versions
+          DEPRECATED_PATTERNS=(
+            "apiVersion: extensions/v1beta1"
+            "apiVersion: apps/v1beta1"
+            "apiVersion: apps/v1beta2"
+            "apiVersion: batch/v1beta1"
+            "apiVersion: networking.k8s.io/v1beta1"
+          )
+          
+          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
+            for pattern in "${DEPRECATED_PATTERNS[@]}"; do
+              if grep -q "$pattern" "$manifest"; then
+                echo "❌ Found deprecated API version in $manifest: $pattern"
+                exit 1
+              fi
+            done
+          done
+          
+          echo "✅ No deprecated API versions found"
+
+      - name: Check for best practices
+        if: steps.find-manifests.outputs.manifests != ''
+        run: |
+          VIOLATIONS=0
+          
+          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
+            echo "Checking best practices for $manifest..."
+            
+            # Check for resource limits/requests
+            if grep -q "kind: Deployment" "$manifest"; then
+              if ! grep -q "resources:" "$manifest"; then
+                echo "⚠️ Warning: No resource limits/requests defined in $manifest"
+                VIOLATIONS=$((VIOLATIONS + 1))
+              fi
+              
+              # Check for liveness/readiness probes
+              if ! grep -q "livenessProbe:" "$manifest" && ! grep -q "readinessProbe:" "$manifest"; then
+                echo "⚠️ Warning: No liveness or readiness probes defined in $manifest"
+                VIOLATIONS=$((VIOLATIONS + 1))
+              fi
+            fi
+            
+            # Check for image tags (avoid 'latest')
+            if grep -q "image:.*:latest" "$manifest"; then
+              echo "⚠️ Warning: Using 'latest' image tag in $manifest (consider using specific tags)"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done
+          
+          if [ $VIOLATIONS -gt 0 ]; then
+            echo "⚠️ Found $VIOLATIONS best practice violation(s)"
+            echo "These are warnings only and will not fail the check"
+          else
+            echo "✅ All best practices checks passed"
+          fi
