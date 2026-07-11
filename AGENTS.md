@@ -163,6 +163,7 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 
 ## Gotchas
 - ArgoCD auto-deploys on ANY push to `apps/`
+- Always bump the OpenClaw image version in `.github/workflows/build-openclaw.yml` and `apps/openclaw/openclaw-deployment.yml` when editing `openclaw/Dockerfile`.
 - No CI testing - manual validation only
 - Production homelab - minimal changes only
 - Renovate creates PRs immediately (no auto-merge)
