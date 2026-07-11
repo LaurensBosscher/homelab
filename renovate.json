@@ -34,6 +34,18 @@
         "uv tool install (?<depName>[\\w.-]+)==(?<currentValue>[^\\s&]+)"
       ],
       "datasourceTemplate": "pypi"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)openclaw/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "apt-get install -y gh=(?<currentValue>[\\d.]+)"
+      ],
+      "depName": "cli/cli",
+      "datasourceTemplate": "github-tags",
+      "extractVersionTemplate": "^v(?<version>.*)$"
     }
   ],
   "argocd": {
