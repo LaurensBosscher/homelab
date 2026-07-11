@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/openclaw
+  IMAGE_NAME: ${{ github.repository_owner }}/openclaw-tools
 
 jobs:
   build-and-push:
@@ -44,9 +44,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
             type=sha,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=2026.6.11-4
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
