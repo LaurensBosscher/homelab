@@ -1,11 +1,12 @@
-FROM oven/bun:1.3.5-debian
+FROM oven/bun:1.3.14-debian
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh && mkdir -p /home/bun/ && chown bun:bun /home/bun/
 
 USER bun
 WORKDIR /home/bun/
 
-RUN bun install opencode-ai oh-my-opencode@latest; bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
+RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 && \
+    bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no
 
 RUN echo 'export PATH="$HOME/node_modules/opencode-ai/bin/:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ENV NODE_ENV=production
