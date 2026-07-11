@@ -8,6 +8,9 @@ on:
       - '.github/workflows/kube-lint.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   k8s-lint:
     name: Lint Kubernetes manifests
