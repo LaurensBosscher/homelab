@@ -179,7 +179,7 @@ data:
                 href: https://opencode.bosscher.ch
                 description: AI coding agent
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terminal.svg
-                siteMonitor: http://opencode.opencode.svc.cluster.local:4096
+                siteMonitor: http://openclaw-opencode.openclaw.svc.cluster.local:4096
             - OpenRouter:
                 href: https://openrouter.ai/chat
                 description: OpenRouter AI Chat

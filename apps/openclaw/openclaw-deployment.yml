@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: ghcr.io/openclaw/openclaw:2026.6.11
+          image: ghcr.io/laurensbosscher/openclaw-tools:2026.6.11-4
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -95,6 +95,55 @@ spec:
             httpGet:
               path: /readyz
               port: 18789
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 5
+        - name: opencode
+          image: ghcr.io/laurensbosscher/openclaw-tools:2026.6.11-4
+          imagePullPolicy: IfNotPresent
+          command:
+            - opencode
+            - web
+            - --port
+            - "4096"
+            - --hostname
+            - 0.0.0.0
+          ports:
+            - name: opencode-http
+              containerPort: 4096
+              protocol: TCP
+          env:
+            - name: HOME
+              value: /home/node
+            - name: TZ
+              value: Europe/Zurich
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: data
+              mountPath: /home/node/
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 4Gi
+          livenessProbe:
+            httpGet:
+              path: /global/health
+              port: 4096
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /global/health
+              port: 4096
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5

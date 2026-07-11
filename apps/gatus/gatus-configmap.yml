@@ -333,8 +333,8 @@ data:
           - "[RESPONSE_TIME] < 2500"
 
       - name: opencode
-        group: productivity
-        url: "http://opencode.opencode.svc.cluster.local:4096"
+        group: ai
+        url: "http://openclaw-opencode.openclaw.svc.cluster.local:4096"
         interval: 5m
         conditions:
           - "[STATUS] == 200"

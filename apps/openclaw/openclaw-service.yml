@@ -21,6 +21,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: openclaw-opencode
+  labels:
+    app.kubernetes.io/name: openclaw
+    component: opencode
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: openclaw
+    component: gateway
+  ports:
+    - name: http
+      port: 4096
+      targetPort: opencode-http
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: openclaw-chrome
   labels:
     app.kubernetes.io/name: openclaw
