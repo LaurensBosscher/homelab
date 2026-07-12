@@ -34,7 +34,7 @@ spec:
                       - us
       containers:
         - name: wealthfolio
-          image: wealthfolio/wealthfolio:latest
+          image: wealthfolio/wealthfolio:3.6.1
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
