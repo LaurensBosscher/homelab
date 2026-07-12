@@ -165,6 +165,11 @@ data:
               href: https://weekend.bosscher.ch
               description: Weekend dashboard
               icon: https://cdn-icons-png.flaticon.com/512/1090/1090663.png
+          - Hikes:
+              href: https://hikes.bosscher.ch
+              description: Hiking trail dashboard
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/komoot.png
+              siteMonitor: https://hikes.bosscher.ch
         - AI:
             - Grok:
                 href: https://grok.com/
