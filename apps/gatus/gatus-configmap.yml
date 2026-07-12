@@ -339,3 +339,11 @@ data:
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
+
+      - name: wealthfolio
+        group: productivity
+        url: "http://wealthfolio.wealthfolio.svc.cluster.local:8088/api/v1/healthz"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"

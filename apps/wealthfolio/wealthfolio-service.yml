@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wealthfolio
+  labels:
+    app.kubernetes.io/name: wealthfolio
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8088
+      targetPort: http
+      protocol: TCP
+  selector:
+    app: wealthfolio

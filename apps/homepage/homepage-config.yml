@@ -175,6 +175,11 @@ data:
               description: Twitter bookmarks dashboard
               icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
               siteMonitor: https://bookmarks.bosscher.ch
+          - Wealthfolio:
+              href: https://wealthfolio.bosscher.ch
+              description: Private portfolio tracker
+              icon: https://wealthfolio.app/logo.svg
+              siteMonitor: http://wealthfolio.wealthfolio.svc.cluster.local:8088
         - AI:
             - Grok:
                 href: https://grok.com/
