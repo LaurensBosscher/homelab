@@ -170,6 +170,11 @@ data:
               description: Hiking trail dashboard
               icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/komoot.png
               siteMonitor: https://hikes.bosscher.ch
+          - Bookmarks:
+              href: https://bookmarks.bosscher.ch
+              description: Twitter bookmarks dashboard
+              icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
+              siteMonitor: https://bookmarks.bosscher.ch
         - AI:
             - Grok:
                 href: https://grok.com/
