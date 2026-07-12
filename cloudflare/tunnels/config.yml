@@ -74,3 +74,5 @@
   service: http://openclaw-opencode.openclaw.svc.cluster.local:4096
 - hostname: openclaw.bosscher.ch
   service: http://openclaw-gateway.openclaw.svc.cluster.local:18789
+- hostname: wealthfolio.bosscher.ch
+  service: http://wealthfolio.wealthfolio.svc.cluster.local:8088
