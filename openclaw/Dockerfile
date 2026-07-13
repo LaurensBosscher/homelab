@@ -31,12 +31,13 @@ RUN uv tool install ruff==0.15.21 && \
 
 WORKDIR /opt/openclaw-tools
 
-RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 && \
+RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @tobilu/qmd && \
     ln -s /opt/openclaw-tools/node_modules/.bin/opencode /usr/local/bin/opencode && \
     ln -s /opt/openclaw-tools/node_modules/.bin/oh-my-openagent /usr/local/bin/oh-my-openagent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/sg /usr/local/bin/sg && \
     ln -s /opt/openclaw-tools/node_modules/.bin/ast-grep /usr/local/bin/ast-grep && \
     ln -s /opt/openclaw-tools/node_modules/.bin/wrangler /usr/local/bin/wrangler && \
+    ln -s /opt/openclaw-tools/node_modules/.bin/qmd /usr/local/bin/qmd && \
     rm -rf /root/.bun/install/cache
 
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
