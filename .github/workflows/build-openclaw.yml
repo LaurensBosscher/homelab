@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'openclaw/**'
+      - '.github/workflows/build-openclaw.yml'
   workflow_dispatch:
     inputs:
       commit_hash:
