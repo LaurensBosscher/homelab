@@ -19,11 +19,14 @@ spec:
         app.kubernetes.io/name: openclaw
         component: gateway
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -35,7 +38,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: ghcr.io/laurensbosscher/openclaw-tools:2026.7.1-1
+          image: ghcr.io/laurensbosscher/openclaw-tools:2026.7.1-2
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -73,6 +76,10 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: data
               mountPath: /home/node/
@@ -99,7 +106,7 @@ spec:
             periodSeconds: 60
             timeoutSeconds: 5
         - name: opencode
-          image: ghcr.io/laurensbosscher/openclaw-tools:2026.7.1-1
+          image: ghcr.io/laurensbosscher/openclaw-tools:2026.7.1-2
           imagePullPolicy: IfNotPresent
           command:
             - opencode
@@ -122,6 +129,10 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: data
               mountPath: /home/node/
