@@ -68,11 +68,6 @@
   },
   "packageRules": [
     {
-      "matchDepTypes": [""],
-      "excludeDeprecated": true,
-      "description": "Ignore beta, alpha, rc, preview, dev and other pre-release versions"
-    },
-    {
       "matchManagers": [
         "kubernetes",
         "argocd",
