@@ -31,7 +31,8 @@ spec:
         - name: fusion
           image: ghcr.io/0x2e/fusion:1.1.1
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -64,7 +65,7 @@ spec:
 
               path: /
 
-              port: 8080
+              port: http
 
             initialDelaySeconds: 5
 
