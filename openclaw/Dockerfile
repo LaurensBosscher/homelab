@@ -39,6 +39,11 @@ RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 w
     ln -s /opt/openclaw-tools/node_modules/.bin/wrangler /usr/local/bin/wrangler && \
     rm -rf /root/.bun/install/cache /root/.npm /tmp/npm-*
 
+# Remove QMD remnants from the base image (replaced by builtin sqlite-vec engine)
+RUN rm -rf /home/node/node_modules/@tobilu/qmd \
+        /home/node/node_modules/node-llama-cpp \
+        /home/node/.config/qmd
+
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
 
 USER node
