@@ -6,6 +6,17 @@
     enabled: true
   tags: [iscsid]
 
+- name: Configure iscsid to auto-restart on exit
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/iscsid.service.d/override.conf
+    content: |
+      [Service]
+      Restart=on-failure
+      RestartSec=5s
+    mode: "0644"
+  notify: daemon reload
+  tags: [iscsid]
+
 - name: Check if SELinux Longhorn module exists
   ansible.builtin.shell: semodule -l | grep -q local_longhorn
   register: selinux_module
