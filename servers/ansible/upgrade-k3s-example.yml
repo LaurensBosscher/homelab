@@ -7,7 +7,7 @@
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    k3s_version: v1.35.0+k3s1  # Change this to your desired version
+    k3s_version: v1.36.2+k3s1  # Change this to your desired version
   
   tasks:
     - name: Display target version

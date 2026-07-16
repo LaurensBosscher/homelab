@@ -42,6 +42,7 @@
 
 - name: Kubernetes control plane configuration
   hosts: kubernetes_control_plane
+  serial: 1
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -53,6 +54,7 @@
 
 - name: Kubernetes agent node configuration
   hosts: kubernetes_agent
+  serial: 1
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3

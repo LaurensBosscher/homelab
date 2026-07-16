@@ -13,6 +13,7 @@
         url: "https://github.com/derailed/k9s/releases/download/{{ k9s_version }}/k9s_Linux_amd64.tar.gz"
         dest: /tmp/k9s_Linux_amd64.tar.gz
         mode: "0644"
+        timeout: 60
       become: true
 
     - name: Extract k9s
@@ -40,5 +41,5 @@
         - /tmp/LICENSE
         - /tmp/README.md
       become: true
-  when: k9s_check.rc != 0
+  when: k9s_check.rc != 0 or k9s_version not in k9s_check.stdout
   tags: [k9s]

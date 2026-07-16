@@ -1,9 +1,9 @@
 ---
-- name: Restrict SSH ListenAddress if ssh_listen_address specified
+- name: Listen for SSH on all IPv4 interfaces
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^#?ListenAddress"
-    line: "ListenAddress {{ tailscale_ip }}"
+    line: "ListenAddress 0.0.0.0"
     create: no
   notify: restart sshd
   tags: [ssh]

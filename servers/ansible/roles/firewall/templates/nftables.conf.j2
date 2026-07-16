@@ -42,7 +42,10 @@ table inet homelab {
     # If you want stricter tailnet segmentation, replace this with per-port rules.
     iifname "tailscale0" accept comment "Allow all from tailnet"
 
-    # --- Defense-in-depth: never allow SSH from non-tailscale ---
+    # --- SSH: Tailscale plus explicitly approved fallback source IPs ---
+{% if firewall_k3s_api_extra_allowed_ips | default([]) | length > 0 %}
+    iifname != "tailscale0" tcp dport 22 ip saddr { {{ firewall_k3s_api_extra_allowed_ips | join(', ') }} } accept comment "SSH fallback (approved sources)"
+{% endif %}
     iifname != "tailscale0" tcp dport 22 drop comment "Deny SSH off-tailnet"
 
     # --- Kubernetes / K3s node-to-node traffic over cluster network/WAN ---
