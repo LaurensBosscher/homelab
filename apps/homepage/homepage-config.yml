@@ -248,11 +248,6 @@ data:
                 description: PDF conversion tool
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bentopdf.png
                 siteMonitor: http://bentopdf.bentopdf.svc.cluster.local:8080
-            - Docspell:
-                href: https://docspell.bosscher.ch/
-                description: Document management
-                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docspell.png
-                siteMonitor: http://docspell-restserver.docspell.svc.cluster.local:7880
         - Media:
             - Prowlarr:
                 href: https://prowlarr.bosscher.ch/
