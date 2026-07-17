@@ -123,7 +123,6 @@ I'm currently running the following apps:
 - [Bookshelf](https://github.com/pennydreadful/bookshelf) - Self-hosted book catalog for web novels and fanfiction
 - [Calibre Web](https://github.com/crocodilestick/Calibre-Web-Automated) - Enhanced version of Calibre web
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
-- [Docspell](https://docspell.org/) - Document management and archiving system
 - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) - Proxy server to bypass Cloudflare protection
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
 - [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring and status page

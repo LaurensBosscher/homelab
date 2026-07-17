@@ -205,14 +205,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: docspell
-        group: media
-        url: "http://docspell-restserver.docspell.svc.cluster.local:7880"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: rdt-client
         group: media
         url: "http://rdt-client.rdt-client.svc.cluster.local:6500"
