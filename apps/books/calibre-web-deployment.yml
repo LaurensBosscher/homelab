@@ -58,19 +58,12 @@ spec:
             limits:
               memory: 512Mi
           readinessProbe:
-
             httpGet:
-
               path: /
-
-              port: http
-
+              port: 8083
             initialDelaySeconds: 5
-
             periodSeconds: 5
-
             timeoutSeconds: 3
-
             failureThreshold: 3
 
           
