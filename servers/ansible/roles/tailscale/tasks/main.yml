@@ -35,6 +35,22 @@
     enabled: true
   tags: [tailscale]
 
+- name: Read Tailscale preferences
+  ansible.builtin.command: tailscale debug prefs
+  register: tailscale_preferences
+  changed_when: false
+  failed_when: false
+  tags: [tailscale]
+
+- name: Disable accepted subnet routes
+  ansible.builtin.command: tailscale set --accept-routes=false
+  when:
+    - tailscale_preferences.rc == 0
+    - >-
+      tailscale_preferences.stdout is search('"RouteAll": true')
+  become: true
+  tags: [tailscale]
+
 - name: Create udev rule for Tailscale MTU
   ansible.builtin.copy:
     content: |

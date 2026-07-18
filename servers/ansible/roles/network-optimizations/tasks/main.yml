@@ -43,7 +43,7 @@
 - name: Define desired ethtool feature states
   ansible.builtin.set_fact:
     network_ethtool_features:
-      - { cmd: "tx-udp-segmentation", check: "tx-udp-segmentation", state: "on" }
+      - { cmd: "tx-udp-segmentation", check: "tx-udp-segmentation", state: "off" }
       - { cmd: "rx-udp-gro-forwarding", check: "rx-udp-gro-forwarding", state: "on" }
       - { cmd: "rx-gro-list", check: "rx-gro-list", state: "off" }
       - { cmd: "tx-checksum-ip-generic", check: "tx-checksum-ip-generic", state: "on" }
@@ -174,7 +174,7 @@
         fi
       }
 
-      apply_feature "tx-udp-segmentation" "tx-udp-segmentation" "on"
+      apply_feature "tx-udp-segmentation" "tx-udp-segmentation" "off"
       apply_feature "rx-udp-gro-forwarding" "rx-udp-gro-forwarding" "on"
       apply_feature "rx-gro-list" "rx-gro-list" "off"
       apply_feature "tx-checksum-ip-generic" "tx-checksum-ip-generic" "on"
