@@ -70,7 +70,7 @@ spec:
                       - us
       serviceAccountName: kite
       containers:
-        - image: ghcr.io/kite-org/kite:v0.14.0
+        - image: ghcr.io/kite-org/kite:v0.14.1
           name: kite
           env:
             - name: KITE_CONFIG_FILE
