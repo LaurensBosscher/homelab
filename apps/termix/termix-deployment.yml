@@ -68,7 +68,7 @@ spec:
             [
               "/bin/sh",
               "-c",
-              "tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock & sleep 5 && tailscale --socket=/var/run/tailscale/tailscaled.sock up --accept-routes --netfilter-mode=off --authkey=$TS_AUTHKEY && wait",
+              "tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock & sleep 5 && tailscale --socket=/var/run/tailscale/tailscaled.sock up --accept-routes --netfilter-mode=off --authkey=$TS_AUTHKEY || echo '[tailscale] auth failed, running in offline mode' ; wait",
             ]
           env:
             - name: TS_USERSPACE
