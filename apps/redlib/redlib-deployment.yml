@@ -35,7 +35,7 @@ spec:
                       - zurich
       containers:
         - name: redlib
-          image: ghcr.io/evrial/redlib:latest
+          image: ghcr.io/evrial/redlib:sha-1c06ad0
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
