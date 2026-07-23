@@ -31,12 +31,14 @@ RUN uv tool install ruff==0.15.21 && \
 
 WORKDIR /opt/openclaw-tools
 
-RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 && \
+RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 && \
     ln -s /opt/openclaw-tools/node_modules/.bin/opencode /usr/local/bin/opencode && \
     ln -s /opt/openclaw-tools/node_modules/.bin/oh-my-openagent /usr/local/bin/oh-my-openagent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/sg /usr/local/bin/sg && \
     ln -s /opt/openclaw-tools/node_modules/.bin/ast-grep /usr/local/bin/ast-grep && \
     ln -s /opt/openclaw-tools/node_modules/.bin/wrangler /usr/local/bin/wrangler && \
+    ln -s /opt/openclaw-tools/node_modules/.bin/gws /usr/local/bin/gog && \
+    ln -s /opt/openclaw-tools/node_modules/.bin/summarize /usr/local/bin/summarize && \
     rm -rf /root/.bun/install/cache /root/.npm /tmp/npm-*
 
 # Remove QMD remnants from the base image (replaced by builtin sqlite-vec engine)
