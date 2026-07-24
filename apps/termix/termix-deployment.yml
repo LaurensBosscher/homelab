@@ -116,6 +116,7 @@ spec:
           persistentVolumeClaim:
             claimName: termix-data
         - name: tailscale-state
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: termix-tailscale-state
         - name: tailscale-socket
           emptyDir: {}

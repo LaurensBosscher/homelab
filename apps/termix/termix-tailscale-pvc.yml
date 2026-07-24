@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: termix-tailscale-state
+  labels:
+    app.kubernetes.io/name: termix
+    app.kubernetes.io/part-of: homelab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-2replicas-compressed-europe
+  resources:
+    requests:
+      storage: 100Mi
