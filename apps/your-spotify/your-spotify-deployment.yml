@@ -180,7 +180,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: mongo
-          image: "reg.mini.dev/mongo:8.3.4"
+          image: "reg.mini.dev/mongo:v8.3.7"
           securityContext:
             runAsUser: 999
             runAsGroup: 999
