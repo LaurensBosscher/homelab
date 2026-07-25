@@ -38,6 +38,7 @@
     - { role: crowdsec }
     - { role: k3s-oom-protection }
     - { role: k3s-install }
+    - { role: k3s-cert-renewal }
     - { role: firewall }
 
 - name: Kubernetes control plane configuration

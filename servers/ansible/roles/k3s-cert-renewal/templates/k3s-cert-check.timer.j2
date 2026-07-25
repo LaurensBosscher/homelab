@@ -1,0 +1,12 @@
+[Unit]
+Description=Monthly k3s certificate renewal check
+
+[Timer]
+# Run on the 1st of every month at 03:00
+OnCalendar=*-*-01 03:00:00
+# Randomize start by 30 min to avoid all nodes restarting simultaneously
+RandomizedDelaySec=30m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

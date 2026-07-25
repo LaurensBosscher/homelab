@@ -1,0 +1,10 @@
+[Unit]
+Description=K3s certificate auto-renewal check
+After={{ 'k3s.service' if inventory_hostname in groups['kubernetes_control_plane'] else 'k3s-agent.service' }}
+Wants={{ 'k3s.service' if inventory_hostname in groups['kubernetes_control_plane'] else 'k3s-agent.service' }}
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/k3s-cert-check.sh
+StandardOutput=journal
+StandardError=journal
