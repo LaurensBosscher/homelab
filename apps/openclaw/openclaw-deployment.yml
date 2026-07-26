@@ -234,6 +234,7 @@ spec:
             - "--remote-debugging-address=0.0.0.0"
             - "--remote-debugging-port=3000"
             - "--headless"
+            - "--remote-allow-origins=*"
           ports:
             - containerPort: 3000
           env:
