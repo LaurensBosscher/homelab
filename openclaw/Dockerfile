@@ -40,6 +40,7 @@ RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-gre
     ln -s /opt/openclaw-tools/node_modules/.bin/gws /usr/local/bin/gog && \
     ln -s /opt/openclaw-tools/node_modules/.bin/summarize /usr/local/bin/summarize && \
     ln -s /opt/openclaw-tools/node_modules/.bin/agent-browser /usr/local/bin/agent-browser && \
+    chmod +x /opt/openclaw-tools/node_modules/agent-browser/bin/agent-browser-linux-x64 && \
     rm -rf /root/.bun/install/cache /root/.npm /tmp/npm-*
 
 # Remove QMD remnants from the base image (replaced by builtin sqlite-vec engine)
