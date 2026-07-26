@@ -12,7 +12,7 @@ RUN if command -v apk >/dev/null; then \
       apk add --no-cache bind-tools curl git github-cli jq kubectl openssh-client ripgrep; \
     elif command -v apt-get >/dev/null; then \
       apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends chromium curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
       apt-get update && \
@@ -31,7 +31,7 @@ RUN uv tool install ruff==0.15.21 && \
 
 WORKDIR /opt/openclaw-tools
 
-RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 && \
+RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 && \
     ln -s /opt/openclaw-tools/node_modules/.bin/opencode /usr/local/bin/opencode && \
     ln -s /opt/openclaw-tools/node_modules/.bin/oh-my-openagent /usr/local/bin/oh-my-openagent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/sg /usr/local/bin/sg && \
@@ -39,6 +39,7 @@ RUN bun install opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 w
     ln -s /opt/openclaw-tools/node_modules/.bin/wrangler /usr/local/bin/wrangler && \
     ln -s /opt/openclaw-tools/node_modules/.bin/gws /usr/local/bin/gog && \
     ln -s /opt/openclaw-tools/node_modules/.bin/summarize /usr/local/bin/summarize && \
+    ln -s /opt/openclaw-tools/node_modules/.bin/agent-browser /usr/local/bin/agent-browser && \
     rm -rf /root/.bun/install/cache /root/.npm /tmp/npm-*
 
 # Remove QMD remnants from the base image (replaced by builtin sqlite-vec engine)
@@ -47,5 +48,6 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
         /home/node/.config/qmd
 
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
+ENV CHROME_PATH=/usr/bin/chromium
 
 USER node
