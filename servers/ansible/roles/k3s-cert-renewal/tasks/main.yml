@@ -1,0 +1,29 @@
+---
+- name: Create k3s certificate renewal check script
+  ansible.builtin.template:
+    src: k3s-cert-check.sh.j2
+    dest: /usr/local/bin/k3s-cert-check.sh
+    mode: "0750"
+    owner: root
+    group: root
+
+- name: Create systemd service for k3s cert renewal
+  ansible.builtin.template:
+    src: k3s-cert-check.service.j2
+    dest: /etc/systemd/system/k3s-cert-check.service
+    mode: "0644"
+  notify: reload systemd
+
+- name: Create systemd timer for k3s cert renewal
+  ansible.builtin.template:
+    src: k3s-cert-check.timer.j2
+    dest: /etc/systemd/system/k3s-cert-check.timer
+    mode: "0644"
+  notify: reload systemd
+
+- name: Enable and start k3s cert renewal timer
+  ansible.systemd:
+    name: k3s-cert-check.timer
+    enabled: true
+    state: started
+    daemon_reload: true
