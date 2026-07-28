@@ -63,10 +63,9 @@ RUN uv pip install --system moonshine-voice && \
     uv pip uninstall --system moonshine-voice && \
     uv cache clean
 
-# Copy voice transcription scripts
+# Copy voice transcription CLI script
 COPY scripts/transcribe.py /usr/local/bin/transcribe.py
-COPY scripts/transcribe_server.py /usr/local/bin/transcribe_server.py
-RUN chmod +x /usr/local/bin/transcribe.py /usr/local/bin/transcribe_server.py
+RUN chmod +x /usr/local/bin/transcribe.py
 
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
 ENV CHROME_PATH=/usr/bin/brave-browser

@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
 """
-Transcribe audio files using Moonshine Voice (on-device ASR).
+Transcribe audio files using Moonshine Voice CLI (on-device ASR).
 Optimized for N100 CPU — uses the Tiny model (34M params).
 
 Usage:
     uv run scripts/transcribe.py <audio_file> [--language en]
 
-Telegram voice notes arrive as OGG/Opus. This script:
-1. Converts OGG/Opus → WAV (16kHz mono 16-bit) via ffmpeg
-2. Transcribes using Moonshine's Transcriber API
-3. Prints the transcript to stdout
+Handles any audio format ffmpeg supports (OGG/Opus, MP3, WAV, M4A, etc.).
+Converts to 16kHz mono WAV, then calls moonshine-voice transcribe.
 
-Dependencies (inline PEP 723):
-    - moonshine-voice (ASR model)
-    - wave (stdlib, for WAV handling)
-
-The Tiny model downloads on first use (~50MB) and caches in
-~/.cache/moonshine_voice/.
+Dependencies (inline PEP 723): none beyond stdlib + moonshine-voice.
+ffmpeg must be installed system-wide.
 """
 
 # /// script
@@ -40,9 +34,9 @@ def convert_to_wav(input_path: str, output_path: str) -> bool:
         subprocess.run(
             [
                 "ffmpeg", "-y", "-i", input_path,
-                "-ar", "16000",      # 16kHz sample rate (Moonshine requirement)
-                "-ac", "1",          # Mono
-                "-acodec", "pcm_s16le",  # 16-bit PCM
+                "-ar", "16000",
+                "-ac", "1",
+                "-acodec", "pcm_s16le",
                 "-loglevel", "error",
                 output_path,
             ],
@@ -59,57 +53,33 @@ def convert_to_wav(input_path: str, output_path: str) -> bool:
 
 
 def transcribe_wav(wav_path: str, language: str = "en") -> str:
-    """Transcribe a WAV file using Moonshine Voice."""
-    import wave
-
-    # Read WAV file
-    with wave.open(wav_path, "rb") as wf:
-        frames = wf.readframes(wf.getnframes())
-        sample_rate = wf.getframerate()
-        n_channels = wf.getnchannels()
-        sampwidth = wf.getsampwidth()
-
-    if sample_rate != 16000:
-        print(f"Warning: expected 16kHz, got {sample_rate}Hz", file=sys.stderr)
-    if n_channels != 1:
-        print(f"Warning: expected mono, got {n_channels} channels", file=sys.stderr)
-
-    # Convert to Moonshine audio format
-    # Moonshine expects float32 samples in [-1.0, 1.0]
-    import struct
-    samples = struct.unpack(f"<{len(frames)//2}h", frames)
-    audio_data = [s / 32768.0 for s in samples]
-
-    # Use Moonshine's Transcriber
-    from moonshine_voice import Transcriber, Stream
-    from moonshine_voice.moonshine_api import get_model_for_language
-
-    model_path, model_arch = get_model_for_language(language)
-
-    transcriber = Transcriber(
-        model_path=model_path,
-        model_arch=model_arch,
-    )
-
-    stream = transcriber.create_stream()
-    stream.add_audio(audio_data)
-    stream.end_stream()
-
-    # Wait for result
-    transcript_lines = []
-    while True:
-        event = stream.next_event()
-        if event is None:
-            break
-        if hasattr(event, 'text') and event.text:
-            transcript_lines.append(event.text)
-
-    return " ".join(transcript_lines).strip()
+    """Transcribe a WAV file using the moonshine-voice CLI."""
+    try:
+        result = subprocess.run(
+            [
+                "moonshine-voice", "transcribe",
+                "--language", language,
+                wav_path,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        if result.returncode != 0:
+            print(f"moonshine-voice error: {result.stderr}", file=sys.stderr)
+            return ""
+        return result.stdout.strip()
+    except FileNotFoundError:
+        print("moonshine-voice not found. Install with: uv pip install moonshine-voice", file=sys.stderr)
+        return ""
+    except subprocess.TimeoutExpired:
+        print("Transcription timed out after 120s", file=sys.stderr)
+        return ""
 
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio with Moonshine (on-device ASR)")
-    parser.add_argument("audio_file", help="Path to audio file (OGG, WAV, MP3, etc.)")
+    parser.add_argument("audio_file", help="Path to audio file (OGG, WAV, MP3, M4A, etc.)")
     parser.add_argument("--language", default="en", help="Language code (default: en)")
     parser.add_argument("--keep-wav", action="store_true", help="Keep intermediate WAV file")
     args = parser.parse_args()
@@ -119,11 +89,7 @@ def main():
         sys.exit(1)
 
     input_path = Path(args.audio_file)
-
-    # Check if already WAV at correct format
-    needs_conversion = True
-    if input_path.suffix.lower() == ".wav":
-        needs_conversion = False
+    needs_conversion = input_path.suffix.lower() != ".wav"
 
     if needs_conversion:
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
@@ -140,7 +106,10 @@ def main():
         print(transcript)
     finally:
         if needs_conversion and not args.keep_wav:
-            os.unlink(wav_path)
+            try:
+                os.unlink(wav_path)
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
