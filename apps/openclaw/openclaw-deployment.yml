@@ -48,6 +48,8 @@ spec:
               # Runs on every (re)start so upgrade breakage auto-repairs.
               # Doctor is best-effort: a failure must not brick the gateway.
               openclaw doctor --yes --fix || echo "openclaw doctor --fix failed (non-fatal), starting gateway anyway"
+              # Seed Brave ad-block filter lists for the managed browser profile
+              brave-preferences.sh || echo "brave-preferences failed (non-fatal)"
               exec openclaw gateway --bind lan --port 18789 --allow-unconfigured
           ports:
             - containerPort: 18789
