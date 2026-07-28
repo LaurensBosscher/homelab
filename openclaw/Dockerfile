@@ -12,7 +12,10 @@ RUN if command -v apk >/dev/null; then \
       apk add --no-cache bind-tools curl git github-cli jq kubectl openssh-client ripgrep; \
     elif command -v apt-get >/dev/null; then \
       apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends chromium curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
+      # Install Brave browser with ad-blocking (replaces chromium)
+      curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg && \
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser.list > /dev/null && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
       apt-get update && \
@@ -48,7 +51,11 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
         /home/node/node_modules/node-llama-cpp \
         /home/node/.config/qmd
 
+# Copy Brave ad-block preferences script
+COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
+RUN chmod +x /usr/local/bin/brave-preferences.sh
+
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
-ENV CHROME_PATH=/usr/bin/chromium
+ENV CHROME_PATH=/usr/bin/brave-browser
 
 USER node
