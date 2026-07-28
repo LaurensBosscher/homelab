@@ -60,7 +60,7 @@ RUN chmod +x /usr/local/bin/brave-preferences.sh
 
 # Pre-download Moonshine Voice tiny model for on-device ASR (N100-optimized)
 # The model (~50MB) is cached for first-use by uv-run transcribe.py
-RUN uv pip install --system moonshine-voice && \
+RUN uv pip install --system --break-system-packages moonshine-voice && \
     mkdir -p /opt/moonshine-models && \
     MOONSHINE_VOICE_CACHE=/opt/moonshine-models moonshine-voice download --stt --language en && \
     uv pip uninstall --system moonshine-voice && \
