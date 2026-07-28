@@ -12,6 +12,8 @@ RUN if command -v apk >/dev/null; then \
       apk add --no-cache bind-tools curl git github-cli jq kubectl openssh-client ripgrep; \
     elif command -v apt-get >/dev/null; then \
       apt-get update && \
+      # Install gnupg first (needed for gpg --dearmor key imports)
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg ca-certificates && \
       # Install Brave browser with ad-blocking (replaces chromium)
       curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser.list > /dev/null && \
