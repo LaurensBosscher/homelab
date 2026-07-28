@@ -15,7 +15,7 @@ RUN if command -v apk >/dev/null; then \
       # Install Brave browser with ad-blocking (replaces chromium)
       curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser.list > /dev/null && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils git jq kubernetes-client openssh-client ripgrep && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils ffmpeg git jq kubernetes-client openssh-client ripgrep && \
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
       apt-get update && \
@@ -55,7 +55,20 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
 COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
 RUN chmod +x /usr/local/bin/brave-preferences.sh
 
+# Pre-download Moonshine Voice tiny model for on-device ASR (N100-optimized)
+# The model (~50MB) is cached for first-use by uv-run transcribe.py
+RUN uv pip install --system moonshine-voice && \
+    mkdir -p /opt/moonshine-models && \
+    MOONSHINE_VOICE_CACHE=/opt/moonshine-models moonshine-voice download --stt --language en && \
+    uv pip uninstall --system moonshine-voice && \
+    uv cache clean
+
+# Copy voice transcription script
+COPY scripts/transcribe.py /usr/local/bin/transcribe.py
+RUN chmod +x /usr/local/bin/transcribe.py
+
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
 ENV CHROME_PATH=/usr/bin/brave-browser
+ENV MOONSHINE_VOICE_CACHE=/opt/moonshine-models
 
 USER node
