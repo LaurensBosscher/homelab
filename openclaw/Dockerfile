@@ -14,14 +14,15 @@ RUN if command -v apk >/dev/null; then \
       apt-get update && \
       # Install gnupg first (needed for gpg --dearmor key imports)
       DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg ca-certificates && \
-      # Install Brave browser with ad-blocking (replaces chromium)
+      # Add Brave browser apt repo (ad-blocking, replaces chromium)
       curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser.list > /dev/null && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils ffmpeg git jq kubernetes-client openssh-client ripgrep && \
+      # Add GitHub CLI apt repo
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+      # Refresh package index with both new repos, then install everything
       apt-get update && \
-      apt-get install -y gh=2.96.0 && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils ffmpeg git jq kubernetes-client openssh-client ripgrep gh=2.96.0 && \
       rm -rf /var/lib/apt/lists/*; \
     else \
       echo "Unsupported package manager" >&2; \
