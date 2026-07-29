@@ -2,7 +2,7 @@
 # k3s certificate auto-renewal check
 # Checks if any k3s certificates are expiring within 120 days.
 # If so, restarts k3s to trigger automatic renewal.
-# Safe to run on all nodes (control plane and agents).
+# Control plane nodes only.
 #
 # See: https://docs.k3s.io/cli/certificate
 
@@ -11,11 +11,6 @@ set -euo pipefail
 # K3s binary location (standard install path)
 K3S_BIN="/usr/local/bin/k3s"
 K3S_SERVICE="k3s"
-
-# On agent nodes, the service is k3s-agent
-if systemctl is-active --quiet k3s-agent 2>/dev/null; then
-    K3S_SERVICE="k3s-agent"
-fi
 
 # Check if k3s binary exists
 if [ ! -x "$K3S_BIN" ]; then
@@ -31,9 +26,9 @@ echo "Checking k3s certificates on $(hostname)..."
 CERT_OUTPUT=$("$K3S_BIN" certificate check 2>&1) || true
 
 # Check for expiring or expired certs
-if echo "$CERT_OUTPUT" | grep -qE "EXPIRING|EXPIRED"; then
+if echo "$CERT_OUTPUT" | grep -qE "EXPIRING|EXPIRED|will expire within 120 days"; then
     echo "⚠️  Certificates need renewal on $(hostname):"
-    echo "$CERT_OUTPUT" | grep -E "EXPIRING|EXPIRED" || true
+    echo "$CERT_OUTPUT" | grep -E "EXPIRING|EXPIRED|will expire within 120 days" || true
     echo "Restarting $K3S_SERVICE to trigger renewal..."
     systemctl restart "$K3S_SERVICE"
     echo "✅ $K3S_SERVICE restarted. Certificates will be renewed on startup."

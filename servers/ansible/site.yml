@@ -38,7 +38,6 @@
     - { role: crowdsec }
     - { role: k3s-oom-protection }
     - { role: k3s-install }
-    - { role: k3s-cert-renewal }
     - { role: firewall }
 
 - name: Kubernetes control plane configuration
@@ -50,6 +49,7 @@
   roles:
     - { role: k3s-common }
     - { role: kubernetes-control-plane }
+    - { role: k3s-cert-renewal }
     - { role: etcd-io-priority }
     - { role: etcd-maintenance }
 
@@ -62,3 +62,4 @@
   roles:
     - { role: k3s-common }
     - { role: kubernetes-agent }
+    - { role: k3s-cert-renewal, tasks_from: remove }

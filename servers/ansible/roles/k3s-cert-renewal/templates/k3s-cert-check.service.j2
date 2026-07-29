@@ -1,7 +1,7 @@
 [Unit]
 Description=K3s certificate auto-renewal check
-After={{ 'k3s.service' if inventory_hostname in groups['kubernetes_control_plane'] else 'k3s-agent.service' }}
-Wants={{ 'k3s.service' if inventory_hostname in groups['kubernetes_control_plane'] else 'k3s-agent.service' }}
+After=k3s.service
+Wants=k3s.service
 
 [Service]
 Type=oneshot

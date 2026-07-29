@@ -22,7 +22,7 @@
   notify: reload systemd
 
 - name: Enable and start k3s cert renewal timer
-  ansible.systemd:
+  ansible.builtin.systemd:
     name: k3s-cert-check.timer
     enabled: true
     state: started
