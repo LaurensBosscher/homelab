@@ -37,7 +37,7 @@ RUN uv tool install ruff==0.15.21 && \
 
 WORKDIR /opt/openclaw-tools
 
-RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 && \
+RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 @oh-my-pi/pi-coding-agent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/opencode /usr/local/bin/opencode && \
     ln -s /opt/openclaw-tools/node_modules/.bin/oh-my-openagent /usr/local/bin/oh-my-openagent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/sg /usr/local/bin/sg && \
@@ -46,6 +46,7 @@ RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-gre
     ln -s /opt/openclaw-tools/node_modules/.bin/gws /usr/local/bin/gog && \
     ln -s /opt/openclaw-tools/node_modules/.bin/summarize /usr/local/bin/summarize && \
     ln -s /opt/openclaw-tools/node_modules/.bin/agent-browser /usr/local/bin/agent-browser && \
+    ln -s /opt/openclaw-tools/node_modules/.bin/omp /usr/local/bin/omp && \
     chmod +x /opt/openclaw-tools/node_modules/agent-browser/bin/agent-browser-linux-x64 && \
     rm -rf /root/.bun/install/cache /root/.npm /tmp/npm-*
 
@@ -58,12 +59,13 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
 COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
 RUN chmod +x /usr/local/bin/brave-preferences.sh
 
-# Pre-download Moonshine Voice tiny model for on-device ASR (N100-optimized)
-# The model (~50MB) is cached for first-use by uv-run transcribe.py
+# Pre-download Moonshine Voice tiny model for on-device ASR
+# Tiny streaming: 34M params, 12% WER, ~69ms on Linux x86 — fast fallback, small footprint
+# Model arch IDs: tiny_streaming=2, base_streaming=3, small_streaming=4, medium_streaming=5
 RUN uv venv /tmp/moonshine-venv && \
     VIRTUAL_ENV=/tmp/moonshine-venv uv pip install moonshine-voice && \
     mkdir -p /opt/moonshine-models && \
-    MOONSHINE_VOICE_CACHE=/opt/moonshine-models /tmp/moonshine-venv/bin/moonshine-voice download --stt --language en && \
+    MOONSHINE_VOICE_CACHE=/opt/moonshine-models /tmp/moonshine-venv/bin/moonshine-voice download --stt --language en --model-arch 2 && \
     rm -rf /tmp/moonshine-venv && \
     uv cache clean
 
