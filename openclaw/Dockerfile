@@ -59,13 +59,13 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
 COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
 RUN chmod +x /usr/local/bin/brave-preferences.sh
 
-# Pre-download Moonshine Voice small model for on-device ASR
-# Small streaming: 123M params, 7.84% WER, ~165ms on Linux x86 (vs medium 245M/6.65%/269ms)
+# Pre-download Moonshine Voice tiny model for on-device ASR
+# Tiny streaming: 34M params, 12% WER, ~69ms on Linux x86 — fast fallback, small footprint
 # Model arch IDs: tiny_streaming=2, base_streaming=3, small_streaming=4, medium_streaming=5
 RUN uv venv /tmp/moonshine-venv && \
     VIRTUAL_ENV=/tmp/moonshine-venv uv pip install moonshine-voice && \
     mkdir -p /opt/moonshine-models && \
-    MOONSHINE_VOICE_CACHE=/opt/moonshine-models /tmp/moonshine-venv/bin/moonshine-voice download --stt --language en --model-arch 4 && \
+    MOONSHINE_VOICE_CACHE=/opt/moonshine-models /tmp/moonshine-venv/bin/moonshine-voice download --stt --language en --model-arch 2 && \
     rm -rf /tmp/moonshine-venv && \
     uv cache clean
 
