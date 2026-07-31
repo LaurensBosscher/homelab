@@ -16,6 +16,8 @@
   service: http://norish.norish.svc.cluster.local:3000
 - hostname: stacks.bosscher.ch
   service: http://stacks.books.svc.cluster.local:7788
+- hostname: shelfmark.bosscher.ch
+  service: http://shelfmark.books.svc.cluster.local:8084
 - hostname: calibre-web.bosscher.ch
   service: http://calibre-web.books.svc.cluster.local:8083
 - hostname: audiobookshelf.bosscher.ch
