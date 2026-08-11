@@ -6,8 +6,8 @@ prefer-bundled-bin: true
 
 node-external-ip: {{ cluster_network_ip }}  # Advertises cluster network IP for external access
 
-# Disable Traefik (use your own ingress controller)
-disable: traefik
+# Disable bundled components (use the managed Prometheus stack for metrics-server)
+disable: [traefik, metrics-server]
 
 # Enable secret encryption at rest
 secrets-encryption: true

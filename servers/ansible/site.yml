@@ -63,3 +63,33 @@
     - { role: k3s-common }
     - { role: kubernetes-agent }
     - { role: k3s-cert-renewal, tasks_from: remove }
+
+
+- name: Enable Tailscale SSH and automatic client updates
+  hosts: all
+  serial: 1
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Read Tailscale preferences before enabling SSH
+      ansible.builtin.command: tailscale debug prefs
+      register: tailscale_preferences
+      changed_when: false
+      tags: [tailscale, tailscale_ssh, updates]
+
+    # Keep this as the final play: enabling Tailscale SSH can interrupt the
+    # current SSH connection to the node's Tailscale IP.
+    - name: Enable Tailscale SSH and automatic updates
+      ansible.builtin.command:
+        argv:
+          - tailscale
+          - set
+          - --ssh
+          - --auto-update
+      when: >-
+        tailscale_preferences.stdout is not search('"RunSSH": true')
+        or tailscale_preferences.stdout is not search('"AutoUpdate": true')
+      # Do not wait on the SSH channel after Tailscale takes over port 22.
+      async: 30
+      poll: 0
+      tags: [tailscale, tailscale_ssh, updates]

@@ -27,3 +27,13 @@ kube-prometheus-stack:
         memory: 128Mi
   alertmanager:
     enabled: false
+metrics-server:
+  args:
+    - --kubelet-insecure-tls
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
