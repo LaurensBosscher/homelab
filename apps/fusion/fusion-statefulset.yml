@@ -43,11 +43,12 @@ spec:
               drop:
                 - ALL
           env:
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: fusion-secret
-                  key: password
+            # Fusion sits behind Cloudflare Access (fusion.bosscher.ch);
+            # app-level password login is redundant. Empty password + no OIDC
+            # disables auth entirely (FUSION_ALLOW_EMPTY_PASSWORD opt-in).
+            # See https://github.com/0x2E/fusion#environment-variables
+            - name: FUSION_ALLOW_EMPTY_PASSWORD
+              value: "true"
           volumeMounts:
             - name: fusion-data
               mountPath: /data
