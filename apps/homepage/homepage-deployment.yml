@@ -69,17 +69,27 @@ spec:
               memory: 128Mi
             limits:
               memory: 256Mi
+          # homepage >= v2.0.0 validates the Host header on ALL routes (including
+          # / and /api/healthcheck) against HOMEPAGE_ALLOWED_HOSTS. Kubelet probes
+          # arrive with Host: <podIP>:3000 and would get HTTP 400 -> CrashLoopBackOff.
+          # Send an allowed Host and probe the same endpoint as the image HEALTHCHECK.
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/healthcheck
               port: 3000
+              httpHeaders:
+                - name: Host
+                  value: home.bosscher.ch
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/healthcheck
               port: 3000
+              httpHeaders:
+                - name: Host
+                  value: home.bosscher.ch
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
