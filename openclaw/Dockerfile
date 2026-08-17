@@ -37,7 +37,9 @@ RUN uv tool install ruff==0.15.21 && \
 
 WORKDIR /opt/openclaw-tools
 
-RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 @oh-my-pi/pi-coding-agent && \
+# omp: 17.3.5 ships GLM-5.3 in the model catalog (z.AI provider,
+# default model, 1M context, low/high/max reasoning ladder)
+RUN bun install agent-browser opencode-ai@1.17.18 oh-my-opencode@4.16.3 @ast-grep/cli@0.44.1 wrangler@4.110.0 @googleworkspace/cli@0.8.0 @steipete/summarize@0.21.6 @oh-my-pi/pi-coding-agent@17.3.5 && \
     ln -s /opt/openclaw-tools/node_modules/.bin/opencode /usr/local/bin/opencode && \
     ln -s /opt/openclaw-tools/node_modules/.bin/oh-my-openagent /usr/local/bin/oh-my-openagent && \
     ln -s /opt/openclaw-tools/node_modules/.bin/sg /usr/local/bin/sg && \
