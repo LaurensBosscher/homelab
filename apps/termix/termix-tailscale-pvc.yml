@@ -11,4 +11,4 @@ spec:
   storageClassName: longhorn-2replicas-compressed-europe
   resources:
     requests:
-      storage: 100Mi
+      storage: 112Mi
