@@ -22,7 +22,7 @@ RUN if command -v apk >/dev/null; then \
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
       # Refresh package index with both new repos, then install everything
       apt-get update && \
-      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils ffmpeg git jq kubernetes-client openssh-client ripgrep gh=2.97.0 && \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends brave-browser curl dnsutils ffmpeg git jq kubernetes-client openssh-client ripgrep gh && \
       rm -rf /var/lib/apt/lists/*; \
     else \
       echo "Unsupported package manager" >&2; \
