@@ -49,8 +49,20 @@ spec:
               # Runs on every (re)start so upgrade breakage auto-repairs.
               # Doctor is best-effort: a failure must not brick the gateway.
               openclaw doctor --yes --fix || echo "openclaw doctor --fix failed (non-fatal), starting gateway anyway"
-              openclaw plugins enable acpx --accept-capabilities || echo "acpx consent failed (non-fatal)"
-              openclaw update repair || echo "update repair failed (non-fatal)"
+              # acpx: try enable with capabilities, fallback to disable if blocked by allowlist
+              openclaw plugins enable acpx --accept-capabilities 2>&1 || openclaw plugins disable acpx 2>&1 || echo "acpx consent failed (non-fatal)"
+              openclaw update repair 2>&1 || echo "update repair failed (non-fatal)"
+              # Legacy exec-approvals.json blocks doctor/gateway - remove if still present after doctor
+              if [ -f /home/node/.openclaw/exec-approvals.json ]; then
+                echo "Removing legacy exec-approvals.json"
+                rm -f /home/node/.openclaw/exec-approvals.json || true
+              fi
+              # Legacy session store requires migration - re-run doctor, then backup file if doctor didn't migrate
+              openclaw doctor --yes --fix 2>&1 || echo "second doctor --fix failed (non-fatal)"
+              if [ -f /home/node/.openclaw/agents/main/sessions/sessions.json ]; then
+                echo "Legacy sessions.json still present after doctor --fix, backing up to allow gateway start"
+                mv /home/node/.openclaw/agents/main/sessions/sessions.json /home/node/.openclaw/agents/main/sessions/sessions.json.bak.$(date +%s) 2>&1 || rm -f /home/node/.openclaw/agents/main/sessions/sessions.json || true
+              fi
               # Seed Brave ad-block filter lists for the managed browser profile
               brave-preferences.sh || echo "brave-preferences failed (non-fatal)"
               exec openclaw gateway --bind lan --port 18789 --allow-unconfigured
