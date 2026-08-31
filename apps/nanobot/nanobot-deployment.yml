@@ -7,6 +7,11 @@ metadata:
     app.kubernetes.io/name: nanobot
 spec:
   replicas: 1
+  # RWO PVC + single replica: RollingUpdate deadlocks (new pod Pending on
+  # Multi-Attach while old pod holds the volume until the new one is ready).
+  # Recreate kills the old pod first, freeing the volume. Same as openclaw.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: nanobot
@@ -14,6 +19,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: nanobot
+      annotations:
+        # Template bump to force the re-roll after the strategy change
+        # (strategy alone does not trigger a new ReplicaSet).
+        nanobot.bosscher.ch/rollout: "0.3.0-2-r1"
     spec:
       automountServiceAccountToken: false
       securityContext:
