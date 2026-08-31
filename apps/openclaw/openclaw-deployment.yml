@@ -108,26 +108,23 @@ spec:
               memory: 6Gi
           # 2026.8.1 proxy-attribution gate: kubelet probes originate from the
           # flannel cni0 bridge IP, which sits inside gateway.trustedProxies
-          # (10.42.0.0/16), so probes MUST carry client attribution or the
-          # gateway answers 403 proxy_attribution_required -> pod NotReady ->
-          # endpoints dropped -> tunnel 502. 192.0.2.1 = RFC 5737 synthetic IP.
+          # whenever that covers the pod CIDR (10.42.0.0/16). /readyz is NOT
+          # exempt from the gate -> 403 proxy_attribution_required -> pod
+          # NotReady -> Service endpoints dropped -> cloudflared 502 on
+          # openclaw.bosscher.ch. /healthz IS exempt, so readiness uses it;
+          # this is attribution-independent and works under any
+          # trustedProxies scope (pod CIDR or narrow cloudflared IP list).
           livenessProbe:
             httpGet:
               path: /healthz
               port: 18789
-              httpHeaders:
-                - name: X-Forwarded-For
-                  value: 192.0.2.1
             initialDelaySeconds: 30
             periodSeconds: 60
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /healthz
               port: 18789
-              httpHeaders:
-                - name: X-Forwarded-For
-                  value: 192.0.2.1
             initialDelaySeconds: 10
             periodSeconds: 60
             timeoutSeconds: 5
