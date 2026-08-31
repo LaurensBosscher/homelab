@@ -71,6 +71,29 @@ RUN set -eu; \
     sed -i 's/return unattributableProxy(remoteAddress);/return attributed("direct-remote", remoteAddress);/g' "$f"; \
     grep -q 'return attributed("direct-remote", remoteAddress);' "$f"
 
+# --- Disable OpenClaw 2026.8.1 Control-UI device-linking wall (2026-08-31) ---
+# 2026.8.1 walls every operator browser (Control UI/webchat) behind a device
+# pairing approval flow. The disable key (dangerouslyDisableDeviceAuth) was
+# retired (doctor --fix strips it at boot) and silent local auto-approve
+# requires pairing locality != "remote", which is impossible for browsers
+# arriving through the cloudflared tunnel (proxy headers, non-loopback
+# origin). Token auth remains the real gate; the pairing ceremony does not.
+# Patch marks operator-browser pairing requests as silent so they
+# auto-approve inline (approvedVia trusted-cidr) instead of pending on an
+# operator prompt. Node/mobile/ESP32 pairing lanes are untouched.
+# Guarded: exactly one marker site in one message-handler-*.js file plus a
+# scope-anchor check; build FAILS loudly on upstream rename.
+RUN set -eu; \
+    f=$(grep -l 'silent: allowSilentLocalPairing || allowSilentTrustedCidrsNodePairing || allowSetupCodeHandoffBootstrapPairing || allowControlUiOperatorBootstrapPairing,' /app/dist/message-handler-*.js); \
+    test "$(printf '%s\n' "$f" | wc -l)" -eq 1; \
+    n=$(grep -c 'silent: allowSilentLocalPairing || allowSilentTrustedCidrsNodePairing || allowSetupCodeHandoffBootstrapPairing || allowControlUiOperatorBootstrapPairing,' "$f" || true); \
+    echo "device-pairing patch: $n silent-plan site in $f"; \
+    test "$n" -eq 1; \
+    grep -q 'role, isControlUi, isBrowserOperatorUi, isWebchat, isNativeAppUi, authMethod' "$f"; \
+    sed -i 's@silent: allowSilentLocalPairing || allowSilentTrustedCidrsNodePairing || allowSetupCodeHandoffBootstrapPairing || allowControlUiOperatorBootstrapPairing,@silent: allowSilentLocalPairing || allowSilentTrustedCidrsNodePairing || allowSetupCodeHandoffBootstrapPairing || allowControlUiOperatorBootstrapPairing || role === "operator" \&\& (isBrowserOperatorUi || isControlUi || isWebchat),@' "$f"; \
+    grep -q '|| role === "operator" && (isBrowserOperatorUi || isControlUi || isWebchat),' "$f"; \
+    node --input-type=module --check < "$f"
+
 # Copy Brave ad-block preferences script
 COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
 RUN chmod +x /usr/local/bin/brave-preferences.sh
