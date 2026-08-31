@@ -57,6 +57,20 @@ RUN rm -rf /home/node/node_modules/@tobilu/qmd \
         /home/node/node_modules/node-llama-cpp \
         /home/node/.config/qmd
 
+# --- Disable OpenClaw 2026.8.1 proxy-attribution rejections (2026-08-31) ---
+# Turns every proxy-attribution 403 in the shipped dist into a socket-IP
+# attribution fallback: kubelet probes, rescheduled cloudflared pods, and
+# headerless clients all get served instead of 403 proxy_attribution_required.
+# Guarded: if upstream renames the marker, the build FAILS loudly so this
+# patch gets consciously re-reviewed instead of silently vanishing.
+RUN set -eu; \
+    f=$(ls /app/dist/ingress-attribution-*.js); \
+    n=$(grep -c 'return unattributableProxy(remoteAddress);' "$f" || true); \
+    echo "proxy-attribution patch: $n rejection sites in $f"; \
+    test "$n" -ge 5; \
+    sed -i 's/return unattributableProxy(remoteAddress);/return attributed("direct-remote", remoteAddress);/g' "$f"; \
+    grep -q 'return attributed("direct-remote", remoteAddress);' "$f"
+
 # Copy Brave ad-block preferences script
 COPY brave-preferences.sh /usr/local/bin/brave-preferences.sh
 RUN chmod +x /usr/local/bin/brave-preferences.sh
