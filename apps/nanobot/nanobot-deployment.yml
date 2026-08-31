@@ -16,9 +16,14 @@ spec:
         app.kubernetes.io/name: nanobot
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: nanobot
-          image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-1
+          image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8765
@@ -41,6 +46,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/nanobot
+            - name: tmp
+              mountPath: /tmp
           readinessProbe:
             tcpSocket:
               port: 8765
@@ -69,3 +76,5 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: nanobot-data
+        - name: tmp
+          emptyDir: {}
