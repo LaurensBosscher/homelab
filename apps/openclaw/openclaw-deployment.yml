@@ -48,6 +48,11 @@ spec:
               # Runs on every (re)start so upgrade breakage auto-repairs.
               # Doctor is best-effort: a failure must not brick the gateway.
               openclaw doctor --yes --fix || echo "openclaw doctor --fix failed (non-fatal), starting gateway anyway"
+              # Handle acpx plugin capability consent - auto-accept or disable to prevent
+              # "Plugin 'acpx' requires capability consent" from blocking gateway readiness.
+              # Doctor --fix does not auto-approve capabilities, so do it explicitly.
+              openclaw plugins enable acpx --accept-capabilities 2>&1 || openclaw plugins disable acpx 2>&1 || echo "acpx plugin handling failed (non-fatal)"
+              openclaw update repair 2>&1 || echo "openclaw update repair failed (non-fatal)"
               # Seed Brave ad-block filter lists for the managed browser profile
               brave-preferences.sh || echo "brave-preferences failed (non-fatal)"
               exec openclaw gateway --bind lan --port 18789 --allow-unconfigured
