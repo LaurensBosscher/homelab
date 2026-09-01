@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nanobot-config-seed
+  namespace: nanobot
+  labels:
+    app.kubernetes.io/name: nanobot
+data:
+  # Seed config copied to the PVC by an initContainer ONLY if absent —
+  # after that nanobot owns the file and the WebUI settings can edit it.
+  # host 0.0.0.0: the WebUI/WebSocket channel binds 127.0.0.1 by default
+  # (verified against nanobot 0.3.0), which the k8s Service can never reach.
+  # A provider entry must exist: `nanobot webui --yes` refuses to start with
+  # incomplete provider setup ("--yes cannot answer provider credentials").
+  # Replace the placeholder key with the real ZAI key in the WebUI settings.
+  config.json: |
+    {
+      "agents": {
+        "defaults": {
+          "workspace": "/home/nanobot/workspace",
+          "provider": "openai",
+          "model": "glm-4.7"
+        }
+      },
+      "channels": {
+        "websocket": {
+          "enabled": true,
+          "host": "0.0.0.0",
+          "port": 8765,
+          "path": "/"
+        }
+      },
+      "providers": {
+        "openai": {
+          "apiKey": "PASTE-REAL-KEY-IN-WEBUI-SETTINGS",
+          "baseUrl": "https://api.z.ai/v1"
+        }
+      }
+    }

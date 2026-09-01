@@ -22,7 +22,7 @@ spec:
       annotations:
         # Template bump to force the re-roll after the strategy change
         # (strategy alone does not trigger a new ReplicaSet).
-        nanobot.bosscher.ch/rollout: "0.3.0-2-r1"
+        nanobot.bosscher.ch/rollout: "0.3.0-3-r2"
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -30,6 +30,20 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: seed-config
+          image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - 'mkdir -p /home/nanobot/workspace /home/nanobot/.nanobot && { [ -f /home/nanobot/.nanobot/config.json ] || cp /seed/config.json /home/nanobot/.nanobot/config.json; }'
+          volumeMounts:
+            - name: data
+              mountPath: /home/nanobot
+            - name: config-seed
+              mountPath: /seed
+              readOnly: true
       containers:
         - name: nanobot
           image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3
@@ -87,3 +101,6 @@ spec:
             claimName: nanobot-data
         - name: tmp
           emptyDir: {}
+        - name: config-seed
+          configMap:
+            name: nanobot-config-seed
