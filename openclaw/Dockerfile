@@ -1,7 +1,7 @@
 FROM ghcr.io/astral-sh/uv:0.12.7 AS uv
 FROM oven/bun:1.4.0 AS bun
 
-FROM ghcr.io/openclaw/openclaw:2026.8.1
+FROM ghcr.io/openclaw/openclaw:2026.9.1
 
 USER root
 
