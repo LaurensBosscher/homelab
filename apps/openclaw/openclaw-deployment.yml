@@ -106,6 +106,13 @@ spec:
               cpu: 100m
             limits:
               memory: 6Gi
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 18789
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 36
           livenessProbe:
             httpGet:
               path: /healthz
