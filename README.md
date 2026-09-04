@@ -264,10 +264,11 @@ sudo /usr/local/bin/etcd \
   --force-new-cluster \
   --listen-client-urls http://127.0.0.1:2379 \
   --advertise-client-urls http://127.0.0.1:2379
-```bash
+```
 
 In a separate terminal:
-```
+
+```bash
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" rev=$(etcdctl endpoint status --write-out fields | grep Revision | awk '{print $3}')
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl compact "$rev" --physical   # --physical forces immediate application
 ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl defrag
