@@ -1,5 +1,5 @@
 FROM ghcr.io/astral-sh/uv:0.12.7 AS uv
-FROM oven/bun:1.4.0 AS bun
+FROM oven/bun:1.4.1 AS bun
 
 FROM ghcr.io/openclaw/openclaw:2026.8.1
 
