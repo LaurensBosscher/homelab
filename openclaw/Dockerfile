@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.12.7 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.10 AS uv
 FROM oven/bun:1.4.2 AS bun
 # Obscura: Rust headless browser (CDP-compatible). Pulled from the upstream
 # distroless image so we never vendor the 105MB binary in this repo.
