@@ -6,10 +6,6 @@ metadata:
     app.kubernetes.io/name: blocky
 data:
   config.yml: |
-    ports:
-      dns: 53
-      http: 4000
-    prometheus: {}
     upstreams:
       groups:
         default:
@@ -18,17 +14,26 @@ data:
           - https://dns.google/dns-query
     conditional:
       mapping:
-        cluster.local: "10.43.0.10"
-        svc.cluster.local: "10.43.0.10"
-        in-addr.arpa: "10.43.0.10"
-        ip6.arpa: "10.43.0.10"
+        cluster.local: 10.43.0.10
+        svc.cluster.local: 10.43.0.10
+        in-addr.arpa: 10.43.0.10
+        ip6.arpa: 10.43.0.10
+
     blocking:
       blockType: zeroIp
       blockTTL: 1h
-      refreshPeriod: 24h
-      blackLists:
+      denylists:
         default:
           - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
       clientGroupsBlock:
         default:
           - default
+      loading:
+        refreshPeriod: 24h
+
+    prometheus:
+      enable: true
+
+    ports:
+      dns: 53
+      http: 4000

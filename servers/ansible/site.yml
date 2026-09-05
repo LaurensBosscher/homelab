@@ -86,9 +86,10 @@
           - set
           - --ssh
           - --auto-update
+          - --accept-risk=lose-ssh
       when: >-
         tailscale_preferences.stdout is not search('"RunSSH": true')
-        or tailscale_preferences.stdout is not search('"AutoUpdate": true')
+        or tailscale_preferences.stdout is not search('"Apply": true')
       # Do not wait on the SSH channel after Tailscale takes over port 22.
       async: 30
       poll: 0
