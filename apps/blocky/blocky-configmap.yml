@@ -12,7 +12,6 @@ data:
           - https://dns.quad9.net/dns-query
           - https://cloudflare-dns.com/dns-query
           - https://dns.google/dns-query
-
     conditional:
       mapping:
         cluster.local: 10.43.0.10
