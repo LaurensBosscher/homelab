@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: obscura
+  namespace: obscura
+  labels:
+    app.kubernetes.io/name: obscura
+    app.kubernetes.io/part-of: homelab
+spec:
+  selector:
+    app: obscura
+  ports:
+    - port: 9222
+      targetPort: 9222
+      name: cdp
