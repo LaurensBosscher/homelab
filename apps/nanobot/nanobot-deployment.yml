@@ -57,16 +57,6 @@ spec:
               mountPath: /home/nanobot
             - name: tmp
               mountPath: /tmp
-          readinessProbe:
-            tcpSocket:
-              port: 8765
-            initialDelaySeconds: 10
-            periodSeconds: 30
-          livenessProbe:
-            tcpSocket:
-              port: 8765
-            initialDelaySeconds: 30
-            periodSeconds: 60
           securityContext:
             runAsUser: 1000
             runAsNonRoot: true
