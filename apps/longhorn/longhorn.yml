@@ -20,6 +20,15 @@ spec:
             backupTargetCredentialSecret: "k3s-longhorn-backup-backblaze"
           persistence:
             defaultClassReplicaCount: 2
+          # Trim CSI sidecar replica counts (defaults are 3; 1 is plenty here) —
+          # saves ~8 pods / ~240m CPU requests across 7 nodes
+          csi:
+            attacherReplicaCount: 1
+            provisionerReplicaCount: 1
+            resizerReplicaCount: 1
+            snapshotterReplicaCount: 1
+          longhornUI:
+            replicas: 1
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
