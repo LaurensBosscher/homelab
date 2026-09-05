@@ -39,7 +39,7 @@ spec:
                       - zurich
       containers:
         - name: gateway
-          image: ghcr.io/laurensbosscher/openclaw-tools:2026.9.1-1
+          image: ghcr.io/laurensbosscher/openclaw-tools:39e73b8
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -128,7 +128,7 @@ spec:
             periodSeconds: 60
             timeoutSeconds: 5
         - name: opencode
-          image: ghcr.io/laurensbosscher/openclaw-tools:2026.9.1-1
+          image: ghcr.io/laurensbosscher/openclaw-tools:39e73b8
           imagePullPolicy: IfNotPresent
           command:
             - opencode
