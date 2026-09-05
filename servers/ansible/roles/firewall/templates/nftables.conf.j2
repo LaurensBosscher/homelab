@@ -64,6 +64,9 @@ table inet homelab {
 {% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_k3s_api_allowed_ips | length > 0 %}
     tcp dport 6443 ip saddr { {{ firewall_k3s_api_allowed_ips | join(', ') }} } accept comment "K3s API (from cluster nodes and approved join clients)"
 {% endif %}
+{% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_kubelet_allowed_pod_cidrs | default([]) | length > 0 %}
+    tcp dport 6443 ip saddr { {{ firewall_kubelet_allowed_pod_cidrs | join(', ') }} } accept comment "K3s API (from cluster pods)"
+{% endif %}
 
 {% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_cluster_network_ips | length > 0 %}
     tcp dport 9345 ip saddr { {{ firewall_cluster_network_ips | join(', ') }} } accept comment "K3s supervisor (from cluster nodes)"
