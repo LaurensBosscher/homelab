@@ -77,12 +77,20 @@ spec:
             capabilities:
               drop:
                 - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
           volumeMounts:
             - name: data
               mountPath: /home/nanobot
             - name: sample-config
               mountPath: /etc/nanobot-sample
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
       containers:
         - name: nanobot
           image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3
