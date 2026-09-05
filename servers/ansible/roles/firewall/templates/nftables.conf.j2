@@ -55,7 +55,10 @@ table inet homelab {
 {% endif %}
 
 {% if firewall_control_plane_network_ips | length > 0 %}
-    tcp dport 10250 ip saddr { {{ firewall_control_plane_network_ips | join(', ') }} } accept comment "Kubelet API (from control-plane only)"
+    tcp dport 10250 ip saddr { {{ firewall_control_plane_network_ips | join(', ') }} } accept comment "Kubelet API (from control-plane)"
+{% endif %}
+{% if firewall_kubelet_allowed_pod_cidrs | default([]) | length > 0 %}
+    tcp dport 10250 ip saddr { {{ firewall_kubelet_allowed_pod_cidrs | join(', ') }} } accept comment "Kubelet API (from cluster pods)"
 {% endif %}
 
 {% if inventory_hostname in groups['kubernetes_control_plane'] and firewall_k3s_api_allowed_ips | length > 0 %}
