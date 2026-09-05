@@ -23,6 +23,11 @@ firewall_enable: true
 firewall_k3s_api_extra_allowed_ips:
   - 84.226.17.204
 
+# Metrics-server runs as a pod and must reach every node's kubelet API.
+# Kubelet authentication and authorization still protect the endpoint.
+firewall_kubelet_allowed_pod_cidrs:
+  - 10.42.0.0/16
+
 # Tool versions
 k9s_version: "v0.51.0"
 k3s_version: "v1.36.2+k3s1"

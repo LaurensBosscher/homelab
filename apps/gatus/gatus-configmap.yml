@@ -263,7 +263,7 @@ data:
 
       - name: norish
         group: food
-        url: "http://norish.norish.svc.cluster.local:3000/api/health"
+        url: "http://norish.norish.svc.cluster.local:3000/api/v1/health"
         interval: 5m
         conditions:
           - "[STATUS] == 200"

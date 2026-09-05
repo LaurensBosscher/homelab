@@ -8,11 +8,11 @@ spec:
     - git:
         repoURL: https://github.com/LaurensBosscher/homelab.git
         revision: main
-        files:
-          - path: "helm/*/Chart.yaml"
+        directories:
+          - path: "helm/*"
   template:
     metadata:
-      name: "{{path[1]}}"
+      name: "{{path.basename}}"
       labels:
         app.kubernetes.io/part-of: homelab
     spec:
@@ -22,12 +22,12 @@ spec:
         targetRevision: main
         path: "{{path.path}}"
         helm:
-          releaseName: "{{path[1]}}"
+          releaseName: "{{path.basename}}"
           valueFiles:
             - values.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{path[1]}}"
+        namespace: "{{path.basename}}"
       syncPolicy:
         automated:
           prune: true
