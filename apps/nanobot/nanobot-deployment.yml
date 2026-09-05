@@ -30,6 +30,59 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: bootstrap-config
+          image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3
+          command:
+            - /opt/uv-tools/nanobot-ai/bin/python
+            - -c
+            - |
+              import json
+              from pathlib import Path
+
+              config_path = Path("/home/nanobot/.nanobot/config.json")
+              sample_path = Path("/etc/nanobot-sample/config.json")
+              sample = json.loads(sample_path.read_text())
+              config_path.parent.mkdir(parents=True, exist_ok=True)
+
+              if not config_path.exists():
+                  config_path.write_text(json.dumps(sample, indent=2) + "\n")
+              else:
+                  config = json.loads(config_path.read_text())
+                  defaults = config.setdefault("agents", {}).setdefault("defaults", {})
+                  provider = defaults.get("provider")
+                  model = defaults.get("model") or ""
+                  if provider in (None, "", "auto"):
+                      provider = model.split("/", 1)[0] if "/" in model else None
+                  provider_config = config.setdefault("providers", {}).get(provider, {})
+                  api_key = provider_config.get("apiKey")
+                  configured = (
+                      provider == "ollama"
+                      and bool(provider_config.get("apiBase"))
+                  ) or (
+                      isinstance(api_key, str)
+                      and (bool(api_key) or api_key.startswith("${"))
+                  )
+                  if not configured:
+                      defaults.update(sample["agents"]["defaults"])
+                      ollama = config["providers"].setdefault("ollama", {})
+                      ollama.setdefault("apiKey", sample["providers"]["ollama"]["apiKey"])
+                      ollama["apiBase"] = sample["providers"]["ollama"]["apiBase"]
+                      config_path.write_text(json.dumps(config, indent=2) + "\n")
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: data
+              mountPath: /home/nanobot
+            - name: sample-config
+              mountPath: /etc/nanobot-sample
+              readOnly: true
       containers:
         - name: nanobot
           image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3
@@ -75,5 +128,8 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: nanobot-data
+        - name: sample-config
+          configMap:
+            name: nanobot-config-sample
         - name: tmp
           emptyDir: {}
