@@ -1,5 +1,9 @@
 FROM ghcr.io/astral-sh/uv:0.12.7 AS uv
 FROM oven/bun:1.4.1 AS bun
+# Obscura: Rust headless browser (CDP-compatible). Pulled from the upstream
+# distroless image so we never vendor the 105MB binary in this repo.
+# Bump the tag to upgrade; binaries land in /usr/local/bin.
+FROM h4ckf0r0day/obscura:0.2.1 AS obscura
 
 FROM ghcr.io/openclaw/openclaw:2026.9.1
 
@@ -7,6 +11,7 @@ USER root
 
 COPY --from=uv /uv /uvx /usr/local/bin/
 COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=obscura /obscura /obscura-worker /usr/local/bin/
 
 RUN if command -v apk >/dev/null; then \
       apk add --no-cache bind-tools curl git github-cli jq kubectl openssh-client ripgrep; \
@@ -78,5 +83,7 @@ RUN chmod +x /usr/local/bin/transcribe.py
 ENV NODE_PATH=/opt/openclaw-tools/node_modules
 ENV CHROME_PATH=/usr/bin/brave-browser
 ENV MOONSHINE_VOICE_CACHE=/opt/moonshine-models
+# Obscura: run on-demand (fetch CLI) or serve CDP on 127.0.0.1:9222
+ENV OBSCURA_ALLOW_PRIVATE_NETWORK=1
 
 USER node
