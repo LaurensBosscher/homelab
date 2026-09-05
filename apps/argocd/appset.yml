@@ -10,6 +10,8 @@ spec:
         revision: main
         directories:
           - path: apps/*
+          - path: apps/longhorn
+            exclude: true
   template:
     metadata:
       name: "{{path.basename}}"
