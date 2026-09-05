@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn-release
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: homelab
+spec:
+  project: default
+  source:
+    chart: longhorn
+    repoURL: https://charts.longhorn.io/
+    targetRevision: 1.12.1
+    helm:
+      releaseName: longhorn
+      valuesObject:
+        defaultSettings:
+          defaultReplicaCount: 2
+          backupTarget: "s3://longhorn-backups-ay76@s3.eu-central-003/"
+          backupTargetCredentialSecret: "k3s-longhorn-backup-backblaze"
+        persistence:
+          defaultClassReplicaCount: 2
+        csi:
+          attacherReplicaCount: 1
+          provisionerReplicaCount: 1
+          resizerReplicaCount: 1
+          snapshotterReplicaCount: 1
+        longhornUI:
+          replicas: 1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
