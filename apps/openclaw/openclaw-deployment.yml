@@ -20,6 +20,20 @@ spec:
         component: gateway
     spec:
       automountServiceAccountToken: false
+      # DNS ad blocking: blocky first (StevenBlack hosts via DoH upstreams),
+      # kube-dns fallback keeps resolution alive if blocky is down.
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.43.53.53
+          - 10.43.0.10
+        searches:
+          - openclaw.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "5"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

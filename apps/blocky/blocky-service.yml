@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blocky-dns
+  labels:
+    app.kubernetes.io/name: blocky
+spec:
+  # Pinned so the openclaw pod's dnsConfig can reference it statically
+  clusterIP: 10.43.53.53
+  selector:
+    app.kubernetes.io/name: blocky
+  ports:
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+    - name: dns-tcp
+      port: 53
+      protocol: TCP
+      targetPort: dns-tcp
+    - name: http
+      port: 4000
+      targetPort: http
