@@ -3,7 +3,7 @@ FROM oven/bun:1.4.2 AS bun
 # Obscura: Rust headless browser (CDP-compatible). Pulled from the upstream
 # distroless image so we never vendor the 105MB binary in this repo.
 # Bump the tag to upgrade; binaries land in /usr/local/bin.
-FROM h4ckf0r0day/obscura:0.2.1 AS obscura
+FROM h4ckf0r0day/obscura:0.2.2 AS obscura
 
 FROM ghcr.io/openclaw/openclaw:2026.9.1
 
