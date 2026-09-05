@@ -5,7 +5,7 @@ FROM oven/bun:1.4.2 AS bun
 # Bump the tag to upgrade; binaries land in /usr/local/bin.
 FROM h4ckf0r0day/obscura:0.2.2 AS obscura
 
-FROM ghcr.io/openclaw/openclaw:2026.9.1
+FROM ghcr.io/openclaw/openclaw:2026.9.2
 
 USER root
 
