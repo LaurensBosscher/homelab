@@ -17,8 +17,20 @@ kube-prometheus-stack:
       limits:
         memory: 512Mi
   kube-state-metrics:
+    # Chart 5.26.0 (kube-prometheus-stack 65.8.1) still probes /readyz on :8080.
+    # From KSM >=2.14, /readyz lives on the telemetry port (:8081) and returns
+    # 404 on the metrics port — that stalls the Deployment rollout (ProgressDeadlineExceeded)
+    # with two ReplicaSets both desired=1. See prometheus-community/helm-charts#4981.
     image:
       tag: v2.19.1
+    livenessProbe:
+      httpGet:
+        path: /livez
+        port: 8080
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: 8081
     resources:
       requests:
         cpu: 10m
