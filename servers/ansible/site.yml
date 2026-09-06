@@ -62,7 +62,11 @@
   roles:
     - { role: k3s-common }
     - { role: kubernetes-agent }
-    - { role: k3s-cert-renewal, tasks_from: remove }
+  tasks:
+    - name: Remove k3s certificate renewal from agent nodes
+      ansible.builtin.include_role:
+        name: k3s-cert-renewal
+        tasks_from: remove
 
 
 - name: Enable Tailscale SSH and automatic client updates
