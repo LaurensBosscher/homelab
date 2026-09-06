@@ -16,6 +16,7 @@ spec:
       valuesObject:
         defaultSettings:
           defaultReplicaCount: 2
+          concurrentAutomaticEngineUpgradePerNodeLimit: 1
           backupTarget: "s3://longhorn-backups-ay76@s3.eu-central-003/"
           backupTargetCredentialSecret: "k3s-longhorn-backup-backblaze"
         persistence:
