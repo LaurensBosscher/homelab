@@ -7,7 +7,8 @@ spec:
   name: weekly-fstrim
   cron: 0 2 * * 0
   task: filesystem-trim
+  # Opt-in group: avoid trimming every volume by default
   groups:
-    - default
+    - weekly-fstrim
   retain: 0
   concurrency: 1

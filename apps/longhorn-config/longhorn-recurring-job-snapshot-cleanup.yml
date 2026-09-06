@@ -5,7 +5,7 @@ metadata:
   namespace: longhorn-system
 spec:
   name: daily-snapshot-cleanup
-  cron: "0 3 * * *" # Daily at 3 AM
+  cron: "0 4 * * *" # Daily at 4 AM, after backups
   task: snapshot-cleanup
   groups:
     - default
