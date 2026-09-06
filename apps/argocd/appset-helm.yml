@@ -20,17 +20,18 @@ spec:
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
         targetRevision: main
-        path: "{{path.path}}"
+        path: "{{path}}"
         helm:
           releaseName: "{{path.basename}}"
           valueFiles:
             - values.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{path.basename}}"
+        namespace: monitoring
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+          - ServerSideApply=true

@@ -11,3 +11,9 @@
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
   notify: restart k3s
+
+- name: Persist CoreDNS placement for cross-region DNS availability
+  ansible.builtin.template:
+    src: coredns-config.yaml.j2
+    dest: /var/lib/rancher/k3s/server/manifests/coredns-config.yaml
+    mode: "0644"
