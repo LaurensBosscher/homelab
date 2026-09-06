@@ -19,6 +19,14 @@ kube-prometheus-stack:
   kube-state-metrics:
     image:
       tag: v2.19.1
+    readinessProbe:
+      httpGet:
+        path: /metrics
+        port: 8080
+    livenessProbe:
+      httpGet:
+        path: /metrics
+        port: 8080
     resources:
       requests:
         cpu: 10m
