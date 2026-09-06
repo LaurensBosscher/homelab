@@ -1,0 +1,23 @@
+---
+- name: Check for k3s certificate renewal timer
+  ansible.builtin.stat:
+    path: /etc/systemd/system/k3s-cert-check.timer
+  register: k3s_cert_timer
+
+- name: Stop and disable k3s certificate renewal timer
+  ansible.builtin.systemd:
+    name: k3s-cert-check.timer
+    enabled: false
+    state: stopped
+    daemon_reload: true
+  when: k3s_cert_timer.stat.exists
+
+- name: Remove k3s certificate renewal artifacts
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/local/bin/k3s-cert-check.sh
+    - /etc/systemd/system/k3s-cert-check.service
+    - /etc/systemd/system/k3s-cert-check.timer
+  notify: reload systemd
