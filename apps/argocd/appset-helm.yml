@@ -20,7 +20,7 @@ spec:
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
         targetRevision: main
-        path: "{{path.path}}"
+        path: "{{path}}"
         helm:
           releaseName: "{{path.basename}}"
           valueFiles:
