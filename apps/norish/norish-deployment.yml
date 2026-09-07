@@ -6,7 +6,7 @@ metadata:
     app: norish
     component: web
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -123,7 +123,7 @@ metadata:
     app: norish
     component: db
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -226,7 +226,7 @@ metadata:
     app: norish
     component: chrome
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -311,7 +311,7 @@ metadata:
     app: norish
     component: redis
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
