@@ -24,21 +24,25 @@ The cluster is configured with production like settings such as:
 
 ### Secure Communication
 - **WireGuard Backend**: Internal cluster communication uses WireGuard directly (not over Tailscale) to avoid double encapsulation issues
-- **SSH Restricted to Tailscale**: SSH daemon only listens on the Tailscale interface, eliminating public SSH exposure
+- **SSH Restricted to Tailscale and Approved Fallbacks**: SSH is available on Tailscale and only from explicitly approved public source IPs
 
 ### Firewall (nftables)
-A comprehensive firewall configuration is available via Ansible, it provides:
+Host firewalling is enabled via Ansible (`firewall_enable: true`) using an `inet homelab` nftables table (input/forward default drop, output accept). It provides:
 
 - **Port Scan Protection**: Drops NULL, SYN-FIN, SYN-RST, and FIN-RST scans
 - **Anti-Spoofing**: Blocks spoofed loopback traffic (127.0.0.0/8 and ::1)
-- **Rate Limiting**: ICMP limited to 10/second to prevent ping floods
-- **Cluster Traffic Only**: Only allows Kubernetes traffic from authorized cluster IPs:
-  - Flannel WireGuard (51820/udp) between all nodes
-  - Kubelet API (10250/tcp) from control-plane to worker nodes
-  - K3s API (6443/tcp) and supervisor (9345/tcp) between control-plane nodes
+- **Rate Limiting**: ICMP echo limited to 5/second (essential PMTU / IPv6 ND always allowed)
+- **Tailscale**: Underlay UDP/41641 allowed; all traffic arriving on `tailscale0` is trusted (management plane). Prefer Tailscale ACLs for tailnet segmentation.
+- **SSH**: Allowed from the tailnet; off-tailnet SSH only from `firewall_k3s_api_extra_allowed_ips` (sshd still listens on `0.0.0.0` — restriction is nftables, not `ListenAddress`)
+- **Cluster Traffic Only**: Kubernetes host ports are allowlisted from authorized sources:
+  - Flannel WireGuard (51820/udp) from node WAN/peer IPs (`cluster_network_ip`, plus optional per-host `cluster_wan_ip` / `ansible_host` for NAT/home nodes)
+  - node-exporter (9100/tcp) from node IPs and pod CIDR `10.42.0.0/16` (Prometheus scrapes from pods)
+  - Kubelet API (10250/tcp) from cluster node IPs and pod CIDR `10.42.0.0/16` (metrics-server; node IPs cover pod-to-kubelet traffic SNATed to the source host)
+  - K3s API (6443/tcp) and supervisor (9345/tcp) on control-plane nodes from cluster node IPs
   - K3s API (6443/tcp) from explicitly approved public join clients in `firewall_k3s_api_extra_allowed_ips`
   - etcd (2379-2380/tcp) between control-plane nodes
-- **Logging**: Rate-limited logging of dropped NEW connections (10/minute)
+- **Forwarding**: Pod/CNI traffic via `cni0` / `flannel.1` / `flannel-wg` (and `10.42.0.0/16` egress safety net); accidental WAN NodePort exposure is blocked
+- **Logging**: Rate-limited logging of dropped packets (10/minute)
 
 ## Intrusion Detection & Prevention
 
@@ -216,8 +220,8 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=latest K3S_URL=https://46.33.
 Ansible configures the nodes with the following:
 
 - Automatic security updates enabled and services are automatically restarted (if needed) 
-- SSH secured by only listening on the tailscale interface
-- Firewall pre-configured (not yet enabled due to issues with K8s egress)
+- SSH hardened and firewalled (Tailscale + approved WAN fallback IPs; sshd listens on all interfaces)
+- Host firewall (nftables) enabled for cluster/WAN traffic with CNI-aware forwarding
 - SELinux enforcing enabled on compatible hosts (with per-node exception support)
 - Kubernetes kubelet `seccompDefault` enabled
 - ZRAM activated

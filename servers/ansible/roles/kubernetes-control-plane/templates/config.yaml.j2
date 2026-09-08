@@ -36,8 +36,9 @@ etcd-arg:
   # Only increase if you consistently hit quota alarms
 
 # Automated etcd snapshots (backup + size management)
+# Keep fewer local copies: old bloated snaps were retaining ~1.4Gi after DB compaction.
 etcd-snapshot-schedule-cron: "0 */12 * * *"  # Every 12 hours (reasonable for hobby)
-etcd-snapshot-retention: 5
+etcd-snapshot-retention: 3
 
 kube-controller-manager-arg:
   - "node-monitor-period=10s"

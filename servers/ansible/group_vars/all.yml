@@ -28,6 +28,11 @@ firewall_k3s_api_extra_allowed_ips:
 firewall_kubelet_allowed_pod_cidrs:
   - 10.42.0.0/16
 
+# Extra WAN peers for cluster members that are not Ansible-managed (e.g. bazzite/home).
+# Included in Flannel WireGuard + node allowlists.
+firewall_extra_peer_ips:
+  - 84.226.17.204
+
 # Tool versions
 k9s_version: "v0.51.0"
 k3s_version: "v1.36.2+k3s1"

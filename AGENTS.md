@@ -116,8 +116,8 @@ ansible-playbook -i hosts.ini site.yml --tags <role-name> --check
 - **NEVER** commit secrets (use cluster secrets or Sealed Secrets)
 - **NEVER** use `latest` image tags
 - **NEVER** modify `apps/` without expecting immediate ArgoCD deployment
-- SSH access: Tailscale interface only
-- Firewall: nftables via Ansible (not yet enforced on all nodes)
+- SSH access: Tailscale + approved WAN fallback IPs (enforced by nftables; sshd listens on `0.0.0.0`)
+- Firewall: nftables via Ansible (`firewall_enable: true`, `inet homelab` table on nodes)
 
 ### Secrets Handling
 - Kubernetes: Use `secretKeyRef` referencing cluster secrets

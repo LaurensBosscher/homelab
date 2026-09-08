@@ -1,5 +1,17 @@
 ---
+# Delete/replace only the homelab table. Never `flush ruleset` — that wipes
+# kube-proxy/CNI iptables-nft tables on these nodes.
+# Tag the handler so it still runs under `--tags firewall`.
 - name: reload nftables
-  ansible.builtin.systemd:
-    name: nftables
-    state: reloaded
+  ansible.builtin.shell: |
+    set -euo pipefail
+    if [ -f /etc/sysconfig/nftables.conf ]; then
+      conf=/etc/sysconfig/nftables.conf
+    else
+      conf=/etc/nftables.conf
+    fi
+    nft delete table inet homelab 2>/dev/null || true
+    nft -f "$conf"
+  args:
+    executable: /bin/bash
+  tags: [firewall]

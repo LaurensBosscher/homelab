@@ -14,7 +14,7 @@ roles/
 │   optimizations, network-optimizations
 │   tailscale, kubecolor
 │   zram (50% RAM compressed swap)
-│   ssh (Tailscale-only binding)
+│   ssh (hardening; access limited by firewall)
 │   crowdsec, k3s-oom-protection
 │   k3s-install, firewall
 ```
