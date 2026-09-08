@@ -6,7 +6,7 @@ metadata:
     app: fusion
 spec:
   serviceName: fusion
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: fusion
