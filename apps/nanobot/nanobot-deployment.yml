@@ -22,7 +22,7 @@ spec:
       annotations:
         # Template bump to force the re-roll after the strategy change
         # (strategy alone does not trigger a new ReplicaSet).
-        nanobot.bosscher.ch/rollout: "0.3.0-2-r1"
+        nanobot.bosscher.ch/rollout: "0.3.0-3-r2"
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -49,6 +49,14 @@ spec:
                   config_path.write_text(json.dumps(sample, indent=2) + "\n")
               else:
                   config = json.loads(config_path.read_text())
+                  # Repair: PR #363 sample dropped channels.websocket.host;
+                  # nanobot's generated default binds 127.0.0.1 -> Service
+                  # connection-refused -> tunnel 502. Force the pod bind.
+                  ws = config.setdefault("channels", {}).setdefault("websocket", {})
+                  if ws.get("host", "127.0.0.1") != "0.0.0.0":
+                      ws["host"] = "0.0.0.0"
+                      ws["port"] = 8765
+                      config_path.write_text(json.dumps(config, indent=2) + "\n")
                   defaults = config.setdefault("agents", {}).setdefault("defaults", {})
                   provider = defaults.get("provider")
                   model = defaults.get("model") or ""
