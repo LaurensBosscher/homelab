@@ -1,0 +1,7 @@
+---
+# Effective policy today: auto-apply security updates only, never reboot,
+# restart touched services. Matches the values the old blockinfile block
+# used to shadow-append; now owned in a single [commands] section.
+dnf_automatic_upgrade_type: security
+dnf_automatic_apply_updates: true
+dnf_automatic_restart_services: true
