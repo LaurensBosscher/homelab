@@ -64,3 +64,13 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_TUNNEL_ID: ${{ env.CLOUDFLARE_OPENSTICK_TUNNEL_ID }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+
+  notify-failure:
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/notify-telegram-on-failure.yml
+    secrets:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    with:
+      parent_workflow: ${{ github.workflow }}

@@ -37,3 +37,15 @@ patches:
         name: applicationsets.argoproj.io
         annotations:
           argocd.argoproj.io/sync-options: ServerSideApply=true
+  # Public base URL for UI redirects / deep links.
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: argocd-cm
+    patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-cm
+      data:
+        url: https://argocd.bosscher.ch

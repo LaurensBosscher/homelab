@@ -296,6 +296,22 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
+      - name: prometheus-public
+        group: external
+        url: "https://prometheus.bosscher.ch/-/ready"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
+      - name: alertmanager-public
+        group: external
+        url: "https://alertmanager.bosscher.ch/-/ready"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: beszel
         group: cluster
         url: "http://beszel.beszel.svc.cluster.local:8090"

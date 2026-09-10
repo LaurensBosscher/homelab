@@ -57,3 +57,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  notify-failure:
+    needs: [build-and-push]
+    if: failure()
+    uses: ./.github/workflows/notify-telegram-on-failure.yml
+    secrets:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    with:
+      parent_workflow: ${{ github.workflow }}

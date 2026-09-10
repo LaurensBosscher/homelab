@@ -115,3 +115,13 @@ jobs:
           else
             echo "✅ All best practices checks passed"
           fi
+
+  notify-failure:
+    needs: [k8s-lint]
+    if: failure()
+    uses: ./.github/workflows/notify-telegram-on-failure.yml
+    secrets:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    with:
+      parent_workflow: ${{ github.workflow }}
