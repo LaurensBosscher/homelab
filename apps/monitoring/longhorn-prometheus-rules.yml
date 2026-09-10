@@ -10,54 +10,7 @@ metadata:
     release: prometheus
 spec:
   groups:
-    - name: longhorn.volume
-      rules:
-        # Prefer label-based robustness (Longhorn >= recent 1.x); keep numeric fallback.
-        - alert: LonghornVolumeFaulted
-          expr: |
-            (
-              longhorn_volume_robustness{state="faulted"} == 1
-            )
-            or
-            (
-              longhorn_volume_robustness == 3
-              unless on(volume, node) longhorn_volume_robustness{state=~".+"}
-            )
-          for: 2m
-          labels:
-            severity: critical
-          annotations:
-            summary: Longhorn volume {{ $labels.volume }} is faulted
-            description: Volume {{ $labels.volume }} on {{ $labels.node }} reported faulted robustness.
-            dashboard_url: https://longhorn.bosscher.ch
-        - alert: LonghornVolumeDegraded
-          expr: |
-            (
-              longhorn_volume_robustness{state="degraded"} == 1
-            )
-            or
-            (
-              longhorn_volume_robustness == 2
-              unless on(volume, node) longhorn_volume_robustness{state=~".+"}
-            )
-          for: 15m
-          labels:
-            severity: warning
-          annotations:
-            summary: Longhorn volume {{ $labels.volume }} is degraded
-            description: Volume {{ $labels.volume }} on {{ $labels.node }} has been degraded for >15m.
-            dashboard_url: https://longhorn.bosscher.ch
-        - alert: LonghornVolumeUsageCritical
-          expr: |
-            100 * (longhorn_volume_usage_bytes / longhorn_volume_capacity_bytes) > 90
-          for: 10m
-          labels:
-            severity: critical
-          annotations:
-            summary: Longhorn volume {{ $labels.volume }} is >90% full
-            description: Volume {{ $labels.volume }} usage is {{ $value | printf "%.1f" }}%.
-            dashboard_url: https://longhorn.bosscher.ch
-    - name: longhorn.node
+    - name: longhorn.storage
       rules:
         - alert: LonghornNodeStorageUsageHigh
           expr: |
@@ -69,28 +22,29 @@ spec:
             summary: Longhorn node {{ $labels.node }} storage >85% used
             description: Node {{ $labels.node }} Longhorn disk usage is {{ $value | printf "%.1f" }}%.
             dashboard_url: https://longhorn.bosscher.ch
+        - alert: LonghornDiskUsageCritical
+          expr: |
+            100 * (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) > 90
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: Longhorn disk {{ $labels.disk }} on {{ $labels.node }} is >90% full
+            description: Disk usage is {{ $value | printf "%.1f" }}%.
+            dashboard_url: https://longhorn.bosscher.ch
     - name: longhorn.backup
       rules:
-        # Numeric backup_state: 4 = Error (classic). Label-based: state="error"/"Error".
+        # Longhorn 1.12 exposes numeric backup_state (3=Completed, 4=Error).
         - alert: LonghornBackupFailed
-          expr: |
-            (
-              longhorn_backup_state{state=~"(?i)error"} == 1
-            )
-            or
-            (
-              longhorn_backup_state == 4
-              unless on(backup, volume, backup_volume) longhorn_backup_state{state=~".+"}
-            )
+          expr: longhorn_backup_state == 4
           for: 5m
           labels:
             severity: critical
           annotations:
-            summary: Longhorn backup failed for {{ $labels.volume }}{{ $labels.backup_volume }}
-            description: A Longhorn backup is in Error state.
+            summary: Longhorn backup {{ $labels.backup }} failed for {{ $labels.volume }}
+            description: Backup is in Error state (recurring_job={{ $labels.recurring_job }}).
             dashboard_url: https://longhorn.bosscher.ch
-        # Recurring Job CronJobs that leave Failed Jobs behind (already fires as KubeJobFailed;
-        # keep a focused high-signal alias for backup specifically).
+        # Recurring Job failures via kube-state-metrics (works without Longhorn scrape).
         - alert: LonghornRecurringJobFailed
           expr: |
             (
