@@ -10,6 +10,17 @@ data:
       type: sqlite
       path: /data/data.db
 
+    alerting:
+      telegram:
+        # Values come from Secret telegram-bot (SealedSecret)
+        token: "${TELEGRAM_BOT_TOKEN}"
+        id: "${TELEGRAM_CHAT_ID}"
+        default-alert:
+          enabled: true
+          failure-threshold: 3
+          success-threshold: 2
+          send-on-resolved: true
+
     endpoints:
       - name: laurensbosscher.nl
         group: external

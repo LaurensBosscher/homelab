@@ -16,6 +16,37 @@ kube-prometheus-stack:
         memory: 256Mi
       limits:
         memory: 512Mi
+    # Telegram bot token + chat id from SealedSecret telegram-bot
+    envValueFrom:
+      TELEGRAM_BOT_TOKEN:
+        secretKeyRef:
+          name: telegram-bot
+          key: token
+      TELEGRAM_CHAT_ID:
+        secretKeyRef:
+          name: telegram-bot
+          key: chat_id
+    alerting:
+      contactpoints.yaml:
+        apiVersion: 1
+        contactPoints:
+          - orgId: 1
+            name: telegram
+            receivers:
+              - uid: telegram
+                type: telegram
+                settings:
+                  bottoken: $TELEGRAM_BOT_TOKEN
+                  chatid: $TELEGRAM_CHAT_ID
+                disableResolveMessage: false
+      policies.yaml:
+        apiVersion: 1
+        policies:
+          - orgId: 1
+            receiver: telegram
+            group_by:
+              - grafana_folder
+              - alertname
   kube-state-metrics:
     # Do not pin image.tag above the chart default while on kube-prometheus-stack
     # 65.8.1 / kube-state-metrics 5.26.x: that chart hardcodes readiness to /readyz
@@ -30,7 +61,67 @@ kube-prometheus-stack:
       limits:
         memory: 128Mi
   alertmanager:
-    enabled: false
+    enabled: true
+    config:
+      global:
+        resolve_timeout: 5m
+      inhibit_rules:
+        - source_matchers:
+            - severity = critical
+          target_matchers:
+            - severity =~ warning|info
+          equal:
+            - namespace
+            - alertname
+        - source_matchers:
+            - severity = warning
+          target_matchers:
+            - severity = info
+          equal:
+            - namespace
+            - alertname
+        - source_matchers:
+            - alertname = InfoInhibitor
+          target_matchers:
+            - severity = info
+          equal:
+            - namespace
+        - target_matchers:
+            - alertname = InfoInhibitor
+      route:
+        group_by:
+          - namespace
+          - alertname
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 4h
+        receiver: telegram
+        routes:
+          - receiver: "null"
+            matchers:
+              - alertname = Watchdog
+          - receiver: "null"
+            matchers:
+              - alertname = InfoInhibitor
+      receivers:
+        - name: "null"
+        - name: telegram
+          telegram_configs:
+            - bot_token_file: /etc/alertmanager/secrets/telegram-bot/token
+              chat_id: 1265937934
+              parse_mode: HTML
+              send_resolved: true
+      templates:
+        - /etc/alertmanager/config/*.tmpl
+    alertmanagerSpec:
+      secrets:
+        - telegram-bot
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
 metrics-server:
   args:
     - --kubelet-insecure-tls
