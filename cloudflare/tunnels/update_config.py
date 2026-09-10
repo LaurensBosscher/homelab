@@ -296,21 +296,33 @@ class TunnelConfigManager:
         return TunnelConfig(ingress=ingress_rules)
 
     def get_existing_dns_records(self) -> Dict[str, DNSRecord]:
-        """Get existing DNS records for tunnel hostnames."""
+        """Get DNS records that already point at this tunnel."""
         records: Dict[str, DNSRecord] = {}
 
         try:
             response: CloudflareListResponse = self.api.list_dns_records()
             for record_data in response.result:
-                if record_data.get("type") == "CNAME" and record_data.get(
-                    "content", ""
-                ).endswith(".cfargotunnel.com"):
+                if (
+                    record_data.get("type") == "CNAME"
+                    and record_data.get("content") == self.api.tunnel_domain
+                ):
                     record = DNSRecord(**record_data)
                     records[record.name] = record
         except requests.exceptions.HTTPError as e:
             print(f"Warning: Failed to fetch DNS records: {e}")
 
         return records
+
+    def _lookup_dns_record(self, hostname: str) -> Optional[DNSRecord]:
+        """Look up an existing DNS record by exact hostname."""
+        try:
+            response: CloudflareListResponse = self.api.list_dns_records(name=hostname)
+            for record_data in response.result:
+                if record_data.get("name") == hostname:
+                    return DNSRecord(**record_data)
+        except requests.exceptions.HTTPError as e:
+            print(f"Warning: Failed to look up DNS record for {hostname}: {e}")
+        return None
 
     def sync_dns_records(
         self,
@@ -323,28 +335,30 @@ class TunnelConfigManager:
 
         print("\n📋 Synchronizing DNS records...")
 
-        # Get existing DNS records
-        existing_records: Dict[str, DNSRecord] = self.get_existing_dns_records()
-
-        # Determine required hostnames from routes
+        # Records currently owned by this tunnel (safe delete candidates only)
+        managed_records: Dict[str, DNSRecord] = self.get_existing_dns_records()
         required_hostnames: set[str] = {route.hostname for route in routes}
-        existing_hostnames: set[str] = set(existing_records.keys())
 
         dns_create: List[str] = []
         dns_update: List[str] = []
         dns_delete: List[str] = []
+        records_by_hostname: Dict[str, DNSRecord] = dict(managed_records)
 
-        # Find DNS records to create
-        for hostname in required_hostnames - existing_hostnames:
-            dns_create.append(hostname)
+        # Create or re-point required hostnames
+        for hostname in required_hostnames:
+            existing = records_by_hostname.get(hostname) or self._lookup_dns_record(
+                hostname
+            )
+            if existing is None:
+                dns_create.append(hostname)
+                continue
 
-        # Find DNS records to update (if pointing to wrong tunnel)
-        for hostname in required_hostnames & existing_hostnames:
-            if existing_records[hostname].content != self.api.tunnel_domain:
+            records_by_hostname[hostname] = existing
+            if existing.content != self.api.tunnel_domain:
                 dns_update.append(hostname)
 
-        # Find DNS records to delete
-        for hostname in existing_hostnames - required_hostnames:
+        # Only delete CNAMEs that already point at this tunnel
+        for hostname in set(managed_records.keys()) - required_hostnames:
             dns_delete.append(hostname)
 
         # Display planned DNS actions
@@ -384,7 +398,7 @@ class TunnelConfigManager:
                 print(f"  ✓ Created DNS record for {hostname}")
 
             for hostname in dns_update:
-                existing = existing_records[hostname]
+                existing = records_by_hostname[hostname]
                 if existing.id:
                     record = DNSRecord(
                         type="CNAME",
@@ -397,7 +411,7 @@ class TunnelConfigManager:
                     print(f"  ✓ Updated DNS record for {hostname}")
 
             for hostname in dns_delete:
-                existing = existing_records[hostname]
+                existing = managed_records[hostname]
                 if existing.id:
                     self.api.delete_dns_record(existing.id)
                     print(f"  ✓ Deleted DNS record for {hostname}")

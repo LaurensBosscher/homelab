@@ -134,7 +134,7 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 ### Adding New App
 1. Create `apps/<app-name>/` with deployment, service, PVC
 2. Add homepage entry: `apps/homepage/homepage-config.yml`
-3. Add DNS route: `cloudflare/tunnels/config.yml`
+3. Add DNS route: `cloudflare/tunnels/config.yml` (cluster) or `config-openstick.yml` (OpenStick)
 4. Add health check: `apps/gatus/gatus-configmap.yml`
 5. ArgoCD auto-deploys
 
@@ -146,7 +146,7 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 ### Multi-Region Deployment
 - Regions: `europe`, `us`, `zurich` (node labels)
 - Storage: `2replicas-europe` or `2replicas-us` storage classes
-- Tunnels: One Cloudflare tunnel instance per region
+- Tunnels: cluster (`config.yml`) + OpenStick (`config-openstick.yml`); GH Actions syncs both
 
 ## Testing Philosophy
 - Runtime health = primary test (probes + Gatus monitoring)

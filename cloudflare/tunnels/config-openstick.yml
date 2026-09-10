@@ -1,0 +1,8 @@
+- hostname: ssh.openstick.bosscher.ch
+  service: ssh://localhost:22
+- hostname: fusion.openstick.bosscher.ch
+  service: http://localhost:8080
+- hostname: gatus.openstick.bosscher.ch
+  service: http://localhost:8081
+- hostname: pico.openstick.bosscher.ch
+  service: http://localhost:18800

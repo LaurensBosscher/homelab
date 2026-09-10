@@ -13,10 +13,14 @@ on:
       - main
     paths:
       - "cloudflare/tunnels/config.yml"
+      - "cloudflare/tunnels/config-openstick.yml"
+      - "cloudflare/tunnels/update_config.py"
       - ".github/workflows/update_cloudflare_settings.yml"
 
 env:
   PYTHON_VERSION: "3.14"
+  # Tunnel IDs are public via DNS CNAMEs (*.cfargotunnel.com).
+  CLOUDFLARE_OPENSTICK_TUNNEL_ID: "9ec2e211-3f7b-4664-b720-29d02010af13"
 
 jobs:
   deploy:
@@ -41,12 +45,22 @@ jobs:
           cd cloudflare/tunnels
           uv sync
 
-      - name: Update Cloudflare Tunnel Settings
+      - name: Update cluster tunnel
         run: |
           cd cloudflare/tunnels
-          uv run python update_config.py
+          uv run python update_config.py --config config.yml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_TUNNEL_ID: ${{ secrets.CLOUDFLARE_TUNNEL_ID }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+
+      - name: Update openstick tunnel
+        run: |
+          cd cloudflare/tunnels
+          uv run python update_config.py --config config-openstick.yml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_TUNNEL_ID: ${{ env.CLOUDFLARE_OPENSTICK_TUNNEL_ID }}
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
