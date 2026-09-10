@@ -1,0 +1,8 @@
+---
+# Version of henrygd/beszel releases to install (agent binary + download URL).
+beszel_agent_version: "0.19.0"
+# TCP port the agent's embedded SSH server listens on (the hub connects here).
+beszel_agent_port: 45876
+# Hub's ed25519 public key — agents only accept hub connections signed by it.
+# Set in group_vars/all.yml (extracted from the in-cluster hub on first deploy).
+beszel_agent_public_key: ""

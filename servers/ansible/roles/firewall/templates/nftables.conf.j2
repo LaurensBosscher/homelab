@@ -58,6 +58,12 @@ table inet homelab {
 {% if firewall_kubelet_allowed_pod_cidrs | default([]) | length > 0 %}
     tcp dport 9100  ip saddr { {{ firewall_kubelet_allowed_pod_cidrs | join(', ') }} } accept comment "node-exporter (from cluster pods)"
 {% endif %}
+{% if firewall_cluster_network_ips | length > 0 %}
+    tcp dport 45876 ip saddr { {{ firewall_cluster_network_ips | join(', ') }} } accept comment "beszel-agent (from node IPs)"
+{% endif %}
+{% if firewall_kubelet_allowed_pod_cidrs | default([]) | length > 0 %}
+    tcp dport 45876 ip saddr { {{ firewall_kubelet_allowed_pod_cidrs | join(', ') }} } accept comment "beszel-agent (from cluster pods)"
+{% endif %}
 
 {% if firewall_control_plane_network_ips | length > 0 %}
     tcp dport 10250 ip saddr { {{ firewall_control_plane_network_ips | join(', ') }} } accept comment "Kubelet API (from control-plane)"

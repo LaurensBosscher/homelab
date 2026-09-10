@@ -1,0 +1,67 @@
+---
+- name: Assert agent public key is configured
+  ansible.builtin.assert:
+    that: beszel_agent_public_key | length > 0
+    fail_msg: >-
+      Set beszel_agent_public_key (the hub's ed25519 public key) in
+      group_vars/all.yml before rolling out agents.
+  tags: [beszel]
+
+- name: Create beszel system group
+  ansible.builtin.group:
+    name: beszel
+    system: true
+  tags: [beszel]
+
+- name: Create beszel system user
+  ansible.builtin.user:
+    name: beszel
+    group: beszel
+    system: true
+    create_home: false
+    shell: /usr/sbin/nologin
+  tags: [beszel]
+
+- name: Download beszel-agent {{ beszel_agent_version }} release tarball
+  ansible.builtin.get_url:
+    url: >-
+      https://github.com/henrygd/beszel/releases/download/v{{ beszel_agent_version }}/beszel-agent_linux_{{
+      'amd64' if ansible_facts.architecture == 'x86_64' else 'arm64' }}.tar.gz
+    dest: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
+    mode: "0644"
+  tags: [beszel]
+
+- name: Install beszel-agent binary
+  ansible.builtin.unarchive:
+    src: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root
+  notify: Restart beszel-agent
+  tags: [beszel]
+
+- name: Clean up downloaded tarball
+  ansible.builtin.file:
+    path: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
+    state: absent
+  tags: [beszel]
+
+- name: Deploy beszel-agent systemd unit
+  ansible.builtin.template:
+    src: beszel-agent.service.j2
+    dest: /etc/systemd/system/beszel-agent.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart beszel-agent
+  tags: [beszel, config]
+
+- name: Enable and start beszel-agent
+  ansible.builtin.systemd:
+    name: beszel-agent
+    enabled: true
+    state: started
+    daemon_reload: true
+  tags: [beszel]

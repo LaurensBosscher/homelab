@@ -1,0 +1,20 @@
+[Unit]
+Description=Beszel Agent (server metrics for the in-cluster Beszel hub)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=beszel
+Group=beszel
+Environment=PORT={{ beszel_agent_port }}
+Environment="KEY={{ beszel_agent_public_key }}"
+ExecStart=/usr/local/bin/beszel-agent
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
