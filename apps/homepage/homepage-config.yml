@@ -329,6 +329,11 @@ data:
                 description: Monitoring & Dashboards
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
                 siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
+            - Beszel:
+                href: https://beszel.bosscher.ch
+                description: Lightweight server monitoring
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/beszel.png
+                siteMonitor: http://beszel.beszel.svc.cluster.local:8090
         - Infrastructure:
             - Termix:
                 href: https://termix.bosscher.ch
