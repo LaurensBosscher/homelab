@@ -296,6 +296,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
+      - name: beszel
+        group: cluster
+        url: "http://beszel.beszel.svc.cluster.local:8090"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
       - name: cloudflare-icmp
         group: external
         url: "icmp://1.1.1.1"
