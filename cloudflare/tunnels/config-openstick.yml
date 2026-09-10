@@ -6,3 +6,7 @@
   service: http://localhost:8081
 - hostname: pico_openstick.bosscher.ch
   service: http://localhost:18800
+- hostname: dozzle_openstick.bosscher.ch
+  service: http://localhost:8888
+- hostname: beszel_openstick.bosscher.ch
+  service: http://localhost:8090

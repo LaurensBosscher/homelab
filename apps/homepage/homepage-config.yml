@@ -351,6 +351,32 @@ data:
                 href: https://app.crowdsec.net/
                 description: CrowdSec Security Console
                 icon: https://lwfiles.mycourse.app/64672e16e486f630b28c1d77-public/1e5e214fc750145687a9ef60a80b4a8b.png
+        - OpenStick:
+            - Fusion:
+                href: https://fusion_openstick.bosscher.ch
+                description: OpenStick RSS reader
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rsshub.png
+                siteMonitor: https://fusion_openstick.bosscher.ch
+            - Gatus:
+                href: https://gatus_openstick.bosscher.ch
+                description: OpenStick uptime monitoring
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
+                siteMonitor: https://gatus_openstick.bosscher.ch
+            - Pico:
+                href: https://pico_openstick.bosscher.ch
+                description: Pico service on OpenStick
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png
+                siteMonitor: https://pico_openstick.bosscher.ch
+            - Dozzle:
+                href: https://dozzle_openstick.bosscher.ch
+                description: Docker log viewer
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/dozzle.png
+                siteMonitor: https://dozzle_openstick.bosscher.ch
+            - Beszel:
+                href: https://beszel_openstick.bosscher.ch
+                description: Server metrics hub
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/beszel.png
+                siteMonitor: https://beszel_openstick.bosscher.ch
     bookmarks.yaml: |
         - Developer:
             - GitHub:
