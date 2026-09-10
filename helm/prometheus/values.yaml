@@ -181,6 +181,10 @@ kube-prometheus-stack:
           - receiver: "null"
             matchers:
               - alertname =~ "KubeControllerManagerDown|KubeSchedulerDown|KubeProxyDown"
+          # Ephemeral kubectl debug leftovers should not page Telegram.
+          - receiver: "null"
+            matchers:
+              - pod =~ "node-debugger-.*"
       receivers:
         - name: "null"
         - name: telegram
