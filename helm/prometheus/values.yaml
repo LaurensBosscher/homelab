@@ -12,6 +12,12 @@ kube-prometheus-stack:
       KubeControllerManagerDown: true
       KubeSchedulerDown: true
       KubeProxyDown: true
+  # ArgoCD gets stuck on PreSync admission patch Jobs; Ignore is fine for homelab.
+  prometheusOperator:
+    admissionWebhooks:
+      failurePolicy: Ignore
+      patch:
+        enabled: false
   kubelet:
     serviceMonitor:
       # Keep chart-default metrics_path label, then drop unreachable bazzite LAN IP.
