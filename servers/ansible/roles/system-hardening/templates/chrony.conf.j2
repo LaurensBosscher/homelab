@@ -1,0 +1,16 @@
+# AlmaLinux chrony configuration (Ansible managed).
+{% if chrony_pool %}
+pool {{ chrony_pool }} iburst
+{% endif %}
+{% for server in chrony_extra_servers | default([]) %}
+server {{ server }} iburst
+{% endfor %}
+sourcedir /run/chrony-dhcp
+driftfile /var/lib/chrony/drift
+makestep 1.0 3
+rtcsync
+ntsdumpdir /var/lib/chrony
+logdir /var/log/chrony
+{% for cidr in chrony_allow_cidrs | default([]) %}
+allow {{ cidr }}
+{% endfor %}

@@ -10,8 +10,21 @@ resources:
   - appset-helm.yml
   - default-appproject.yml
   - longhorn-application.yml
+  - argocd-notifications-cm.yml
+  - argocd-notifications-secret-sealed.yml
 
 patches:
+  # Upstream core-install ships an empty notifications secret; SealedSecret owns it.
+  - target:
+      version: v1
+      kind: Secret
+      name: argocd-notifications-secret
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: argocd-notifications-secret
   - target:
       group: apiextensions.k8s.io
       version: v1

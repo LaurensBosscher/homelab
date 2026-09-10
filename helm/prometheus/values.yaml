@@ -1,5 +1,17 @@
 # kube-prometheus-stack values
 kube-prometheus-stack:
+  # K3s embeds these components; default ServiceMonitors / absent() rules are false positives.
+  kubeControllerManager:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  defaultRules:
+    disabled:
+      KubeControllerManagerDown: true
+      KubeSchedulerDown: true
+      KubeProxyDown: true
   prometheus:
     prometheusSpec:
       retention: 15d
@@ -9,6 +21,16 @@ kube-prometheus-stack:
           memory: 1Gi
         limits:
           memory: 2Gi
+      # bazzite advertises InternalIP 192.168.1.104 (unreachable from the VPS mesh).
+      # Scrape host metrics via Tailscale until node-ip is switched to 100.81.190.71.
+      additionalScrapeConfigs:
+        - job_name: node-exporter-bazzite-tailscale
+          static_configs:
+            - targets:
+                - 100.81.190.71:9100
+              labels:
+                node: bazzite
+                scrape_path: tailscale
   grafana:
     resources:
       requests:
@@ -101,6 +123,15 @@ kube-prometheus-stack:
           - receiver: "null"
             matchers:
               - alertname = InfoInhibitor
+          # bazzite LAN InternalIP is not reachable from VPS Prometheus pods.
+          # Host metrics are scraped via Tailscale additionalScrapeConfigs instead.
+          - receiver: "null"
+            matchers:
+              - instance =~ "192\\.168\\.1\\.104:.*"
+          # K3s false positives (also disabled via defaultRules; belt-and-suspenders)
+          - receiver: "null"
+            matchers:
+              - alertname =~ "KubeControllerManagerDown|KubeSchedulerDown|KubeProxyDown"
       receivers:
         - name: "null"
         - name: telegram

@@ -19,6 +19,37 @@
     state: present
   tags: [system-hardening, time-sync]
 
+- name: Detect whether chronyd was built with NTP server support
+  ansible.builtin.command: chronyd -v
+  register: chronyd_version
+  changed_when: false
+  failed_when: false
+  tags: [system-hardening, time-sync]
+
+- name: Configure chronyd
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    mode: "0644"
+    backup: true
+  vars:
+    # Client-only chrony builds (no +NTP) reject `allow` directives.
+    chrony_allow_cidrs: >-
+      {{
+        (chrony_allow_cidrs | default([]))
+        if ('+NTP' in (chronyd_version.stdout | default('')))
+        else []
+      }}
+  notify: restart chronyd
+  tags: [system-hardening, time-sync]
+
+- name: Prefer RTC kept in UTC
+  ansible.builtin.command: timedatectl set-local-rtc 0
+  register: timedatectl_local_rtc
+  changed_when: false
+  failed_when: false
+  tags: [system-hardening, time-sync]
+
 - name: Enable and start chronyd service
   ansible.builtin.systemd:
     name: chronyd

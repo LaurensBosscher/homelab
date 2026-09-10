@@ -1,0 +1,7 @@
+---
+# Chrony defaults. Override per-host/group when public NTP is blocked.
+chrony_pool: "2.almalinux.pool.ntp.org"
+# Extra NTP servers (used as fallback / primary when pool is unreachable).
+chrony_extra_servers: []
+# CIDRs allowed to query this node as an NTP server (requires chrony +NTP build).
+chrony_allow_cidrs: []

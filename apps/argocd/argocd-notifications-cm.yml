@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/component: notifications-controller
+    app.kubernetes.io/name: argocd-notifications-controller
+    app.kubernetes.io/part-of: argocd
+data:
+  service.telegram: |
+    token: $telegram-token
+  # Default subscriptions for every Application in this controller namespace.
+  # Avoid on-sync-succeeded / on-deployed to prevent alert fatigue.
+  subscriptions: |
+    - recipients:
+        - telegram:1265937934
+      triggers:
+        - on-sync-failed
+        - on-health-degraded
+        - on-sync-status-unknown
+  context: |
+    argocdUrl: https://argocd.bosscher.ch
+  template.app-sync-failed: |
+    message: |
+      ❌ ArgoCD sync failed: {{.app.metadata.name}}
+      {{- if .app.status.operationState }}
+      Phase: {{.app.status.operationState.phase}}
+      Message: {{.app.status.operationState.message}}
+      {{- end }}
+      {{.context.argocdUrl}}/applications/{{.app.metadata.name}}?operation=true
+  template.app-health-degraded: |
+    message: |
+      ⚠️ ArgoCD health degraded: {{.app.metadata.name}}
+      Health: {{.app.status.health.status}}
+      Sync: {{.app.status.sync.status}}
+      {{.context.argocdUrl}}/applications/{{.app.metadata.name}}
+  template.app-sync-status-unknown: |
+    message: |
+      ❓ ArgoCD sync unknown: {{.app.metadata.name}}
+      Sync: {{.app.status.sync.status}}
+      {{.context.argocdUrl}}/applications/{{.app.metadata.name}}
+  trigger.on-sync-failed: |
+    - description: Application syncing has failed
+      oncePer: app.status.operationState?.syncResult?.revision
+      send:
+        - app-sync-failed
+      when: app.status.operationState != nil and app.status.operationState.phase in ['Error', 'Failed']
+  trigger.on-health-degraded: |
+    - description: Application has degraded
+      oncePer: app.status.operationState?.syncResult?.revision
+      send:
+        - app-health-degraded
+      when: app.status.health.status == 'Degraded'
+  trigger.on-sync-status-unknown: |
+    - description: Application status is Unknown
+      oncePer: app.status.operationState?.syncResult?.revision
+      send:
+        - app-sync-status-unknown
+      when: app.status.sync.status == 'Unknown'
