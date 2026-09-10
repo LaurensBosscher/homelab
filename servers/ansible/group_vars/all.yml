@@ -36,7 +36,7 @@ firewall_extra_peer_ips:
 # Beszel agent (hub runs in-cluster in the beszel namespace).
 # Public key is the hub's ed25519 key — extracted from the hub pod on first deploy.
 beszel_agent_version: "0.19.0"
-beszel_agent_public_key: ""
+beszel_agent_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKfQjDttAcHBpgByCelV9GtjGj5fbbqPbCshWTR0fff2"
 
 # Tool versions
 k9s_version: "v0.51.0"
