@@ -16,16 +16,14 @@ kube-prometheus-stack:
         memory: 256Mi
       limits:
         memory: 512Mi
-    # Telegram bot token + chat id from SealedSecret telegram-bot
+    # Telegram bot token from SealedSecret telegram-bot
+    # chatid must stay a quoted string in provisioning — env substitution of a
+    # numeric id is unmarshaled as a number and crashes Grafana on boot.
     envValueFrom:
       TELEGRAM_BOT_TOKEN:
         secretKeyRef:
           name: telegram-bot
           key: token
-      TELEGRAM_CHAT_ID:
-        secretKeyRef:
-          name: telegram-bot
-          key: chat_id
     alerting:
       contactpoints.yaml:
         apiVersion: 1
@@ -37,7 +35,7 @@ kube-prometheus-stack:
                 type: telegram
                 settings:
                   bottoken: $TELEGRAM_BOT_TOKEN
-                  chatid: $TELEGRAM_CHAT_ID
+                  chatid: "1265937934"
                 disableResolveMessage: false
       policies.yaml:
         apiVersion: 1
