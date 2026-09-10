@@ -62,6 +62,10 @@
   service: http://gatus.gatus.svc.cluster.local:8080
 - hostname: grafana.bosscher.ch
   service: http://prometheus-grafana.monitoring.svc.cluster.local:80
+- hostname: prometheus.bosscher.ch
+  service: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+- hostname: alertmanager.bosscher.ch
+  service: http://prometheus-kube-prometheus-alertmanager.monitoring.svc.cluster.local:9093
 - hostname: beszel.bosscher.ch
   service: http://beszel.beszel.svc.cluster.local:8090
 - hostname: bentopdf.bosscher.ch

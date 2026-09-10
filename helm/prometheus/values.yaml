@@ -58,6 +58,8 @@ kube-prometheus-stack:
             action: drop
   prometheus:
     prometheusSpec:
+      # Public Cloudflare Tunnel URL so alert Source links are clickable.
+      externalUrl: https://prometheus.bosscher.ch
       retention: 15d
       resources:
         requests:
@@ -75,6 +77,10 @@ kube-prometheus-stack:
                 node: bazzite
                 scrape_path: tailscale
   grafana:
+    grafana.ini:
+      server:
+        root_url: https://grafana.bosscher.ch
+        domain: grafana.bosscher.ch
     resources:
       requests:
         cpu: 100m
@@ -186,6 +192,8 @@ kube-prometheus-stack:
       templates:
         - /etc/alertmanager/config/*.tmpl
     alertmanagerSpec:
+      # Public Cloudflare Tunnel URL for Alertmanager UI / silence links.
+      externalUrl: https://alertmanager.bosscher.ch
       secrets:
         - telegram-bot
       resources:

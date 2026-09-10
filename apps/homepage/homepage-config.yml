@@ -329,6 +329,16 @@ data:
                 description: Monitoring & Dashboards
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png
                 siteMonitor: http://prometheus-grafana.monitoring.svc.cluster.local:80
+            - Prometheus:
+                href: https://prometheus.bosscher.ch
+                description: Metrics & alert Source links
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png
+                siteMonitor: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+            - Alertmanager:
+                href: https://alertmanager.bosscher.ch
+                description: Alert routing & silences
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/alertmanager.png
+                siteMonitor: http://prometheus-kube-prometheus-alertmanager.monitoring.svc.cluster.local:9093
             - Beszel:
                 href: https://beszel.bosscher.ch
                 description: Lightweight server monitoring
