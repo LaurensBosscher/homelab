@@ -12,23 +12,34 @@ kube-prometheus-stack:
       KubeControllerManagerDown: true
       KubeSchedulerDown: true
       KubeProxyDown: true
-  # bazzite advertises InternalIP 192.168.1.104 (LAN), unreachable from VPS Prometheus.
-  # Drop those scrape targets so TargetDown stops firing; host metrics come via Tailscale below.
   kubelet:
     serviceMonitor:
+      # Keep chart-default metrics_path label, then drop unreachable bazzite LAN IP.
       relabelings:
+        - action: replace
+          sourceLabels: [__metrics_path__]
+          targetLabel: metrics_path
         - sourceLabels: [__address__]
           regex: 192\.168\.1\.104:.*
           action: drop
       cAdvisorRelabelings:
+        - action: replace
+          sourceLabels: [__metrics_path__]
+          targetLabel: metrics_path
         - sourceLabels: [__address__]
           regex: 192\.168\.1\.104:.*
           action: drop
       probesRelabelings:
+        - action: replace
+          sourceLabels: [__metrics_path__]
+          targetLabel: metrics_path
         - sourceLabels: [__address__]
           regex: 192\.168\.1\.104:.*
           action: drop
       resourceRelabelings:
+        - action: replace
+          sourceLabels: [__metrics_path__]
+          targetLabel: metrics_path
         - sourceLabels: [__address__]
           regex: 192\.168\.1\.104:.*
           action: drop
