@@ -11,7 +11,10 @@
     dest: /etc/systemd/zram-generator.conf
     content: |-
       [zram0]
-      zram-size = ram / 2
+      # Cap at 8G: zram costs nothing until written, but beyond ~8G of
+      # compressed spill the node is thrashing anyway; fail fast via OOM
+      # instead of obtaining responsiveness on deep swap.
+      zram-size = min(ram / 2, 8192)
       compression-algorithm = zstd
     owner: root
     group: root

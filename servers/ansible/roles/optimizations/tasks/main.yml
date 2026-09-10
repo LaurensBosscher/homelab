@@ -11,14 +11,23 @@
     k8s_low_mem_threshold_gb: 12
   tags: [optimizations]
 
-- name: Calculate dynamic min_free_kbytes 512 MB
+# 512 MB reserved on a 4.8 GB node is 10% of RAM held back from use and
+# forces premature kswapd wakeups; scale the reservation with node size.
+- name: Set min_free_kbytes for low-memory systems (< 12 GB)
+  ansible.builtin.set_fact:
+    vm_min_free_kbytes: 262144
+  when: total_mem_gb | int < k8s_low_mem_threshold_gb | int
+  tags: [optimizations]
+
+- name: Set min_free_kbytes for normal/high-memory systems (>= 12 GB)
   ansible.builtin.set_fact:
     vm_min_free_kbytes: 524288
+  when: total_mem_gb | int >= k8s_low_mem_threshold_gb | int
   tags: [optimizations]
 
 - name: Set vm parameters for low-memory systems (< 12 GB)
   ansible.builtin.set_fact:
-    vm_swappiness: "60"
+    vm_swappiness: "100"
     vm_dirty_ratio: "10"
     vm_dirty_background_ratio: "3"
     queue_depth: "32"
@@ -27,7 +36,7 @@
 
 - name: Set vm parameters for normal/high-memory systems (>= 12 GB)
   ansible.builtin.set_fact:
-    vm_swappiness: "60"
+    vm_swappiness: "100"
     vm_dirty_ratio: "15"
     vm_dirty_background_ratio: "5"
     queue_depth: "256"
@@ -88,7 +97,8 @@
       # Trigger kswapd earlier to smooth out memory reclamation spikes
       vm.watermark_scale_factor = 200
       
-      # Disable swap prefetching; ZRAM is CPU-bound not I/O-bound, so read-ahead is overhead
+      # Disable swap readahead; ZRAM is CPU-bound not I/O-bound, so read-ahead is overhead
+      # (preserves the behavior of the retired 99-swap-tune.conf drop-in)
       vm.page-cluster = 0
       
       # Do not panic on OOM; let the OOM killer pick a process (usually a pod) to kill
@@ -110,6 +120,20 @@
   tags: [optimizations]
   register: tuned_profile_created
 
+# Orphan drop-ins from the pre-tuned era. Tuned's sysctl plugin reapplies
+# /etc/sysctl.d on top of the profile, so any vm.* key here silently wins
+# over kubernetes-node (this caused the 10/60/100/180 swappiness scatter).
+- name: Remove orphan sysctl drop-ins shadowing the tuned profile
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/sysctl.d/99-kubernetes-optimizations.conf
+    - /etc/sysctl.d/99-swap-tune.conf
+  become: true
+  tags: [optimizations]
+  register: orphan_sysctl_removed
+
 - name: Check active tuned profile
   ansible.builtin.command: tuned-adm active
   register: current_tuned_profile
@@ -124,6 +148,7 @@
   become: true
   when: >
     tuned_profile_created.changed or
+    orphan_sysctl_removed.changed or
     'Current active profile: kubernetes-node' not in current_tuned_profile.stdout
   tags: [optimizations]
 
