@@ -126,7 +126,10 @@ spec:
               port: 18789
             periodSeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 36
+            # Boot = 2x doctor + update repair finalize + gateway start.
+            # Measured ~6.5min against Longhorn; 2026.9.x update finalize can
+            # take longer. 120 x 10s = 20min budget (liveness guards after).
+            failureThreshold: 120
           livenessProbe:
             httpGet:
               path: /healthz
