@@ -34,7 +34,7 @@ spec:
                       - zurich
       containers:
         - name: radarr
-          image: lscr.io/linuxserver/radarr:6.3.0
+          image: lscr.io/linuxserver/radarr:6.4.4
           securityContext:
             allowPrivilegeEscalation: false
           ports:
