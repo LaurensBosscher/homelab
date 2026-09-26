@@ -54,7 +54,7 @@ spec:
             runAsNonRoot: false
       containers:
         - name: norish
-          image: norishapp/norish:v0.23.1-beta
+          image: norishapp/norish:v0.24.0-beta
           ports:
             - containerPort: 3000
           securityContext:
@@ -353,7 +353,7 @@ spec:
               mountPath: /data
       containers:
         - name: redis
-          image: redis:8.10.1-alpine
+          image: redis:8.10.2-alpine
           ports:
             - containerPort: 6379
           securityContext:
