@@ -1,0 +1,28 @@
+# Radarr Kustomization overlay
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+# Use base templates
+resources:
+  - ../../base
+
+# App-specific configuration
+namePrefix: radarr-
+
+# Add app-specific resources
+resources:
+  - radarr-pvcs.yml
+
+# Patch the deployment with Radarr-specific settings
+patchesStrategicMerge:
+  - deployment-patch.yaml
+
+commonLabels:
+  app.kubernetes.io/name: radarr
+  app.kubernetes.io/component: media-server
+
+images:
+  - name: linuxserver/radarr
+    newTag: "latest"  # TODO: Pin to specific version

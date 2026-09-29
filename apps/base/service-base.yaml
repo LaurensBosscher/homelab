@@ -1,0 +1,17 @@
+# Base service template
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APP_NAME}
+  labels:
+    app.kubernetes.io/name: ${APP_NAME}
+    app.kubernetes.io/part-of: homelab
+spec:
+  type: ClusterIP
+  ports:
+  - port: ${APP_PORT}
+    targetPort: ${APP_PORT}
+    protocol: TCP
+    name: http
+  selector:
+    app: ${APP_NAME}

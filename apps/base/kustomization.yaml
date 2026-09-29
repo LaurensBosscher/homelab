@@ -1,0 +1,13 @@
+# Base kustomization for common deployment patterns
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+  - deployment-base.yaml
+  - service-base.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: homelab
+  app.kubernetes.io/managed-by: argocd
