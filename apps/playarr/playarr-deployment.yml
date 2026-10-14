@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: playarr
           image: maikboarder/playerr:v0.4.8
@@ -80,9 +80,9 @@ spec:
             claimName: playarr-config
         - name: games-complete
           hostPath:
-            path: /mnt/downloads/complete/games
+            path: /mnt/data/downloads/complete/games
             type: DirectoryOrCreate
         - name: games-incomplete
           hostPath:
-            path: /mnt/downloads/incomplete/games
+            path: /mnt/data/downloads/incomplete/games
             type: DirectoryOrCreate

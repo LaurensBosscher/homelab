@@ -42,6 +42,9 @@ beszel_agent_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpNTxI1PCrBJ3zHyu
 k9s_version: "v0.51.0"
 k3s_version: "v1.36.2+k3s1"
 
+# V2: embedded SQLite on single server (bazzite). Set to 'etcd' only for legacy HA.
+k3s_datastore: sqlite
+
 # System tuning
 tailscale_mtu: 1280
 journal_max_use: "2G"

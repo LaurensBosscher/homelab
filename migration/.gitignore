@@ -1,0 +1,4 @@
+secrets/
+*.sql.gz
+*.tar
+restic-password.txt

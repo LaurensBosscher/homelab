@@ -47,11 +47,10 @@ spec:
             timeoutSeconds: 5
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - us
+                      - bazzite

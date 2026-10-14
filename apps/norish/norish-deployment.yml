@@ -24,10 +24,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - us
+                      - bazzite
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -143,10 +143,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - us
+                      - bazzite
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -244,10 +244,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - us
+                      - bazzite
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -331,10 +331,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: region
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - us
+                      - bazzite
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:

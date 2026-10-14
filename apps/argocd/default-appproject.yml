@@ -6,7 +6,6 @@ metadata:
 spec:
   sourceRepos:
     - https://github.com/LaurensBosscher/homelab.git
-    - https://charts.longhorn.io/
   destinations:
     - namespace: '*'
       server: '*'

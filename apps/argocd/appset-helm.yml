@@ -7,7 +7,7 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        revision: main
+        revision: v2
         directories:
           - path: "helm/*"
   template:
@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        targetRevision: main
+        targetRevision: v2
         path: "{{path}}"
         helm:
           releaseName: "{{path.basename}}"
@@ -29,9 +29,7 @@ spec:
         server: https://kubernetes.default.svc
         namespace: monitoring
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
+        # Manual until V2 restore soak completes
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true

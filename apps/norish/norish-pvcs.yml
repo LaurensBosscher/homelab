@@ -10,7 +10,7 @@ items:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: longhorn-2replicas-compressed-us
+      storageClassName: local-path
       resources:
         requests:
           storage: 1Gi
@@ -23,7 +23,7 @@ items:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: longhorn-2replicas-compressed-us
+      storageClassName: local-path
       resources:
         requests:
           storage: 1Gi
@@ -36,7 +36,7 @@ items:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: longhorn-2replicas-compressed-us
+      storageClassName: local-path
       resources:
         requests:
           storage: 1Gi

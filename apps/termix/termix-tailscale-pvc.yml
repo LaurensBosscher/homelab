@@ -8,7 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-2replicas-compressed-europe
+  storageClassName: local-path
   resources:
     requests:
       storage: 112Mi

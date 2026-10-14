@@ -22,10 +22,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"

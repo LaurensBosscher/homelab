@@ -19,14 +19,13 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: city
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: aiostreams
           image: ghcr.io/viren070/aiostreams:v2.34.0

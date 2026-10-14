@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: rdt-client
           image: rogerfar/rdtclient:2.0.142
@@ -78,5 +78,5 @@ spec:
             claimName: rdt-client-data
         - name: downloads
           hostPath:
-            path: /mnt/downloads/
+            path: /mnt/data/downloads/
             type: DirectoryOrCreate

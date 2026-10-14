@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: mydia
           image: ghcr.io/getmydia/mydia:0.14.0
@@ -98,9 +98,9 @@ spec:
             claimName: mydia-config
         - name: movies
           hostPath:
-            path: /mnt/downloads/complete/movies
+            path: /mnt/data/downloads/complete/movies
             type: DirectoryOrCreate
         - name: tv
           hostPath:
-            path: /mnt/downloads/complete/tv
+            path: /mnt/data/downloads/complete/tv
             type: DirectoryOrCreate

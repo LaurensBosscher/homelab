@@ -21,14 +21,13 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - europe
+                      - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -102,14 +101,13 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - europe
+                      - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -188,14 +186,13 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - europe
+                      - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100

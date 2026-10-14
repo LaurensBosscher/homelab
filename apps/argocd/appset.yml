@@ -7,10 +7,12 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        revision: main
+        revision: v2
         directories:
           - path: apps/*
           - path: apps/longhorn
+            exclude: true
+          - path: apps/longhorn-config
             exclude: true
   template:
     metadata:
@@ -21,13 +23,13 @@ spec:
       project: default
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        targetRevision: main
+        targetRevision: v2
         path: "{{path}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{path.basename}}"
       syncPolicy:
-        automated: {}
+        # Keep manual until PVC restores finish; enable automated after soak.
         syncOptions:
           - CreateNamespace=true
           - Prune=false

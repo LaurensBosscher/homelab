@@ -10,7 +10,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn-2replicas-compressed-us
+  storageClassName: local-path
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,4 +24,4 @@ spec:
   resources:
     requests:
       storage: 128Mi
-  storageClassName: longhorn-2replicas-compressed-us
+  storageClassName: local-path

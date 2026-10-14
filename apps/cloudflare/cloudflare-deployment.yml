@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: cloudflared
+  template:
+    metadata:
+      labels:
+        pod: cloudflared
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
+      securityContext:
+        sysctls:
+          # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
+          - name: net.ipv4.ping_group_range
+            value: "65532 65532"
+      containers:
+        - image: cloudflare/cloudflared:2026.9.1
+          name: cloudflared
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-token
+                  key: token
+          command:
+            - cloudflared
+            - tunnel
+            - --no-autoupdate
+            - --loglevel
+            - info
+            - --metrics
+            - 0.0.0.0:2000
+            - run
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 5

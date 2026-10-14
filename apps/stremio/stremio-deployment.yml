@@ -16,7 +16,7 @@ spec:
         app: stremio
     spec:
       nodeSelector:
-        city: zurich
+        kubernetes.io/hostname: bazzite
       containers:
         - name: stremio
           image: tsaridas/stremio-docker:v1.3.10
