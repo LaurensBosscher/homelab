@@ -47,6 +47,11 @@
 2. ArgoCD uses **core-install** (no `argocd-server` Deploy/Service). CF/homepage/gatus URLs to `argocd-server.argocd.svc` will fail until UI is added or tunnel paths updated.
 3. Flannel on **`tailscale0`** + API via Tailscale: london-1 briefly **NotReady** (TLS/API dial flaps). Fixed with `systemctl restart k3s-agent` on london-1; all 3 nodes Ready again. Watch Tailscale direct vs DERP during soak.
 
+## Soak
+- **Started:** 2026-10-14 (marker `/var/mnt/data/migrate/SOAK_START.txt` on bazzite)
+- Watch: CF tunnel, media downloads, openclaw, prometheus/alertmanager, london-1 Tailscale↔API stability
+- **Do not** decommission old nodes until soak is clean
+
 ## Remaining
-1. Soak (watch CF tunnel, media downloads, openclaw, prometheus, london-1 Tailscale stability)
+1. Complete soak window
 2. Decommission old nodes after soak
