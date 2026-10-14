@@ -173,17 +173,24 @@ Pod recycle + k3s restarts made Tailscale pick Flannel (`10.42.x:41641`) as “d
 - london-1 Enforcing + `container_runtime_exec_t`; agent→API returns **401** (TLS path healthy)
 - Ansible: `roles/k3s-common` SELinux fcontexts; `roles/tailscale` Flannel block + MSS; `group_vars` `tailscale_mtu: 1200`
 
-## london-2 join (blocked 2026-10-14 ~16:05Z)
-**Intent:** V2 worker alongside london-1/3 (stateless overflow). Inventory updated; **do not** cancel this VPS.
+## london-2 join (blocked 2026-10-14 ~16:05Z; LAN probe ~16:07Z)
+**Intent:** V2 worker alongside london-1/3 (stateless overflow). Inventory + `migration/join-london-2.sh` ready (`054398c`); **do not** cancel this VPS.
 
-**Reachability:** Tailscale online (`100.107.92.7` ↔ WAN `46.33.10.90`, same /26 as london-1). Host alive (node_exporter `:9100` answers, often 503 “concurrent requests” flooded). ICMP LAN from london-1 OK (~0.2ms).
+**Reachability (from london-1 /26):**
+- ICMP OK (~0.24ms); ARP `52:54:00:32:58:50` on `ens3`
+- LAN open: **only `:9100`** (node_exporter; often HTTP 503 concurrent-limit)
+- LAN closed/timeout: `:22`, `:80`, `:443`, `:6443`, `:10250`, `:2379`, `:9099`, `:41641`
+- Tailscale (`100.107.92.7`): `:22` TCP accepts then **empty banner / connection closed** (sshd wedged or filtered mid-handshake)
+- No leftover k3s ports → not currently a cluster member
 
-**Blocker:** SSH broken — TCP `:22` accepts on Tailscale then **empty banner** / reset; LAN `:22` filtered/timeout. No hop via amsterdam/california either. Needs **provider console** (likely pandahost — same subnet as london-1).
+**Join path once SSH works:** CP already accepts `:6443` / UDP `:51820`; london-1 nftables still lists `46.33.10.90` as Flannel peer from V1.
+
+**Blocker:** needs **provider console** (same /26 as london-1 → pandahost).
 
 **Console checklist:**
-1. `systemctl restart sshd && journalctl -u sshd -n 50` (also check disk full / MaxStartups / crowdsec)
+1. `systemctl restart sshd && journalctl -u sshd -n 50` (disk full / MaxStartups / crowdsec / fail2ban)
 2. Confirm key login from laptop via `100.107.92.7`
-3. Run `migration/join-london-2.sh` with `K3S_TOKEN` from bazzite `/var/lib/rancher/k3s/server/node-token`
+3. `K3S_TOKEN=$(ssh bazzite cat /var/lib/rancher/k3s/server/node-token) bash migration/join-london-2.sh` (or paste on console)
 4. Ansible: `site.yml` limit `k3s-london-2` for zswap/firewall/tailscale harden
 
 ## Remaining
