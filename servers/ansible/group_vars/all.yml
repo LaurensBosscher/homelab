@@ -48,7 +48,8 @@ k3s_version: "v1.36.2+k3s1"
 k3s_datastore: sqlite
 
 # System tuning
-tailscale_mtu: 1280
+# 1200 avoids TLS ClientHello blackholes on agent→API over Tailscale/WG paths.
+tailscale_mtu: 1200
 journal_max_use: "2G"
 journal_runtime_max_use: "512M"
 journal_max_retention: "1month"

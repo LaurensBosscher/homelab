@@ -103,13 +103,6 @@
 - london-1: **0** `ACTIVE→FAILED` in last 3m; API dials ~110ms stable
 - Ansible hardened so cutover drift cannot return: physical NIC preference + assert against `tailscale0`, `cluster_wan_ip` → `node-external-ip`, agent/server templates match live configs
 
-## Remaining
-1. ~~Finish soak window~~ → **passed short soak** (see below)
-2. ~~Soft-decommission legacy nodes~~ → **done** (see below)
-3. **Cancel VPS subscriptions** after multi-day soak (PLAN Phase 5) — amsterdam / california / california-2 / london-2
-4. Optional: remove retired hosts from Tailscale ACL / tailnet
-5. Optional: ansible-playbook apply of k3s config roles to confirm templates render cleanly
-
 ## zswap migration (2026-10-14 ~13:45Z) — verified 15:46Z
 Replaced **zram** with **zswap + disk swap** (Chris Down guidance). Never run zram alongside disk swap (LRU inversion).
 
@@ -143,3 +136,43 @@ Criteria: flap-free after Flannel→WAN fix (`12:54:41Z`).
 - `hosts.v2.ini` synced to same
 - README updated for 3-node V2 topology
 - **Do not cancel VPS billing yet** — wait multi-day soak per PLAN, then destroy amsterdam/california×2/london-2 at the providers + remove from Tailscale
+
+## SELinux / k3s fix (2026-10-14 ~16:50Z)
+Root cause was **config + labels**, not missing k3s SELinux support (`k3s-selinux` was already installed).
+
+| Host | OS SELinux | k3s `selinux` | k3s domain |
+|---|---|---|---|
+| bazzite | Permissive | **true** | `container_runtime_t` |
+| london-1 | Enforcing | **true** | `container_runtime_t` |
+| london-3 | **Disabled** | true (config only) | n/a until OS SELinux enabled |
+
+Fixes applied:
+- `selinux: true` in `/etc/rancher/k3s/config.yaml` on all 3 nodes
+- Relabeled `/usr/local/bin/k3s` → `container_runtime_exec_t` (was `user_tmp_t` on bazzite; local `bin_t` override on london-1)
+- Custom fcontexts: `/run/k3s` → `container_var_run_t`, `/etc/rancher` → `container_config_t`, `/mnt/data/local-path` → `container_file_t` (Bazzite `/var/mnt` ≡ `/mnt`)
+- `restorecon` on rancher/kubelet/local-path trees; `container_manage_cgroup` on
+- Recycled bazzite pods so shims leave leftover `init_t` (k3s `KillMode=process` keeps old shims across service restarts)
+- Masked `setroubleshootd` on bazzite (was ~100% CPU replaying AVC backlog; live AVC rate ~0 after domain fix)
+
+Ansible: `k3s_selinux_enabled: true` (host_vars + inventory defaults); `k3s-common` now installs/labels fcontexts + `restorecon` after upgrades.
+
+Still Permissive on bazzite — flip to Enforcing after multi-day soak if AVC stays quiet. london-3 needs OS SELinux enable + reboot before k3s SELinux is meaningful there.
+
+### Side-effect fixed during SELinux work
+Pod recycle + k3s restarts made Tailscale pick Flannel (`10.42.x:41641`) as “direct” paths → agent→API TLS blackhole (first ClientHello segment lost). Mitigations on all 3 nodes:
+- `block-tailscale-on-flannel.service` — DROP udp/41641 on `flannel-wg`/`cni0`
+- `fix-overlay-mss.sh` — `tailscale0` MTU 1200 + TCPMSS 1100 on `tailscale0`/`flannel-wg`
+- Tailscale endpoints back on public WAN (`46.33.10.93` / `85.121.120.36`)
+
+### Verified (2026-10-14 ~17:07Z)
+- All 3 nodes **Ready**; **54 Running** pods; **0** CrashLoop/Pending apps
+- bazzite load ~1.85 (was ~setroubleshoot-dominated); AVC k3s since boot **0**; `setroubleshootd` **masked**
+- `block-tailscale-on-flannel` **active** on all 3; `tailscale0` MTU **1200** everywhere
+- london-1 Enforcing + `container_runtime_exec_t`; agent→API returns **401** (TLS path healthy)
+- Ansible: `roles/k3s-common` SELinux fcontexts; `roles/tailscale` Flannel block + MSS; `group_vars` `tailscale_mtu: 1200`
+
+## Remaining
+1. **Cancel VPS subscriptions** after multi-day soak — amsterdam / california / california-2 / london-2
+2. Optional: remove retired hosts from Tailscale
+3. Optional: bazzite SELinux Enforcing (after quiet AVC soak)
+4. Optional: enable OS SELinux on london-3 + reboot
