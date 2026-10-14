@@ -1,24 +1,44 @@
 # Migration status (2026-10-14)
 
-## V2 cluster baseline — UP
-- Nodes: **bazzite** (control-plane, SQLite) + **k3s-london-1** + **k3s-london-3** — Ready
-- Disk: `/var/mnt/data/{downloads,local-path,migrate}` (symlink `/var/mnt/downloads` → downloads)
-- Networking: Tailscale as `node-ip` + `flannel-iface` (fixes ClusterIP hairpin)
-- **local-path** → `/var/mnt/data/local-path` on bazzite (smoke PVC verified on `/dev/sda`)
-- **Sealed Secrets** controller up; restored keys registered (`sealed-secrets-key*`)
-- CoreDNS Ready
+## V2 cluster
+- **bazzite** control-plane SQLite Ready (Tailscale IP / LAN `192.168.1.104`)
+- **k3s-london-1**, **k3s-london-3** agents Ready
+- Disk: `/var/mnt/data/{downloads,local-path,migrate}`
+- local-path → `/var/mnt/data/local-path` (verified)
+- Sealed Secrets: 10 old keys registered
+- Reloader installed
+- ArgoCD core installed; ApplicationSets on **`v2`** branch (manual sync)
 
-## Exports available
-- 33 PVC restic snapshots + sealed-secrets in B2
-- Offline: `~/dev/homelab-migration-secrets/`
-- On disk: `/var/mnt/data/migrate/`
+## Git
+- Branch `v2`: Cloudflare `--protocol http2` (QUIC blocked)
+
+## PVC restore
+### Tier0 DONE (verified sizes)
+| PVC | Size |
+|---|---|
+| qbittorrent-config | 14M |
+| sabnzbd-config | 15M |
+| prowlarr-config | 29M |
+| radarr-config | 82M |
+| sonarr-config | 37M |
+| rdt-client-data | 248K |
+| audiobookshelf-config | 684K (re-fixed) |
+| audiobookshelf-metadata | 216K |
+| calibre-web-config | 439M (re-fixed) |
+| calibre-web-library | 204M (re-fixed) |
+| openclaw-pvc | 5.1G |
+
+### Bug fixed
+`restic snapshots --tag A --tag B` is **OR**, not AND. `restore-pvc.sh` now uses unique `pvc:NAME` tag.
+
+### In progress
+- Tier1 restore log: `/var/mnt/data/migrate/logs/restore-tier1.log`
+
+## Cloudflare BLOCKED
+Needs fresh tunnel token (`migration` note on bazzite: `/var/mnt/data/migrate/CLOUDFLARE_BLOCKED.txt`).
+Old tunnel IDs deleted; openclaw API token lacks Tunnel:Edit.
 
 ## Next
-1. Install Reloader + Cloudflare tunnel + ArgoCD (point at `v2`)
-2. Restore Tier0/Tier1 PVCs from restic into local-path
-3. Sync apps; smoke-test
-4. Decommission old V1 nodes after soak
-
-## Kubeconfig
-- On server: `/etc/rancher/k3s/k3s.yaml`
-- Copy under `/var/mnt/data/migrate/k3s.yaml` (TS server URL)
+1. Fresh `cloudflared-token` secret
+2. Finish Tier1 + sync remaining apps
+3. Smoke + soak

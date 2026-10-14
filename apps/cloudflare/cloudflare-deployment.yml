@@ -39,6 +39,8 @@ spec:
             - cloudflared
             - tunnel
             - --no-autoupdate
+            - --protocol
+            - http2
             - --loglevel
             - info
             - --metrics
@@ -64,3 +66,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 5
+
+
+[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/dev/homelab/apps/cloudflare/cloudflare-deployment.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]
