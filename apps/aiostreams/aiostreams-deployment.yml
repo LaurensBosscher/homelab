@@ -28,7 +28,7 @@ spec:
                       - bazzite
       containers:
         - name: aiostreams
-          image: ghcr.io/viren070/aiostreams:v2.34.0
+          image: ghcr.io/viren070/aiostreams:v2.36.0
           ports:
             - containerPort: 3000
           env:

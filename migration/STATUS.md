@@ -1,55 +1,32 @@
 # Migration status (2026-10-14)
 
 ## V2 cluster
-- **bazzite** control-plane SQLite Ready (Tailscale IP / LAN `192.168.1.104`)
+- **bazzite** control-plane SQLite Ready (LAN `192.168.1.104`)
 - **k3s-london-1**, **k3s-london-3** agents Ready
 - Disk: `/var/mnt/data/{downloads,local-path,migrate}`
-- local-path → `/var/mnt/data/local-path` (verified)
-- Sealed Secrets: 10 old keys registered
-- Reloader installed
-- ArgoCD core installed; ApplicationSets on **`v2`** branch (manual sync)
+- local-path → `/var/mnt/data/local-path`
+- Sealed Secrets + Reloader + ArgoCD on **`v2`** (manual sync)
 
 ## Git
-- Branch `v2`: Cloudflare `--protocol http2` (QUIC blocked)
-- `277c0f8` books PVC accessMode/size aligned to bound claims
+- `277c0f8` books PVC accessMode/size aligned
+- `0fbe6ef` STATUS
+- aiostreams image → `v2.36.0` (restored DB at migration 27)
 
 ## PVC restore
-### Tier0 DONE
-| PVC | Size |
-|---|---|
-| qbittorrent-config | 14M |
-| sabnzbd-config | 15M |
-| prowlarr-config | 29M |
-| radarr-config | 82M |
-| sonarr-config | 37M |
-| rdt-client-data | 248K |
-| audiobookshelf-config | 684K |
-| audiobookshelf-metadata | 216K |
-| calibre-web-config | 439M |
-| calibre-web-library | 204M |
-| openclaw-pvc | 5.1G |
+- **Tier0 DONE**, **Tier1 DONE** (`TIER1_RESTORE_OK`)
+- restic multi-`--tag` is OR → use unique `pvc:NAME`
 
-### Tier1 DONE (`TIER1_RESTORE_OK`)
-books ingest/stacks, obsidian couchdb×2, linkwarden-data, wanderer×3, aiostreams, fusion, listenarr×2, nanobot, mydia, questarr×2, shiori, bookshelf, stremio, playarr, shelfarr, termix.
+## Secrets
+Restored 29 secrets from amsterdam etcd snaptemp + aescbc key via  
+`/var/mnt/data/migrate/bin/apply-all-etcd-secrets.py`  
+(+ linkwarden SQL import).
 
-### Bug fixed
-`restic snapshots --tag A --tag B` is **OR**, not AND. `restore-pvc.sh` uses unique `pvc:NAME` tag.
+## Cloudflare
+**UP** — `cloudflared` registered over http2 (`Registered tunnel connection`).  
+Origin errors for prometheus/alertmanager until those are healthy.
 
-## Secrets restored
-From amsterdam etcd snaptemp + aescbc key (`encryption-config.json`):
-- `openclaw/openclaw-secret` (gateway token refreshed from restored `openclaw.json`)
-- `linkwarden/linkwarden-secrets` + SQL import `migrate/db/linkwarden.sql.gz`
-- `obsidian-live-sync/couchdb-secret`
-- `cloudflare/cloudflared-token` (**stale** — tunnel deleted; still Unauthorized)
-
-Helper: `/var/mnt/data/migrate/bin/apply-etcd-secrets.py`
-
-## Cloudflare BLOCKED
-Needs **fresh** tunnel token (Tunnel:Edit). Old token/tunnels deleted.
-See `/var/mnt/data/migrate/CLOUDFLARE_BLOCKED.txt`.
-http2 protocol path OK; registration fails: `Unauthorized: Tunnel not found`.
-
-## Next
-1. Fresh `cloudflared-token` + DNS to new tunnel
-2. Sync leftovers / fix prometheus CRD order (`monitoring` helm before `prometheus` app)
-3. Smoke + soak; then decommission old nodes
+## Remaining
+1. openclaw gateway startup probe / doctor hang
+2. prometheus app CRDs (sync monitoring helm chart first)
+3. qbittorrent/stacks `replicas: 0` intentional in git
+4. Smoke + soak; decommission old nodes later
