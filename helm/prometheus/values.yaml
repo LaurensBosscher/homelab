@@ -200,6 +200,16 @@ kube-prometheus-stack:
     alertmanagerSpec:
       # Public Cloudflare Tunnel URL for Alertmanager UI / silence links.
       externalUrl: https://alertmanager.bosscher.ch
+      # Pin to control-plane: london-1 Tailscale↔API flaps make AM unreachable via CF.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
       secrets:
         - telegram-bot
       resources:
@@ -211,6 +221,9 @@ kube-prometheus-stack:
 metrics-server:
   args:
     - --kubelet-insecure-tls
+  # Same as alertmanager — keep metrics API off flappy WAN agents during soak.
+  nodeSelector:
+    kubernetes.io/hostname: bazzite
   resources:
     requests:
       cpu: 100m
