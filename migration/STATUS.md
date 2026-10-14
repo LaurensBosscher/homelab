@@ -21,6 +21,7 @@
 | In-cluster smoke | **PASS** (see below) |
 
 ## Git on `v2`
+- `44cb946` pin alertmanager + metrics-server to bazzite
 - `22c9587` cloudflare yaml repair; prometheus admission TLS off
 - `90722de` openclaw doctor `timeout` wrappers
 - `11bc693` aiostreams `v2.36.0`
@@ -66,3 +67,10 @@
 
 ## Soak mitigation (2026-10-14 ~12:30Z)
 - **Pinned** `alertmanager` + `metrics-server` to **`bazzite`** (helm values + live patch) — london-1 still flapping `FAILED`/`RECOVERING` on API dial; AM on london-1 caused CF `:9093` connection refused during flaps.
+
+## Soak check (2026-10-14 ~12:35Z)
+- Pin **verified live**: AM `alertmanager-…-0` and `prometheus-metrics-server` both on **bazzite**; Argo `prometheus` **Synced/Healthy**.
+- All 3 nodes Ready; **0** non-Running/non-Succeeded pods.
+- CF tunnel up (http2). Post-pin CF logs: no further `:9093` refused; remaining `argocd-server` DNS misses are **expected** (core-install).
+- **london-1** still flapping: Ready `lastTransitionTime` advanced again at `12:23:10Z` and `12:33:09Z`. london-3 stable.
+- Interrupted in-cluster smoke at 12:28 (timeout); re-running AM/prom/sab/sonarr ready checks.
