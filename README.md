@@ -2,21 +2,20 @@
 
 This repo contains backups, scripts, and documentation for my hobby and educational [Kubernetes](https://kubernetes.io/) cluster.
 
-The cluster is configured with production like settings such as:
+**V2 topology (2026-10):** 3-node K3s — `bazzite` (SQLite control-plane + all `local-path` PVCs) + `k3s-london-1` / `k3s-london-3` (agents). No Longhorn; Tailscale is SSH/admin only; Flannel `wireguard-native` runs on public WAN.
 
-- Automatic fail-over for all deployments and nodes, deployed on: 
-    - 7 nodes
-    - Across 4 regions
-    - Across 3 different providers + my home server
-- Ability to target deployment to a geographical location to optimize for latency with automatic fallback or do multi-region deployment
-- All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
+The cluster is configured with production-like settings such as:
+
+- Automatic fail-over for stateless workloads across the London agents + home control-plane
+- Persistent data on bazzite via K3s `local-path` (backed up to [Backblaze](https://www.backblaze.com/) with restic)
 - CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
-- Ingress is taking care of by [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) with one instance per geographical region
+- Ingress via [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
   - Changes are automatically updated using a [GitHub Actions workflow](.github/workflows/update_cloudflare_settings.yml)
-- Communication between the nodes is done through the wireguard native backend (Running over Tailscale caused double encapsulation and hard to debug issues)
+- Pod overlay: Flannel WireGuard on public WAN + tight nftables peer allowlist (not nested in Tailscale)
 - Joining new nodes to the cluster is a ~5 minute job
 - Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
 - [Mend Renovate](https://www.mend.io/renovate/) monitors this repo and automatically creates PRs for any software updates
+- See `PLAN.md` / `migration/STATUS.md` for the V1→V2 cutover notes
 
 # Security
 

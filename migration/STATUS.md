@@ -104,9 +104,11 @@
 - Ansible hardened so cutover drift cannot return: physical NIC preference + assert against `tailscale0`, `cluster_wan_ip` → `node-external-ip`, agent/server templates match live configs
 
 ## Remaining
-1. Finish soak window (aim for a clean hour+ without london-1 `NodeNotReady`)
-2. Decommission old nodes after soak
-3. Optional: ansible-playbook apply of k3s config roles to confirm templates render cleanly (configs already live)
+1. ~~Finish soak window~~ → **passed short soak** (see below)
+2. ~~Soft-decommission legacy nodes~~ → **done** (see below)
+3. **Cancel VPS subscriptions** after multi-day soak (PLAN Phase 5) — amsterdam / california / california-2 / london-2
+4. Optional: remove retired hosts from Tailscale ACL / tailnet
+5. Optional: ansible-playbook apply of k3s config roles to confirm templates render cleanly
 
 ## zswap migration (2026-10-14 ~13:45Z) — verified 15:46Z
 Replaced **zram** with **zswap + disk swap** (Chris Down guidance). Never run zram alongside disk swap (LRU inversion).
@@ -121,3 +123,23 @@ Replaced **zram** with **zswap + disk swap** (Chris Down guidance). Never run zr
 - Persist: `zswap-enable.service` + fstab + `/etc/modprobe.d/zswap.conf`
 - Ansible: `roles/zswap` (btrfs-aware), `zram` retired/fails closed, `apply-zswap.yml`
 - Note: first Alma apply hung on `dnf install systemd-oomd` (~3m); role now uses async + earlyoom fallback
+
+## Soak passed — short window (2026-10-14 ~13:50Z)
+Criteria: flap-free after Flannel→WAN fix (`12:54:41Z`).
+- london-1 Ready continuously since **12:54:41Z** (~56m+); **0** `ACTIVE→FAILED` since fix / last 60m
+- API dials ~110ms stable; Tailscale tx_drops **0**/15s; WG peers on public WAN
+- Smoke: sonarr **200**, alertmanager ready **200**, cloudflared Running; **0** non-Running pods
+- PLAN Phase 5 still says “a few days” before **destroying** VPS — short soak is enough to soft-decommission
+
+## Soft-decommission legacy V1 (2026-10-14 ~13:52Z)
+| Host | Action | Result |
+|---|---|---|
+| amsterdam | `k3s-uninstall` / agent-uninstall | k3s stopped; **SSH later timed out** (likely killall iptables — same class of issue as `CUTOVER_BLOCKED.md`) |
+| california | agent-uninstall | **k3s + agent inactive**, sshd active |
+| california-2 | agent-uninstall | **k3s + agent inactive**, sshd active |
+| london-2 | already unreachable at cutover | skip |
+
+- `servers/ansible/hosts.ini` → V2-only (retired hosts commented)
+- `hosts.v2.ini` synced to same
+- README updated for 3-node V2 topology
+- **Do not cancel VPS billing yet** — wait multi-day soak per PLAN, then destroy amsterdam/california×2/london-2 at the providers + remove from Tailscale
