@@ -10,7 +10,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      # Bound at restore time; local-path cannot expand bound claims.
+      storage: 512Mi
   storageClassName: local-path
 ---
 apiVersion: v1
@@ -25,5 +26,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 512Mi
   storageClassName: local-path
