@@ -108,14 +108,16 @@
 2. Decommission old nodes after soak
 3. Optional: ansible-playbook apply of k3s config roles to confirm templates render cleanly (configs already live)
 
-## zswap migration (2026-10-14 ~13:45Z)
+## zswap migration (2026-10-14 ~13:45Z) — verified 15:46Z
 Replaced **zram** with **zswap + disk swap** (Chris Down guidance). Never run zram alongside disk swap (LRU inversion).
 
-| Node | Swap backing | zswap | Notes |
+| Node | Swap backing | zswap | oomd |
 |---|---|---|---|
-| bazzite | `/var/swapfile` 8G (btrfs NOCOW) | Y zstd/zsmalloc/shrinker | root is composefs; swap on `/var` |
-| london-1 | `/swapfile` 2.4G | Y zstd/zsmalloc/shrinker | systemd-oomd active |
-| london-3 | `/swapfile` 3.7G | Y zstd/zsmalloc/shrinker | was zram+disk (fixed) |
+| bazzite | `/var/swapfile` 8G (btrfs NOCOW `C`) | Y zstd/zsmalloc/shrinker | active (bundled in systemd) |
+| london-1 | `/swapfile` 2.4G | Y zstd/zsmalloc/shrinker | active (`systemd-oomd` rpm) |
+| london-3 | `/swapfile` 3.7G | Y zstd/zsmalloc/shrinker | active (`systemd-oomd` rpm; was zram+disk) |
 
-- Ansible: new `roles/zswap`, `zram` role retired/fails closed, tuned comments updated (`page-cluster=1`, swappiness=100)
-- Helper playbook: `servers/ansible/apply-zswap.yml`
+- **No zram swap** on any node; `vm.swappiness=100`, `vm.page-cluster=1`
+- Persist: `zswap-enable.service` + fstab + `/etc/modprobe.d/zswap.conf`
+- Ansible: `roles/zswap` (btrfs-aware), `zram` retired/fails closed, `apply-zswap.yml`
+- Note: first Alma apply hung on `dnf install systemd-oomd` (~3m); role now uses async + earlyoom fallback

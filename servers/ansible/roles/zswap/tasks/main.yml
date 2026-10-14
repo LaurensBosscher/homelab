@@ -168,12 +168,14 @@
   when: zswap_enable | default(true)
   tags: [zswap]
 
-- name: Remove duplicate / legacy swapfile fstab entries
+- name: Drop legacy /swapfile fstab entry when using a different path
   ansible.builtin.lineinfile:
     path: /etc/fstab
-    regexp: '^{{ zswap_swapfile_path | regex_escape }}(\s|$)'
+    regexp: '^/swapfile(\s|$)'
     state: absent
-  when: zswap_enable | default(true)
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_path != '/swapfile'
   tags: [zswap]
 
 - name: Persist swapfile in fstab
@@ -280,7 +282,9 @@
   when: zswap_enable | default(true)
   tags: [zswap]
 
-- name: Install systemd-oomd when available
+# Alma/Fedora dnf can hang on metadata; bound with async. Prefer systemd-oomd,
+# fall back to earlyoom when the unit is absent (older Alma images).
+- name: Install systemd-oomd package when available
   ansible.builtin.dnf:
     name: systemd-oomd
     state: present
@@ -289,6 +293,17 @@
     - zswap_enable_oomd | default(true)
   register: zswap_oomd_pkg
   failed_when: false
+  async: 90
+  poll: 5
+  tags: [zswap]
+
+- name: Check for systemd-oomd unit
+  ansible.builtin.stat:
+    path: /usr/lib/systemd/system/systemd-oomd.service
+  register: zswap_oomd_unit
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
   tags: [zswap]
 
 - name: Enable systemd-oomd
@@ -299,6 +314,36 @@
   when:
     - zswap_enable | default(true)
     - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - zswap_oomd_unit.stat.exists
+  tags: [zswap]
+
+- name: Install earlyoom when systemd-oomd unit is missing
+  ansible.builtin.dnf:
+    name: earlyoom
+    state: present
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - not zswap_oomd_unit.stat.exists
+  register: zswap_earlyoom_pkg
+  failed_when: false
+  async: 90
+  poll: 5
+  tags: [zswap]
+
+- name: Enable earlyoom fallback
+  ansible.builtin.systemd:
+    name: earlyoom.service
+    enabled: true
+    state: started
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - not zswap_oomd_unit.stat.exists
+    - zswap_earlyoom_pkg is changed or zswap_earlyoom_pkg is succeeded
   failed_when: false
   tags: [zswap]
 
