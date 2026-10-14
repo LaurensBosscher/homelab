@@ -45,8 +45,8 @@
 ## Known / intentional
 1. `qbittorrent` / `stacks` / `norish` / `termix` **`replicas: 0`** in git → Pending WaitForFirstConsumer PVCs → Argo **Progressing** (or qbittorrent **OutOfSync** sidecar drift). Leave until needed.
 2. ArgoCD uses **core-install** (no `argocd-server` Deploy/Service). CF/homepage/gatus URLs to `argocd-server.argocd.svc` will fail until UI is added or tunnel paths updated.
-3. london-1 kubelet `:10250` sometimes returns **502** via apiserver proxy (exec/logs flaky); workloads still schedule/run.
+3. Flannel on **`tailscale0`** + API via Tailscale: london-1 briefly **NotReady** (TLS/API dial flaps). Fixed with `systemctl restart k3s-agent` on london-1; all 3 nodes Ready again. Watch Tailscale direct vs DERP during soak.
 
 ## Remaining
-1. Soak (watch CF tunnel, media downloads, openclaw, prometheus rules)
+1. Soak (watch CF tunnel, media downloads, openclaw, prometheus, london-1 Tailscale stability)
 2. Decommission old nodes after soak
