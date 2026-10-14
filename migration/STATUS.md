@@ -3,6 +3,7 @@
 ## V2 cluster
 - **bazzite** control-plane SQLite Ready (LAN `192.168.1.104`)
 - **k3s-london-1**, **k3s-london-3** agents Ready
+- **k3s-london-2** intended **worker** (same role as london-1) — **not** decommissioned; join blocked on SSH (see below)
 - Disk: `/var/mnt/data/{downloads,local-path,migrate}`
 - local-path → `/var/mnt/data/local-path`
 - Sealed Secrets + Reloader + ArgoCD on **`v2`** (manual sync)
@@ -130,12 +131,13 @@ Criteria: flap-free after Flannel→WAN fix (`12:54:41Z`).
 | amsterdam | **k3s inactive, bins/data gone, sshd active** (brief SSH outage after `k3s-killall` iptables flush; recovered) |
 | california | **k3s inactive, bins/data gone, sshd active** (safe clean without killall) |
 | california-2 | **k3s inactive, bins/data gone, sshd active** |
-| london-2 | already unreachable at cutover — skip |
+| london-2 | **KEEP as V2 worker** — Tailscale up; SSH broken; join pending console |
 
 - `servers/ansible/hosts.ini` → V2-only (retired hosts commented)
 - `hosts.v2.ini` synced to same
 - README updated for 3-node V2 topology
-- **Do not cancel VPS billing yet** — wait multi-day soak per PLAN, then destroy amsterdam/california×2/london-2 at the providers + remove from Tailscale
+- **Do not cancel VPS billing yet** — wait multi-day soak per PLAN, then destroy amsterdam/california×2 at the providers + remove from Tailscale
+- **london-2 stays** — join as fourth node once SSH/console works
 
 ## SELinux / k3s fix (2026-10-14 ~16:50Z)
 Root cause was **config + labels**, not missing k3s SELinux support (`k3s-selinux` was already installed).
@@ -171,8 +173,22 @@ Pod recycle + k3s restarts made Tailscale pick Flannel (`10.42.x:41641`) as “d
 - london-1 Enforcing + `container_runtime_exec_t`; agent→API returns **401** (TLS path healthy)
 - Ansible: `roles/k3s-common` SELinux fcontexts; `roles/tailscale` Flannel block + MSS; `group_vars` `tailscale_mtu: 1200`
 
+## london-2 join (blocked 2026-10-14 ~16:05Z)
+**Intent:** V2 worker alongside london-1/3 (stateless overflow). Inventory updated; **do not** cancel this VPS.
+
+**Reachability:** Tailscale online (`100.107.92.7` ↔ WAN `46.33.10.90`, same /26 as london-1). Host alive (node_exporter `:9100` answers, often 503 “concurrent requests” flooded). ICMP LAN from london-1 OK (~0.2ms).
+
+**Blocker:** SSH broken — TCP `:22` accepts on Tailscale then **empty banner** / reset; LAN `:22` filtered/timeout. No hop via amsterdam/california either. Needs **provider console** (likely pandahost — same subnet as london-1).
+
+**Console checklist:**
+1. `systemctl restart sshd && journalctl -u sshd -n 50` (also check disk full / MaxStartups / crowdsec)
+2. Confirm key login from laptop via `100.107.92.7`
+3. Run `migration/join-london-2.sh` with `K3S_TOKEN` from bazzite `/var/lib/rancher/k3s/server/node-token`
+4. Ansible: `site.yml` limit `k3s-london-2` for zswap/firewall/tailscale harden
+
 ## Remaining
-1. **Cancel VPS subscriptions** after multi-day soak — amsterdam / california / california-2 / london-2
-2. Optional: remove retired hosts from Tailscale
-3. Optional: bazzite SELinux Enforcing (after quiet AVC soak)
-4. Optional: enable OS SELinux on london-3 + reboot
+1. **Join london-2** as V2 agent (console → fix SSH → `join-london-2.sh`)
+2. **Cancel VPS subscriptions** after multi-day soak — amsterdam / california / california-2 only
+3. Optional: remove retired hosts from Tailscale
+4. Optional: bazzite SELinux Enforcing (after quiet AVC soak)
+5. Optional: enable OS SELinux on london-3 + reboot
