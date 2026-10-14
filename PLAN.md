@@ -271,7 +271,7 @@ No parallel V2 cluster. After exports are verified:
   - keep migrate artifacts until restore completes
 - [x] Install K3s single-server with SQLite on **bazzite**
 - [x] Join 2 London agents (london-1 + london-3)
-- [ ] Join london-2 as third agent (Tailscale up; SSH broken — needs provider console; see `migration/join-london-2.sh`)
+- [x] Join london-2 as third agent (2026-10-14 ~16:34Z; see STATUS)
 - [x] Keep Flannel WireGuard native (via Tailscale iface)
 - [ ] Install/bootstrap: local-path ✅, Sealed Secrets ✅; still need Reloader, ArgoCD, Kite
 - [ ] Deploy restic backup CronJobs/scripts for SQLite `db/` + `token` and PVC data
@@ -307,7 +307,7 @@ Only after V2 has been used successfully for a few days.
 - [ ] Final optional Longhorn/V1 backup
 - [ ] Destroy unused nodes (California / Amsterdam / extra London / etc.)
 - [ ] Remove Longhorn and old inventory/firewall peer entries
-- [ ] Update README, Ansible `hosts.ini`, and docs for 4-node topology (bazzite + london-1/2/3)
+- [x] Update README, Ansible `hosts.ini`, and docs for 4-node topology (bazzite + london-1/2/3)
 - [ ] Cancel unused VPS subscriptions
 
 ---

@@ -2,7 +2,7 @@
 
 This repo contains backups, scripts, and documentation for my hobby and educational [Kubernetes](https://kubernetes.io/) cluster.
 
-**V2 topology (2026-10):** K3s — `bazzite` (SQLite control-plane + all `local-path` PVCs) + London agents `k3s-london-1` / `k3s-london-2` / `k3s-london-3` (london-2 join pending SSH/console recovery). No Longhorn; Tailscale is SSH/admin only; Flannel `wireguard-native` runs on public WAN.
+**V2 topology (2026-10):** 4-node K3s — `bazzite` (SQLite control-plane + all `local-path` PVCs) + London agents `k3s-london-1` / `k3s-london-2` / `k3s-london-3`. No Longhorn; Tailscale is SSH/admin only; Flannel `wireguard-native` runs on public WAN.
 
 The cluster is configured with production-like settings such as:
 
