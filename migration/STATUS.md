@@ -136,7 +136,6 @@ Criteria: flap-free after Flannel→WAN fix (`12:54:41Z`).
 - `hosts.v2.ini` synced to same
 - README updated for 3-node V2 topology
 - **Do not cancel VPS billing yet** — wait multi-day soak per PLAN, then destroy amsterdam/california×2 at the providers + remove from Tailscale
-- **london-2 stays** — join as fourth node once SSH/console works
 
 ## SELinux / k3s fix (2026-10-14 ~16:50Z)
 Root cause was **config + labels**, not missing k3s SELinux support (`k3s-selinux` was already installed).
