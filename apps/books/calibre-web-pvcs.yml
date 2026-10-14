@@ -13,7 +13,7 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 1Gi
+          storage: 20Gi
       storageClassName: local-path
   - apiVersion: v1
     kind: PersistentVolumeClaim
@@ -27,7 +27,7 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 5Gi
+          storage: 20Gi
       storageClassName: local-path
   - apiVersion: v1
     kind: PersistentVolumeClaim
@@ -41,5 +41,5 @@ items:
         - ReadWriteMany
       resources:
         requests:
-          storage: 1Gi
+          storage: 20Gi
       storageClassName: local-path

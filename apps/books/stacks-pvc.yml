@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 512Mi
+      storage: 20Gi
   storageClassName: local-path
 ---
 apiVersion: v1
@@ -25,5 +25,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 512Mi
+      storage: 20Gi
   storageClassName: local-path
