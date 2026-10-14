@@ -26,7 +26,7 @@ Restored 29 secrets from amsterdam etcd snaptemp + aescbc key via
 Origin errors for prometheus/alertmanager until those are healthy.
 
 ## Remaining
-1. openclaw gateway startup probe / doctor hang
-2. prometheus app CRDs (sync monitoring helm chart first)
+1. openclaw: doctor can hang on restored state — boot steps now `timeout`-wrapped (`90722de`)
+2. prometheus folder app needs monitoring CRDs first (Degraded/OutOfSync)
 3. qbittorrent/stacks `replicas: 0` intentional in git
 4. Smoke + soak; decommission old nodes later
