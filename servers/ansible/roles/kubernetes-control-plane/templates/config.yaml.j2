@@ -1,10 +1,22 @@
+# Server: Flannel over physical/WAN iface — never Tailscale.
+# For bazzite: node-ip=LAN, node-external-ip=cluster_wan_ip (public).
 flannel-backend: wireguard-native
 flannel-external-ip: true
 flannel-iface: {{ cluster_network_interface }}
 
 prefer-bundled-bin: true
 
-node-external-ip: {{ cluster_network_ip }}  # Advertises cluster network IP for external access
+node-ip: {{ cluster_network_ip }}
+node-external-ip: {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
+advertise-address: {{ cluster_network_ip }}
+
+tls-san:
+  - {{ cluster_network_ip }}
+  - {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
+{% if tailscale_ip is defined and tailscale_ip and tailscale_ip != cluster_network_ip %}
+  - {{ tailscale_ip }}
+{% endif %}
+  - {{ inventory_hostname }}
 
 # Disable bundled components (use the managed Prometheus stack for metrics-server)
 disable: [traefik, metrics-server]

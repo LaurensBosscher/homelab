@@ -10,16 +10,56 @@
         update_cache: yes
       tags: [always]
 
+    # V2: Tailscale is SSH/admin only. Never bind Flannel to tailscale0
+    # (nested WG-in-WG floods the API path). Prefer physical NICs.
+    - name: Build cluster network interface candidates
+      ansible.builtin.set_fact:
+        # Prefer known physical NICs; never fall through to tailscale0/flannel/cni.
+        _cluster_iface_candidates: >-
+          {{
+            (['eth0', 'ens3', 'ens192', 'enp2s0', 'enp1s0']
+              | select('in', ansible_facts.interfaces)
+              | list)
+            + (
+              [ansible_facts.default_ipv4.interface]
+              if ansible_facts.default_ipv4.interface not in ['tailscale0', 'lo']
+              else []
+            )
+            + (
+              ansible_facts.interfaces
+              | reject('equalto', 'lo')
+              | reject('equalto', 'tailscale0')
+              | reject('match', '^(flannel|cni|veth|wg|docker|br-)')
+              | list
+            )
+          }}
+      tags: [always]
+
     - name: Select cluster network interface
       ansible.builtin.set_fact:
-        cluster_network_interface: >-
-          {{ 'eth0' if 'eth0' in ansible_facts.interfaces else ('ens192' if 'ens192' in ansible_facts.interfaces else ansible_facts.default_ipv4.interface) }}
+        cluster_network_interface: "{{ (_cluster_iface_candidates | unique | list)[0] }}"
       tags: [always]
 
     - name: Set network interface IPs
       ansible.builtin.set_fact:
         tailscale_ip: "{{ ansible_facts.get('tailscale0', {}).get('ipv4', {}).get('address', ansible_facts.default_ipv4.address) }}"
         cluster_network_ip: "{{ ansible_facts.get(cluster_network_interface, {}).get('ipv4', {}).get('address', ansible_facts.default_ipv4.address) }}"
+      tags: [always]
+
+    - name: Set public WAN IP for Flannel peers
+      ansible.builtin.set_fact:
+        # Public IP peers use for Flannel WireGuard (UDP/51820). Required for NAT/home nodes.
+        cluster_external_ip: "{{ cluster_wan_ip | default(cluster_network_ip) }}"
+      tags: [always]
+
+    - name: Refuse Tailscale as Flannel interface
+      ansible.builtin.assert:
+        that:
+          - cluster_network_interface != 'tailscale0'
+          - not (cluster_network_interface is match('^(flannel|cni|veth|wg)'))
+        fail_msg: >-
+          Refusing to bind Flannel to {{ cluster_network_interface }}.
+          Set a physical NIC (or inventory override); Tailscale is admin-only.
       tags: [always]
 
   roles:
