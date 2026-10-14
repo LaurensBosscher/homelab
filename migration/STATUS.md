@@ -131,13 +131,13 @@ Criteria: flap-free after Flannel→WAN fix (`12:54:41Z`).
 - Smoke: sonarr **200**, alertmanager ready **200**, cloudflared Running; **0** non-Running pods
 - PLAN Phase 5 still says “a few days” before **destroying** VPS — short soak is enough to soft-decommission
 
-## Soft-decommission legacy V1 (2026-10-14 ~13:52Z)
-| Host | Action | Result |
-|---|---|---|
-| amsterdam | `k3s-uninstall` / agent-uninstall | k3s stopped; **SSH later timed out** (likely killall iptables — same class of issue as `CUTOVER_BLOCKED.md`) |
-| california | agent-uninstall | **k3s + agent inactive**, sshd active |
-| california-2 | agent-uninstall | **k3s + agent inactive**, sshd active |
-| london-2 | already unreachable at cutover | skip |
+## Soft-decommission legacy V1 (2026-10-14 ~13:52Z, verified ~14:00Z)
+| Host | Result |
+|---|---|
+| amsterdam | **k3s inactive, bins/data gone, sshd active** (brief SSH outage after `k3s-killall` iptables flush; recovered) |
+| california | **k3s inactive, bins/data gone, sshd active** (safe clean without killall) |
+| california-2 | **k3s inactive, bins/data gone, sshd active** |
+| london-2 | already unreachable at cutover — skip |
 
 - `servers/ansible/hosts.ini` → V2-only (retired hosts commented)
 - `hosts.v2.ini` synced to same
