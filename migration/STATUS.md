@@ -7,26 +7,28 @@
 - local-path → `/var/mnt/data/local-path`
 - Sealed Secrets + Reloader + ArgoCD on **`v2`** (manual sync)
 
-## Git
-- `277c0f8` books PVC accessMode/size aligned
-- `0fbe6ef` STATUS
-- aiostreams image → `v2.36.0` (restored DB at migration 27)
+## Cutover progress
+| Area | State |
+|---|---|
+| Tier0 + Tier1 PVC restore | **DONE** |
+| App secrets (29 from etcd snaptemp) | **DONE** |
+| linkwarden SQL import | **DONE** |
+| Cloudflare tunnel (http2) | **UP** |
+| openclaw gateway | **3/3 Ready** (`healthz` ok) |
+| aiostreams | **Running** on `v2.36.0` |
+| Media stack (sab/sonarr/radarr/prowlarr/rdt) | **Healthy** |
 
-## PVC restore
-- **Tier0 DONE**, **Tier1 DONE** (`TIER1_RESTORE_OK`)
-- restic multi-`--tag` is OR → use unique `pvc:NAME`
+## Git on `v2`
+- `277c0f8` books PVC align
+- `11bc693` aiostreams `v2.36.0`
+- `90722de` openclaw doctor `timeout` wrappers
 
-## Secrets
-Restored 29 secrets from amsterdam etcd snaptemp + aescbc key via  
-`/var/mnt/data/migrate/bin/apply-all-etcd-secrets.py`  
-(+ linkwarden SQL import).
-
-## Cloudflare
-**UP** — `cloudflared` registered over http2 (`Registered tunnel connection`).  
-Origin errors for prometheus/alertmanager until those are healthy.
+## Helpers on bazzite
+- `/var/mnt/data/migrate/bin/restore-pvc.sh`, `restore-tier1.sh`
+- `/var/mnt/data/migrate/bin/apply-all-etcd-secrets.py`
 
 ## Remaining
-1. openclaw: doctor can hang on restored state — boot steps now `timeout`-wrapped (`90722de`)
-2. prometheus folder app needs monitoring CRDs first (Degraded/OutOfSync)
-3. qbittorrent/stacks `replicas: 0` intentional in git
+1. `prometheus` app Degraded — needs monitoring CRDs first
+2. `qbittorrent` / `stacks` `replicas: 0` intentional in git
+3. `norish` / `termix` / `books` still Progressing
 4. Smoke + soak; decommission old nodes later
