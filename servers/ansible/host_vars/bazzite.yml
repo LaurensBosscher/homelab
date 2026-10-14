@@ -1,0 +1,5 @@
+---
+# Bazzite root is an immutable composefs overlay with no free space.
+# Put the zswap backing store on the writable NVMe-backed /var.
+zswap_swapfile_path: /var/swapfile
+k3s_selinux_enabled: false

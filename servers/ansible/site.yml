@@ -73,7 +73,7 @@
     - { role: network-optimizations }
     - { role: tailscale }
     - { role: kubecolor }
-    - { role: zram }
+    - { role: zswap }
     - { role: ssh }
     - { role: crowdsec }
     - { role: k3s-oom-protection }

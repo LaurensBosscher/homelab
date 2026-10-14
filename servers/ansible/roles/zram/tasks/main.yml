@@ -1,38 +1,17 @@
 ---
-- name: Install zram-generator
-  ansible.builtin.dnf:
-    name: zram-generator
-    state: present
-  when: zram_enable | default(true)
+# Retired: prefer roles/zswap (compressed cache + disk swap).
+# Kept so old playbook references fail closed instead of reintroducing zram.
+- name: Warn that zram role is retired
+  ansible.builtin.debug:
+    msg: >-
+      roles/zram is retired. Use roles/zswap instead (Chris Down: prefer zswap;
+      never run zram alongside disk swap).
   tags: [zram]
 
-- name: Configure zram-generator
-  ansible.builtin.copy:
-    dest: /etc/systemd/zram-generator.conf
-    content: |-
-      [zram0]
-      # Cap at 8G: zram costs nothing until written, but beyond ~8G of
-      # compressed spill the node is thrashing anyway; fail fast via OOM
-      # instead of obtaining responsiveness on deep swap.
-      zram-size = min(ram / 2, 8192)
-      compression-algorithm = zstd
-    owner: root
-    group: root
-    mode: "0644"
-  notify: restart zram
-  when: zram_enable | default(true)
-  tags: [zram]
-
-- name: Reload systemd daemon
-  ansible.builtin.systemd:
-    daemon_reload: true
-  when: zram_enable | default(true)
-  tags: [zram]
-
-- name: Ensure zram service started
-  ansible.builtin.systemd:
-    name: systemd-zram-setup@zram0.service
-    state: started
-    enabled: true
-  when: zram_enable | default(true)
+- name: Fail if zram role invoked while zswap is the configured default
+  ansible.builtin.fail:
+    msg: >-
+      Refusing to configure zram. Set zswap_enable=false explicitly if you truly
+      need a diskless zram-only setup (and pair it with systemd-oomd, no disk swap).
+  when: zswap_enable | default(true) | bool
   tags: [zram]

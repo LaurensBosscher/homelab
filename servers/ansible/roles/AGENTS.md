@@ -13,7 +13,7 @@ roles/
 │   iscsid (Longhorn storage)
 │   optimizations, network-optimizations
 │   tailscale, kubecolor
-│   zram (50% RAM compressed swap)
+│   zswap (compressed cache + disk swap)
 │   ssh (hardening; access limited by firewall)
 │   crowdsec, k3s-oom-protection
 │   k3s-install, firewall
@@ -57,4 +57,4 @@ roles/
 ```
 
 ### Tags
-Roles use descriptive tags: `[security, updates]`, `[ssh]`, `[zram]`, `[etcd_firewall]`
+Roles use descriptive tags: `[security, updates]`, `[ssh]`, `[zswap]`, `[etcd_firewall]`

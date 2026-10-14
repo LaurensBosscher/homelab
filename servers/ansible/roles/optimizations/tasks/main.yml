@@ -25,11 +25,14 @@
   when: total_mem_gb | int >= k8s_low_mem_threshold_gb | int
   tags: [optimizations]
 
+# With zswap + disk swap on SSD/NVMe-class storage, anon vs file reclaim
+# cost is similar — keep equality (100). On clearly spinning disks, lower.
 - name: Set vm parameters for low-memory systems (< 12 GB)
   ansible.builtin.set_fact:
     vm_swappiness: "100"
     vm_dirty_ratio: "10"
     vm_dirty_background_ratio: "3"
+    vm_page_cluster: "1"
     queue_depth: "32"
   when: total_mem_gb | int < k8s_low_mem_threshold_gb | int
   tags: [optimizations]
@@ -39,6 +42,7 @@
     vm_swappiness: "100"
     vm_dirty_ratio: "15"
     vm_dirty_background_ratio: "5"
+    vm_page_cluster: "1"
     queue_depth: "256"
   when: total_mem_gb | int >= k8s_low_mem_threshold_gb | int
   tags: [optimizations]
@@ -76,8 +80,8 @@
       include=virtual-guest
 
       [sysctl]
-      # With ZRAM, we can swap more aggressively (higher swappiness) to compress stale memory
-      # and free up RAM for active workloads, as ZRAM latency is much lower than disk I/O.
+      # zswap + disk swap: equality of anon/file reclaim on SSD-class storage.
+      # (Chris Down — swap is for reclaim equality, not "emergency RAM".)
       vm.swappiness = {{ vm_swappiness }}
       
       # Start writing dirty pages to disk earlier to avoid large I/O spikes
@@ -97,9 +101,9 @@
       # Trigger kswapd earlier to smooth out memory reclamation spikes
       vm.watermark_scale_factor = 200
       
-      # Disable swap readahead; ZRAM is CPU-bound not I/O-bound, so read-ahead is overhead
-      # (preserves the behavior of the retired 99-swap-tune.conf drop-in)
-      vm.page-cluster = 0
+      # Mild swap readahead for disk-backed spill (zswap absorbs most hot pages).
+      # Avoid the old zram-oriented page-cluster=0 and the disk default of 3.
+      vm.page-cluster = {{ vm_page_cluster | default(1) }}
       
       # Do not panic on OOM; let the OOM killer pick a process (usually a pod) to kill
       vm.panic_on_oom = 0

@@ -107,3 +107,15 @@
 1. Finish soak window (aim for a clean hour+ without london-1 `NodeNotReady`)
 2. Decommission old nodes after soak
 3. Optional: ansible-playbook apply of k3s config roles to confirm templates render cleanly (configs already live)
+
+## zswap migration (2026-10-14 ~13:45Z)
+Replaced **zram** with **zswap + disk swap** (Chris Down guidance). Never run zram alongside disk swap (LRU inversion).
+
+| Node | Swap backing | zswap | Notes |
+|---|---|---|---|
+| bazzite | `/var/swapfile` 8G (btrfs NOCOW) | Y zstd/zsmalloc/shrinker | root is composefs; swap on `/var` |
+| london-1 | `/swapfile` 2.4G | Y zstd/zsmalloc/shrinker | systemd-oomd active |
+| london-3 | `/swapfile` 3.7G | Y zstd/zsmalloc/shrinker | was zram+disk (fixed) |
+
+- Ansible: new `roles/zswap`, `zram` role retired/fails closed, tuned comments updated (`page-cluster=1`, swappiness=100)
+- Helper playbook: `servers/ansible/apply-zswap.yml`

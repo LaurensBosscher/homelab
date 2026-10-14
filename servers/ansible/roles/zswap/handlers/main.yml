@@ -1,0 +1,10 @@
+---
+- name: reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: restart systemd-oomd
+  ansible.builtin.systemd:
+    name: systemd-oomd.service
+    state: restarted
+  failed_when: false

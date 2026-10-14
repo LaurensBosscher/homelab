@@ -1,0 +1,24 @@
+---
+# Prefer zswap + disk swap over zram (Chris Down, 2026).
+# zram only makes sense for diskless/embedded or Fedora-style
+# zram-only + systemd-oomd with no disk swap at all.
+zswap_enable: true
+
+# Compressed RAM cache in front of disk swap
+zswap_compressor: zstd
+zswap_max_pool_percent: 20
+# Enable dynamic shrinker when the kernel exposes it (6.8+)
+zswap_shrinker_enabled: true
+
+# Disk-backed swap for zswap to tier into. Half RAM, capped.
+# Override per-host if root is small (e.g. bazzite uses /var).
+zswap_swapfile_path: /swapfile
+zswap_swapfile_size_mb: "{{ [((ansible_facts.memtotal_mb | int) // 2), 8192] | min | int }}"
+# Never shrink below this even on tiny nodes
+zswap_swapfile_size_mb_min: 2048
+
+# Tear down zram so we never run zram + disk swap together (LRU inversion).
+zswap_remove_zram: true
+
+# Userspace pressure kill as a safety net (especially useful on low-RAM agents)
+zswap_enable_oomd: true
