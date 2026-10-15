@@ -75,7 +75,8 @@ data:
 
       - name: gatus
         group: cluster
-        url: "http://gatus.gatus.svc.cluster.local:8080"
+        # Localhost avoids ClusterIP self-hairpin races right after restart.
+        url: "http://127.0.0.1:8080"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
