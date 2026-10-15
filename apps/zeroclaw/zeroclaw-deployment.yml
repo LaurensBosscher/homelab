@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zeroclaw
+  labels:
+    app.kubernetes.io/name: zeroclaw
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 0 # TEST DEPLOYMENT — set to 1 after sealing secrets + configuring
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zeroclaw
+  template:
+    metadata:
+      labels:
+        app: zeroclaw
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
+      initContainers:
+        # No official OCI image: fetch the pinned static musl binary once,
+        # verify SHA256, drop into a shared emptyDir.
+        - name: fetch-binary
+          image: curlimages/curl:8.16.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          env:
+            - name: ZEROCLAW_VERSION
+              value: v0.8.5
+            - name: ZEROCLAW_SHA256
+              value: "REPLACE_WITH_SHA256_FROM_SHA256SUMS"
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              url="https://github.com/zeroclaw-labs/zeroclaw/releases/download/${ZEROCLAW_VERSION}/zeroclaw-x86_64-unknown-linux-musl.tar.gz"
+              curl -fsSL -A "Alameda/1.0" "$url" -o /tmp/zc.tar.gz
+              echo "${ZEROCLAW_SHA256}  /tmp/zc.tar.gz" | sha256sum -c -
+              tar -xzf /tmp/zc.tar.gz -C /bin-zero --strip-components=0
+              chmod +x /bin-zero/zeroclaw*
+          volumeMounts:
+            - name: bin
+              mountPath: /bin-zero
+      containers:
+        - name: zeroclaw
+          image: gcr.io/distroless/static-debian12:nonroot
+          command: ["/usr/local/bin/zeroclaw"]
+          args: ["service", "run"] # verify: check zeroclaw --help; may be `gateway`/`serve`
+          ports:
+            - containerPort: 3210
+              name: http
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: ZEROCLAW_CONFIG
+              value: /config/config.toml
+            - name: ZEROCLAW_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_BOT_TOKEN
+            - name: ZEROCLAW_LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_LLM_API_KEY
+          volumeMounts:
+            - name: bin
+              mountPath: /usr/local/bin
+              readOnly: true
+            - name: config
+              mountPath: /config
+            - name: data
+              mountPath: /home/nonuser/.zeroclaw
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 128Mi
+          livenessProbe:
+            tcpSocket:
+              port: 3210
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 3210
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+      volumes:
+        - name: bin
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: zeroclaw-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: zeroclaw-data
