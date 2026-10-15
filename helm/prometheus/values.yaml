@@ -63,6 +63,17 @@ kube-prometheus-stack:
       # Public Cloudflare Tunnel URL so alert Source links are clickable.
       externalUrl: https://prometheus.bosscher.ch
       retention: 15d
+      # Pin to control-plane: London agents can't reach ClusterIP/API from pods
+      # (kubernetes_sd times out on 10.43.0.1), so Prometheus on london-* stays blind.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
       resources:
         requests:
           cpu: 200m

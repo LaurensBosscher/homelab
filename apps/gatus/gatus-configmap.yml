@@ -234,7 +234,7 @@ data:
 
       - name: listenarr
         group: media
-        url: "http://listenarr.listenarr.svc.cluster.local:5000"
+        url: "http://listenarr.listenarr.svc.cluster.local:4545"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
