@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: restic
+  labels:
+    app.kubernetes.io/name: restic
+    app.kubernetes.io/part-of: homelab
+spec:
+  selector:
+    matchLabels:
+      app: restic
+  template:
+    metadata:
+      labels:
+        app: restic
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: restic
+          image: restic/restic:0.18.0
+          command: ["/bin/sh", "/scripts/backup-loop.sh"]
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            # Node name becomes restic hostname -> snapshots identifiable per node
+            - name: RESTIC_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: RESTIC_REPOSITORY
+              value: "b2:CHANGE_ME_BUCKET/homelab-restic"
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: RESTIC_PASSWORD
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: BACKUP_INTERVAL_SECONDS
+              value: "86400"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: pvc-data
+              mountPath: /data
+              readOnly: true
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        # k3s local-path provisioner root; each PVC lives under
+        # /var/lib/rancher/k3s/storage/pvc-*_<namespace>_<pvc-name>/
+        - name: pvc-data
+          hostPath:
+            path: /var/lib/rancher/k3s/storage
+            type: Directory
+        - name: scripts
+          configMap:
+            name: restic-backup-loop
