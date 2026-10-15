@@ -7,11 +7,9 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        revision: main
+        revision: v2
         directories:
           - path: apps/*
-          - path: apps/longhorn
-            exclude: true
   template:
     metadata:
       name: "{{path.basename}}"
@@ -21,14 +19,15 @@ spec:
       project: default
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        targetRevision: main
+        targetRevision: v2
         path: "{{path}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{path.basename}}"
       syncPolicy:
-        automated: {}
+        automated:
+          prune: false
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
           - Prune=false
-          - SelfHeal=true

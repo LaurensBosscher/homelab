@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: audiobookshelf
           image: ghcr.io/advplyr/audiobookshelf:2.37.1
@@ -82,5 +82,5 @@ spec:
             claimName: audiobookshelf-metadata
         - name: downloads
           hostPath:
-            path: /mnt/downloads/
+            path: /mnt/data/downloads/
             type: DirectoryOrCreate

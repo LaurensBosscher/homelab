@@ -95,7 +95,7 @@ spec:
           app: fusion
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: "longhorn-2replicas-europe"
+        storageClassName: local-path
         resources:
           requests:
-            storage: 2Gi
+            storage: 20Gi

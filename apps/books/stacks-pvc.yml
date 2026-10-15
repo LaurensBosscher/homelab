@@ -10,8 +10,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
+      # Bound at restore time; local-path cannot expand bound claims.
       storage: 512Mi
-  storageClassName: longhorn-2replicas-europe
+  storageClassName: local-path
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,4 +27,4 @@ spec:
   resources:
     requests:
       storage: 512Mi
-  storageClassName: longhorn-2replicas-europe
+  storageClassName: local-path

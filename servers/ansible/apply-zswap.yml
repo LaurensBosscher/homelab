@@ -1,0 +1,13 @@
+---
+# Focused apply for zswap migration (avoids full site.yml always tags).
+- name: Apply zswap + retune optimizations
+  hosts: all
+  become: true
+  serial: 1
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: zswap
+      tags: [zswap]
+    - role: optimizations
+      tags: [optimizations]

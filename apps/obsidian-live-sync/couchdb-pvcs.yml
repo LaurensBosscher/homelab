@@ -9,8 +9,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-  storageClassName: longhorn-2replicas-compressed-us
+      storage: 20Gi
+  storageClassName: local-path
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -23,5 +23,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 128Mi
-  storageClassName: longhorn-2replicas-compressed-us
+      storage: 20Gi
+  storageClassName: local-path

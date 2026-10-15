@@ -1,10 +1,22 @@
+# Server: Flannel over physical/WAN iface — never Tailscale.
+# For bazzite: node-ip=LAN, node-external-ip=cluster_wan_ip (public).
 flannel-backend: wireguard-native
 flannel-external-ip: true
 flannel-iface: {{ cluster_network_interface }}
 
 prefer-bundled-bin: true
 
-node-external-ip: {{ cluster_network_ip }}  # Advertises cluster network IP for external access
+node-ip: {{ cluster_network_ip }}
+node-external-ip: {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
+advertise-address: {{ cluster_network_ip }}
+
+tls-san:
+  - {{ cluster_network_ip }}
+  - {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
+{% if tailscale_ip is defined and tailscale_ip and tailscale_ip != cluster_network_ip %}
+  - {{ tailscale_ip }}
+{% endif %}
+  - {{ inventory_hostname }}
 
 # Disable bundled components (use the managed Prometheus stack for metrics-server)
 disable: [traefik, metrics-server]
@@ -12,40 +24,31 @@ disable: [traefik, metrics-server]
 # Enable secret encryption at rest
 secrets-encryption: true
 
-# etcd tunings for high-latency multi-region WAN cluster
+{% if (k3s_datastore | default('sqlite')) == 'etcd' %}
+# etcd tunings for high-latency multi-region WAN cluster (V1)
 etcd-arg:
-  - 'log-level=warn'  # Since etcd logs end-up mixed with the K3S logs make it less verbose
-
-  # WAN optimizations - increased timeouts for cross-region latency
-  - "heartbeat-interval=500"             # Default 100ms, increased for WAN latency
-  - "election-timeout=5000"              # Default 1000ms, increased for WAN latency
-  - "grpc-keepalive-interval=30000"      # 30s keepalive for WAN connections
-  - "grpc-keepalive-timeout=20000"       # 20s timeout
-
-  # Optional: speeds up large snapshot transfers a lot (K3s ≥ v1.21.5)
-  - "max-request-bytes=10485760"         # 10 MiB instead of ~1.5 MiB
-  - "warning-apply-duration=750000000"   # 750ms warning threshold
-
-  # PREVENTS DATABASE BLOAT: Auto-compact revisions older than 1 hour
-  # Without this, etcd keeps ALL historical revisions forever
-  # 1h = good balance for hobby cluster (keeps history for debugging, prevents unbounded growth)
+  - 'log-level=warn'
+  - "heartbeat-interval=500"
+  - "election-timeout=5000"
+  - "grpc-keepalive-interval=30000"
+  - "grpc-keepalive-timeout=20000"
+  - "max-request-bytes=10485760"
+  - "warning-apply-duration=750000000"
   - "auto-compaction-retention=1h"
   - "auto-compaction-mode=periodic"
 
-  # Keep default 2GB quota - you hit 900MB, so 2GB gives 2x headroom
-  # Only increase if you consistently hit quota alarms
-
-# Automated etcd snapshots (backup + size management)
-# Keep fewer local copies: old bloated snaps were retaining ~1.4Gi after DB compaction.
-etcd-snapshot-schedule-cron: "0 */12 * * *"  # Every 12 hours (reasonable for hobby)
+etcd-snapshot-schedule-cron: "0 */12 * * *"
 etcd-snapshot-retention: 3
+{% else %}
+# V2 default: embedded SQLite. Do not set etcd-arg / etcd-snapshot-*.
+# Back up /var/lib/rancher/k3s/server/db/ + server/token via restic.
+{% endif %}
 
 kube-controller-manager-arg:
   - "node-monitor-period=10s"
   - "node-monitor-grace-period=60s"
 
 # Enable SchedulerAsyncAPICalls for higher scheduler throughput (Beta in 1.34+)
-# Better responsiveness in clusters with heavy scheduling load
 kube-scheduler-arg:
   - "feature-gates=SchedulerAsyncAPICalls=true"
 

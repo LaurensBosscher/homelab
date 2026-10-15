@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       initContainers:
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
@@ -135,5 +135,5 @@ spec:
             claimName: qbittorrent-config
         - name: downloads
           hostPath:
-            path: /mnt/downloads/
+            path: /mnt/data/downloads/
             type: DirectoryOrCreate

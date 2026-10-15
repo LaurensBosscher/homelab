@@ -1,0 +1,40 @@
+# V2: point local-path-provisioner at the bazzite data disk.
+# Apply after K3s install / before restoring PVCs.
+# Path assumes cutover rename: /mnt/downloads → /mnt/data with local-path/ subdirectory.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-path-config
+  namespace: kube-system
+data:
+  config.json: |-
+    {
+      "nodePathMap": [
+        {
+          "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
+          "paths": []
+        },
+        {
+          "node": "bazzite",
+          "paths": ["/mnt/data/local-path"]
+        }
+      ]
+    }
+  setup: |-
+    #!/bin/sh
+    set -eu
+    mkdir -m 0777 -p "$VOL_DIR"
+  teardown: |-
+    #!/bin/sh
+    set -eu
+    rm -rf "$VOL_DIR"
+  helperPod.yaml: |-
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: helper-pod
+    spec:
+      containers:
+      - name: helper-pod
+        image: busybox:1.36
+        imagePullPolicy: IfNotPresent

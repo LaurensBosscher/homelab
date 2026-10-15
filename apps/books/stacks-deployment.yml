@@ -16,18 +16,15 @@ spec:
       labels:
         app: stacks
     spec:
-      nodeSelector:
-        city: zurich
       affinity:
         nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 50
-              preference:
-                matchExpressions:
-                  - key: region
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - europe
+                      - bazzite
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"

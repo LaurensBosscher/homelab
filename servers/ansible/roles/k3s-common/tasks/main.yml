@@ -81,6 +81,15 @@
         - restart k3s
         - restart k3s-agent
 
+    - name: Restore SELinux label on K3s binary after upgrade
+      ansible.builtin.command: restorecon -v /usr/local/bin/k3s
+      when:
+        - k3s_selinux_enabled | default(true) | bool
+        - k3s_version not in k3s_current_version.stdout | default('')
+      changed_when: "'Relabeled' in restorecon_k3s.stdout | default('')"
+      register: restorecon_k3s
+      failed_when: false
+
     - name: Remove temporary K3s binary
       ansible.builtin.file:
         path: /tmp/k3s-{{ k3s_version }}
@@ -92,3 +101,105 @@
       register: k3s_new_version
       changed_when: false
       failed_when: k3s_version not in k3s_new_version.stdout
+
+- name: Ensure k3s-selinux package is installed
+  ansible.builtin.package:
+    name: k3s-selinux
+    state: present
+  when: k3s_selinux_enabled | default(true) | bool
+  failed_when: false
+  tags: [k3s, selinux]
+
+- name: Enable container_manage_cgroup SELinux boolean
+  ansible.builtin.command: setsebool -P container_manage_cgroup 1
+  when: k3s_selinux_enabled | default(true) | bool
+  changed_when: false
+  failed_when: false
+  tags: [k3s, selinux]
+
+- name: Ensure SELinux fcontext for custom local-path storage
+  ansible.builtin.command: >
+    semanage fcontext -a -t container_file_t {{ k3s_local_path_fcontext | quote }}
+  when:
+    - k3s_selinux_enabled | default(true) | bool
+    - k3s_local_path_fcontext is defined
+  register: k3s_local_path_fcontext_add
+  failed_when: false
+  changed_when: k3s_local_path_fcontext_add.rc == 0
+  tags: [k3s, selinux]
+
+- name: Modify SELinux fcontext for custom local-path storage if already present
+  ansible.builtin.command: >
+    semanage fcontext -m -t container_file_t {{ k3s_local_path_fcontext | quote }}
+  when:
+    - k3s_selinux_enabled | default(true) | bool
+    - k3s_local_path_fcontext is defined
+    - k3s_local_path_fcontext_add.rc | default(0) != 0
+  register: k3s_local_path_fcontext_mod
+  failed_when: false
+  changed_when: k3s_local_path_fcontext_mod.rc == 0
+  tags: [k3s, selinux]
+
+- name: Ensure SELinux fcontext for /etc/rancher
+  ansible.builtin.command: semanage fcontext -a -t container_config_t "/etc/rancher(/.*)?"
+  when: k3s_selinux_enabled | default(true) | bool
+  register: k3s_etc_fcontext_add
+  failed_when: false
+  changed_when: k3s_etc_fcontext_add.rc == 0
+  tags: [k3s, selinux]
+
+# Local overrides like /usr/local/bin/k3s → bin_t can beat the packaged
+# /usr/local/s?bin/k3s → container_runtime_exec_t rule (seen on Alma agents).
+- name: Ensure SELinux fcontext for /usr/local/bin/k3s
+  ansible.builtin.command: semanage fcontext -a -t container_runtime_exec_t "/usr/local/bin/k3s"
+  when: k3s_selinux_enabled | default(true) | bool
+  register: k3s_bin_fcontext_add
+  failed_when: false
+  changed_when: k3s_bin_fcontext_add.rc == 0
+  tags: [k3s, selinux]
+
+- name: Modify SELinux fcontext for /usr/local/bin/k3s if already present
+  ansible.builtin.command: semanage fcontext -m -t container_runtime_exec_t "/usr/local/bin/k3s"
+  when:
+    - k3s_selinux_enabled | default(true) | bool
+    - k3s_bin_fcontext_add.rc | default(0) != 0
+  register: k3s_bin_fcontext_mod
+  failed_when: false
+  changed_when: k3s_bin_fcontext_mod.rc == 0
+  tags: [k3s, selinux]
+
+# k3s-selinux ships /var/run/k3s → container_var_run_t, but on modern systems
+# /var/run ≡ /run and matchpathcon resolves /run/k3s to var_run_t unless explicit.
+- name: Ensure SELinux fcontext for /run/k3s
+  ansible.builtin.command: semanage fcontext -a -t container_var_run_t "/run/k3s(/.*)?"
+  when: k3s_selinux_enabled | default(true) | bool
+  register: k3s_run_fcontext_add
+  failed_when: false
+  changed_when: k3s_run_fcontext_add.rc == 0
+  tags: [k3s, selinux]
+
+- name: Modify SELinux fcontext for /run/k3s if already present
+  ansible.builtin.command: semanage fcontext -m -t container_var_run_t "/run/k3s(/.*)?"
+  when:
+    - k3s_selinux_enabled | default(true) | bool
+    - k3s_run_fcontext_add.rc | default(0) != 0
+  register: k3s_run_fcontext_mod
+  failed_when: false
+  changed_when: k3s_run_fcontext_mod.rc == 0
+  tags: [k3s, selinux]
+
+- name: Restore SELinux labels on k3s paths
+  ansible.builtin.command: >
+    restorecon -Rv
+    /usr/local/bin/k3s
+    /etc/rancher
+    /run/k3s
+    /var/run/k3s
+    /var/lib/kubelet
+    /var/lib/rancher/k3s
+    {% if k3s_local_path_storage is defined %}{{ k3s_local_path_storage }}{% endif %}
+  when: k3s_selinux_enabled | default(true) | bool
+  register: k3s_restorecon
+  changed_when: "'Relabeled' in k3s_restorecon.stdout | default('')"
+  failed_when: false
+  tags: [k3s, selinux]

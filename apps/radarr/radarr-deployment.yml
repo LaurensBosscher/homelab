@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: radarr
           image: lscr.io/linuxserver/radarr:6.4.4
@@ -78,5 +78,5 @@ spec:
             claimName: radarr-config
         - name: downloads
           hostPath:
-            path: /mnt/downloads/
+            path: /mnt/data/downloads/
             type: DirectoryOrCreate

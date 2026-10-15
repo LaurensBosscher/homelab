@@ -9,7 +9,6 @@ resources:
   - appset.yml
   - appset-helm.yml
   - default-appproject.yml
-  - longhorn-application.yml
   - argocd-notifications-cm.yml
   - argocd-notifications-secret-sealed.yml
 

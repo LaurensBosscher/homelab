@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 6Gi
-  storageClassName: longhorn-2replicas-us
+  storageClassName: local-path

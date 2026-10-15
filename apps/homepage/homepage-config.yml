@@ -29,8 +29,6 @@ data:
           hideInternetSearch: false
           showSearchSuggestions: true
         providers:
-          longhorn:
-            url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
           argocd:
             url: http://argocd-server.argocd.svc.cluster.local
         experimental:
@@ -314,11 +312,6 @@ data:
                 description: GitOps continuous delivery
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
                 siteMonitor: https://argocd-server.argocd.svc.cluster.local
-            - Longhorn:
-                href: https://longhorn.bosscher.ch
-                description: Storage management
-                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/longhorn.png
-                siteMonitor: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
             - Gatus:
                 href: https://gatus.bosscher.ch
                 description: Synthetic uptime monitoring
@@ -407,9 +400,6 @@ data:
             - Argo CD Docs:
                 - abbr: ACD
                   href: https://argo-cd.readthedocs.io/
-            - Longhorn Docs:
-                - abbr: LH
-                  href: https://longhorn.io/docs/
     widgets.yaml: |
         - greeting:
             text_size: xl
@@ -433,11 +423,6 @@ data:
             cache: 5 # Time in minutes to cache API responses, to stay within limits
             format: # optional, Intl.NumberFormat options
               maximumFractionDigits: 1
-        - longhorn:
-            expanded: false
-            total: true
-            labels: false
-            nodes: false
         - search:
             provider: google
             target: _blank

@@ -28,10 +28,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: city
+                  - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zurich
+                      - bazzite
       containers:
         - name: shelfarr
           image: ghcr.io/calibrain/shelfmark:v1.4.0
@@ -79,5 +79,5 @@ spec:
             claimName: shelfarr-config
         - name: books
           hostPath:
-            path: /mnt/downloads/complete/books
+            path: /mnt/data/downloads/complete/books
             type: DirectoryOrCreate

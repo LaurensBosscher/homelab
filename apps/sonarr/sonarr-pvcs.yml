@@ -12,5 +12,5 @@ items:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 2Gi
-      storageClassName: longhorn-2replicas-europe
+          storage: 20Gi
+      storageClassName: local-path

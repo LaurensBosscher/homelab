@@ -99,6 +99,15 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
       containers:
         - name: nanobot
           image: ghcr.io/laurensbosscher/nanobot-canary:0.3.0-3

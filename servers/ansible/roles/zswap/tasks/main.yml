@@ -1,0 +1,364 @@
+---
+# Migrate nodes from zram → zswap + disk swap.
+# Never leave zram and disk swap enabled together (LRU inversion).
+
+- name: Resolve effective swapfile size
+  ansible.builtin.set_fact:
+    zswap_swapfile_size_mb_effective: >-
+      {{
+        [zswap_swapfile_size_mb | int, zswap_swapfile_size_mb_min | int]
+        | max
+      }}
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Check for existing zram swap
+  ansible.builtin.command: swapon --show=NAME --noheadings
+  register: zswap_swapon_names
+  changed_when: false
+  failed_when: false
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Disable zram swap devices
+  ansible.builtin.command: "swapoff {{ item }}"
+  loop: "{{ zswap_swapon_names.stdout_lines | default([]) | select('match', '^/dev/zram') | list }}"
+  when:
+    - zswap_enable | default(true)
+    - zswap_remove_zram | default(true)
+  failed_when: false
+  tags: [zswap]
+
+- name: Stop zram-generator unit
+  ansible.builtin.systemd:
+    name: systemd-zram-setup@zram0.service
+    state: stopped
+    enabled: false
+  when:
+    - zswap_enable | default(true)
+    - zswap_remove_zram | default(true)
+  failed_when: false
+  tags: [zswap]
+
+- name: Remove zram-generator config
+  ansible.builtin.file:
+    path: /etc/systemd/zram-generator.conf
+    state: absent
+  when:
+    - zswap_enable | default(true)
+    - zswap_remove_zram | default(true)
+  notify: reload systemd daemon
+  tags: [zswap]
+
+- name: Mask zram-generator setup unit (prevents ostree/image defaults returning)
+  ansible.builtin.systemd:
+    name: systemd-zram-setup@zram0.service
+    masked: true
+    daemon_reload: true
+  when:
+    - zswap_enable | default(true)
+    - zswap_remove_zram | default(true)
+  failed_when: false
+  tags: [zswap]
+
+- name: Stat desired swapfile
+  ansible.builtin.stat:
+    path: "{{ zswap_swapfile_path }}"
+  register: zswap_swapfile_stat
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Decide whether swapfile must be (re)created
+  ansible.builtin.set_fact:
+    zswap_swapfile_recreate: >-
+      {{
+        (not (zswap_swapfile_stat.stat.exists | default(false)))
+        or (
+          (zswap_swapfile_stat.stat.size | default(0) | int)
+          != ((zswap_swapfile_size_mb_effective | int) * 1024 * 1024)
+        )
+      }}
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Disable existing swapfile before resize/recreate
+  ansible.builtin.command: "swapoff {{ zswap_swapfile_path }}"
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+    - zswap_swapfile_stat.stat.exists | default(false)
+  failed_when: false
+  tags: [zswap]
+
+- name: Remove wrongly-sized swapfile
+  ansible.builtin.file:
+    path: "{{ zswap_swapfile_path }}"
+    state: absent
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+    - zswap_swapfile_stat.stat.exists | default(false)
+  tags: [zswap]
+
+- name: Ensure parent directory for swapfile exists
+  ansible.builtin.file:
+    path: "{{ zswap_swapfile_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when:
+    - zswap_enable | default(true)
+    - (zswap_swapfile_path | dirname) not in ['/', '']
+  tags: [zswap]
+
+- name: Detect filesystem type for swapfile path
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, FSTYPE, -T, "{{ zswap_swapfile_path | dirname }}"]
+  register: zswap_swapfile_fstype
+  changed_when: false
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+  tags: [zswap]
+
+- name: Create btrfs NOCOW swapfile
+  ansible.builtin.command:
+    argv:
+      - btrfs
+      - filesystem
+      - mkswapfile
+      - --size
+      - "{{ zswap_swapfile_size_mb_effective }}M"
+      - "{{ zswap_swapfile_path }}"
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+    - (zswap_swapfile_fstype.stdout | default('') | trim) == 'btrfs'
+  tags: [zswap]
+
+- name: Allocate swapfile (non-btrfs)
+  ansible.builtin.command:
+    argv:
+      - fallocate
+      - -l
+      - "{{ zswap_swapfile_size_mb_effective }}M"
+      - "{{ zswap_swapfile_path }}"
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+    - (zswap_swapfile_fstype.stdout | default('') | trim) != 'btrfs'
+  tags: [zswap]
+
+- name: Format swapfile (non-btrfs)
+  ansible.builtin.command:
+    argv: [mkswap, "{{ zswap_swapfile_path }}"]
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_recreate | bool
+    - (zswap_swapfile_fstype.stdout | default('') | trim) != 'btrfs'
+  tags: [zswap]
+
+- name: Restrict swapfile permissions
+  ansible.builtin.file:
+    path: "{{ zswap_swapfile_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Drop legacy /swapfile fstab entry when using a different path
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^/swapfile(\s|$)'
+    state: absent
+  when:
+    - zswap_enable | default(true)
+    - zswap_swapfile_path != '/swapfile'
+  tags: [zswap]
+
+- name: Persist swapfile in fstab
+  ansible.posix.mount:
+    path: none
+    src: "{{ zswap_swapfile_path }}"
+    fstype: swap
+    opts: defaults,pri=10
+    state: present
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Enable swapfile now
+  ansible.builtin.command: "swapon --priority 10 {{ zswap_swapfile_path }}"
+  register: zswap_swapon
+  changed_when: zswap_swapon.rc == 0
+  failed_when:
+    - zswap_swapon.rc != 0
+    - "'Device or resource busy' not in (zswap_swapon.stderr | default(''))"
+    - "'already enabled' not in (zswap_swapon.stderr | default(''))"
+    - "'already active' not in (zswap_swapon.stderr | default(''))"
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Persist zswap module options
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/zswap.conf
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      # zswap: compressed RAM cache in front of disk swap (prefer over zram).
+      options zswap enabled=1 compressor={{ zswap_compressor }} max_pool_percent={{ zswap_max_pool_percent }}{% if zswap_shrinker_enabled | bool %} shrinker_enabled=1{% endif %}
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Ensure zswap module is loaded
+  community.general.modprobe:
+    name: zswap
+    state: present
+  when: zswap_enable | default(true)
+  failed_when: false
+  tags: [zswap]
+
+- name: Enable zswap at runtime
+  ansible.builtin.shell: |
+    set -euo pipefail
+    params=/sys/module/zswap/parameters
+    if [ ! -d "$params" ]; then
+      modprobe zswap || true
+    fi
+    if [ ! -d "$params" ]; then
+      echo "zswap parameters not present in sysfs" >&2
+      exit 1
+    fi
+    before=$(cat "$params/enabled")
+    echo {{ zswap_compressor }} > "$params/compressor" || true
+    echo {{ zswap_max_pool_percent }} > "$params/max_pool_percent"
+    if [ -f "$params/shrinker_enabled" ]; then
+      echo {{ 1 if (zswap_shrinker_enabled | bool) else 0 }} > "$params/shrinker_enabled"
+    fi
+    if [ -f "$params/zpool" ]; then
+      echo zsmalloc > "$params/zpool" || true
+    fi
+    echo 1 > "$params/enabled"
+    after=$(cat "$params/enabled")
+    echo "enabled_before=$before enabled_after=$after"
+    grep -H . "$params"/* 2>/dev/null || true
+  args:
+    executable: /bin/bash
+  register: zswap_runtime
+  changed_when: "'enabled_before=N' in zswap_runtime.stdout or 'enabled_before=0' in zswap_runtime.stdout or 'enabled_before=Y' not in zswap_runtime.stdout"
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Persist zswap enable via systemd oneshot (covers built-in zswap + ostree)
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/zswap-enable.service
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Enable zswap compressed swap cache
+      DefaultDependencies=no
+      After=systemd-modules-load.service local-fs.target
+      Before=swap.target
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/bin/bash -c 'p=/sys/module/zswap/parameters; [ -d "$p" ] || modprobe zswap || true; [ -d "$p" ] || exit 0; echo {{ zswap_compressor }} > "$p/compressor" || true; echo {{ zswap_max_pool_percent }} > "$p/max_pool_percent"; [ -f "$p/shrinker_enabled" ] && echo {{ 1 if (zswap_shrinker_enabled | bool) else 0 }} > "$p/shrinker_enabled" || true; [ -f "$p/zpool" ] && echo zsmalloc > "$p/zpool" || true; echo 1 > "$p/enabled"'
+
+      [Install]
+      WantedBy=swap.target multi-user.target
+  notify: reload systemd daemon
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Enable zswap-enable service
+  ansible.builtin.systemd:
+    name: zswap-enable.service
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+# Alma/Fedora dnf can hang on metadata; bound with async. Prefer systemd-oomd,
+# fall back to earlyoom when the unit is absent (older Alma images).
+- name: Install systemd-oomd package when available
+  ansible.builtin.dnf:
+    name: systemd-oomd
+    state: present
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+  register: zswap_oomd_pkg
+  failed_when: false
+  async: 90
+  poll: 5
+  tags: [zswap]
+
+- name: Check for systemd-oomd unit
+  ansible.builtin.stat:
+    path: /usr/lib/systemd/system/systemd-oomd.service
+  register: zswap_oomd_unit
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+  tags: [zswap]
+
+- name: Enable systemd-oomd
+  ansible.builtin.systemd:
+    name: systemd-oomd.service
+    enabled: true
+    state: started
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - zswap_oomd_unit.stat.exists
+  tags: [zswap]
+
+- name: Install earlyoom when systemd-oomd unit is missing
+  ansible.builtin.dnf:
+    name: earlyoom
+    state: present
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - not zswap_oomd_unit.stat.exists
+  register: zswap_earlyoom_pkg
+  failed_when: false
+  async: 90
+  poll: 5
+  tags: [zswap]
+
+- name: Enable earlyoom fallback
+  ansible.builtin.systemd:
+    name: earlyoom.service
+    enabled: true
+    state: started
+  when:
+    - zswap_enable | default(true)
+    - zswap_enable_oomd | default(true)
+    - zswap_oomd_unit.stat is defined
+    - not zswap_oomd_unit.stat.exists
+    - zswap_earlyoom_pkg is changed or zswap_earlyoom_pkg is succeeded
+  failed_when: false
+  tags: [zswap]
+
+- name: Show final swap topology
+  ansible.builtin.command: swapon --show
+  register: zswap_final_swapon
+  changed_when: false
+  when: zswap_enable | default(true)
+  tags: [zswap]
+
+- name: Assert no zram swap remains
+  ansible.builtin.assert:
+    that:
+      - zswap_final_swapon.stdout is not search('/dev/zram')
+    fail_msg: "zram swap still active — refusing to leave zram+disk swap (LRU inversion risk)"
+    success_msg: "Swap topology OK (disk-backed only): {{ zswap_final_swapon.stdout_lines | join(', ') }}"
+  when: zswap_enable | default(true)
+  tags: [zswap]

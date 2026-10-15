@@ -1,22 +1,47 @@
 # Laurens Kubernetes Homelab
 
-This repo contains backups, scripts, and documentation for my hobby and educational [Kubernetes](https://kubernetes.io/) cluster.
+Public showcase + working GitOps config for my hobby [Kubernetes](https://kubernetes.io/) cluster. Manifests in `apps/` are what the live cluster runs via [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Infrastructure is managed with Ansible under `servers/ansible/`.
 
-The cluster is configured with production like settings such as:
+> **Public repo note:** application secrets are never stored in plaintext here. Runtime secrets use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) (ciphertext only) or cluster-local Secret objects. CI credentials live in GitHub Actions secrets. Do not commit kubeconfigs, join tokens, private keys, or `.env` files.
 
-- Automatic fail-over for all deployments and nodes, deployed on: 
-    - 7 nodes
-    - Across 4 regions
-    - Across 3 different providers + my home server
-- Ability to target deployment to a geographical location to optimize for latency with automatic fallback or do multi-region deployment
-- All data is replicated to two nodes by [Longhorn](https://longhorn.io/) and automatically backed-up to [Backblaze](https://www.backblaze.com/)
-- CD pipeline through [ArgoCD](https://argo-cd.readthedocs.io/en/stable/). Any changes in the apps folder will automatically be deployed
-- Ingress is taking care of by [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) with one instance per geographical region
-  - Changes are automatically updated using a [GitHub Actions workflow](.github/workflows/update_cloudflare_settings.yml)
-- Communication between the nodes is done through the wireguard native backend (Running over Tailscale caused double encapsulation and hard to debug issues)
-- Joining new nodes to the cluster is a ~5 minute job
-- Secrets are [encrypted](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) and not stored in this repo ;)
-- [Mend Renovate](https://www.mend.io/renovate/) monitors this repo and automatically creates PRs for any software updates
+## Architecture versions
+
+| | **V1** (retired) | **V2** (current, 2026-10) |
+|---|---|---|
+| Nodes | 7 nodes / 4 regions (CA ×2, London ×3, Amsterdam, Zurich/home) | 4 nodes: home `bazzite` + London agents ×3 |
+| Control plane | Multi-server embedded **etcd** HA | Single K3s server on **bazzite** with **SQLite** |
+| Storage | [Longhorn](https://longhorn.io/) + geo storage classes | K3s **`local-path`** on bazzite NVMe/disk (all PVCs pinned home) |
+| Workload placement | Geo affinity (`europe` / `us` / `zurich`) | Stateful → bazzite; stateless can schedule on London |
+| Pod overlay | Flannel `wireguard-native` (multi-region mesh) | Same CNI, peers on **public WAN** + tight nftables allowlist |
+| Admin access | Tailscale | Tailscale for SSH/admin **only** (not CNI underlay) |
+| Ingress | Cloudflare Tunnel(s) | Single Cloudflare Tunnel on bazzite |
+| GitOps branch | `main` | `v2` |
+| Why change | Powerful, but high ops cost (Longhorn rebuilds, etcd, multi-region) | Cut complexity/cost; keep GitOps + apps |
+
+Cutover notes: [`PLAN.md`](PLAN.md), [`migration/STATUS.md`](migration/STATUS.md).
+
+## V2 at a glance
+
+```text
+bazzite          K3s server (SQLite) + ALL local-path PVCs + media hostPaths
+k3s-london-1..3  K3s agents (stateless / overflow)
+
+Ingress:  Cloudflare Tunnel
+CD:       ArgoCD ApplicationSets → branch `v2`
+Secrets:  Sealed Secrets
+Backup:   restic → Backblaze B2 (SQLite db/ + token + PVC data)
+```
+
+Production-like settings on V2:
+
+- Stateless fail-over across London agents + home control-plane
+- Persistent data on bazzite via `local-path` (backed up to [Backblaze](https://www.backblaze.com/) with restic)
+- CD via ArgoCD — changes under `apps/` auto-deploy when automated sync is enabled
+- Ingress via [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (GitHub Actions syncs tunnel DNS/config)
+- Pod overlay: Flannel WireGuard on public WAN + nftables peer allowlist (not nested in Tailscale)
+- Joining a new agent is a ~5 minute Ansible job
+- Kubernetes secrets encrypted at rest; Sealed Secrets for GitOps-friendly ciphertext
+- [Mend Renovate](https://www.mend.io/renovate/) opens PRs for dependency/image updates
 
 # Security
 
@@ -105,17 +130,20 @@ Critical services are protected against OOM (Out of Memory) kills:
 
 # Hardware
 
-| location   | ram  | cpu                            | Storage | role          | note        | cost/y | management url                  |
-| ---------- | ---- | ------------------------------ | ------- | ------------- | ----------- | ------ | ------------------------------- |
-| California | 30GB | 3c (Xeon Gold 6248)            | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
-| California | 30GB | 3c (Xeon Silver 4214)          | NVMe    | worker        |             | $35    | https://master.pandahost.co.uk/ |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | worker        |             | $20    | https://master.pandahost.co.uk/ |
-| London     | 5GB  | 2c (Xeon Gold 6148)            | NVMe    | control plane |             | $20    | https://master.pandahost.co.uk/ |
-| London     | 8GB  | 4c (AMD EPYC 7542)             | NVMe    | control plane |             | $35    | https://rarecloud.io/clients/   |
-| Amsterdam  | 8GB  | 3c (Intel Xeon Platinum 8173M) | SSD     | control plane |             | $20    | https://vps.deluxhost.net/      |
-| Zurich     | 32GB | 4c (Intel N97)                 | NVMe    | worker        | Home Server | $0     |                                 |
+## V2 (current)
 
-Total of 118 GB RAM and 20 CPU cores. You could get that in a single powerful server but not for for ~100 USD/year and where is the fun in that?
+| location | ram  | cpu                | Storage | role           | note                         | cost/y |
+| -------- | ---- | ------------------ | ------- | -------------- | ---------------------------- | ------ |
+| Zurich   | 32GB | 4c (Intel N97)     | NVMe    | control plane  | Home `bazzite`; all PVCs     | $0     |
+| London   | 5GB  | 2c (Xeon Gold 6148)| NVMe    | agent          | `k3s-london-1`               | ~$20   |
+| London   | 5GB  | 2c (Xeon Gold 6148)| NVMe    | agent          | `k3s-london-2`               | ~$20   |
+| London   | 8GB  | 4c (AMD EPYC 7542) | NVMe    | agent          | `k3s-london-3`               | ~$35   |
+
+~50 GB RAM / 12 cores. Stateful apps + media live on the home node; London nodes take overflow/stateless load.
+
+## V1 (retired — multi-region experiment)
+
+V1 was a 7-node / 4-region mesh (~118 GB RAM / 20 cores, ~$100/year) with Longhorn + embedded etcd HA across California ×2, London ×3, Amsterdam, and home. Great learning setup; too much operational surface for the value. Soft-decommissioned after the V2 soak (see `migration/STATUS.md`).
 
 # Apps
 
@@ -136,7 +164,6 @@ I'm currently running the following apps:
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
 - [Linkwarden](https://github.com/linkwarden/linkwarden) - Collaborative bookmark manager
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
-- [Longhorn](https://longhorn.io/) - Cloud-native distributed block storage for Kubernetes
 - [mydia](https://github.com/getmydia/mydia) - Self-hosted media manager
 - [Norish](https://github.com/norish-recipes/norish) - Real-time, self-hosted recipe app for families & friends
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
@@ -225,59 +252,22 @@ Ansible configures the nodes with the following:
 - Host firewall (nftables) enabled for cluster/WAN traffic with CNI-aware forwarding
 - SELinux enforcing enabled on compatible hosts (with per-node exception support)
 - Kubernetes kubelet `seccompDefault` enabled
-- ZRAM activated
+- ZSWAP + disk swap (migrated from ZRAM on V2)
 - Network and other tweaks applied to optimize for Kubernetes usage
 - K9S, Kubecolor and useful aliases automatically applied
 
 # Tips & Tricks
 
-## ETCDL
+## Control-plane datastore (V2 SQLite)
 
-```bash
-export ETCDCTL_ENDPOINTS="https://100.81.190.71:2379,https://100.79.162.75:2379"
-export ETCDCTL_CACERT="/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt"
-export ETCDCTL_CERT="/var/lib/rancher/k3s/server/tls/etcd/client.crt"
-export ETCDCTL_KEY="/var/lib/rancher/k3s/server/tls/etcd/client.key"
-etcdctl member list
-```
+V2 uses K3s **SQLite**, not embedded etcd. Built-in `etcd-snapshot` / etcdctl workflows from V1 **do not apply**.
 
-## etcd Maintenance (Automated)
+Backup essentials on the server node (`bazzite`):
 
-The cluster now has automated etcd maintenance configured via Ansible:
+- `/var/lib/rancher/k3s/server/db/`
+- `/var/lib/rancher/k3s/server/token` (required; related to secret encryption)
 
-- **Auto-compaction**: Revisions older than 1 hour are automatically compacted
-- **Automated snapshots**: Taken every 12 hours, 5 snapshots retained
-- **Weekly defrag**: Runs Sundays at 3 AM (with 30 min random delay) if DB > 1GB
-
-### Manual defrag (if needed)
-
-```bash
-# Check current DB size
-etcdctl endpoint status --write-out table
-
-# Defrag this node only (safe to run on live cluster)
-etcdctl defrag
-```
-
-## Offline compaction and defrag (Emergency only)
-
-Use only if cluster is unhealthy and automated maintenance failed:
-
-```bash
-sudo /usr/local/bin/etcd \
-  --data-dir /var/lib/rancher/k3s/server/db/etcd \
-  --force-new-cluster \
-  --listen-client-urls http://127.0.0.1:2379 \
-  --advertise-client-urls http://127.0.0.1:2379
-```
-
-In a separate terminal:
-
-```bash
-ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" rev=$(etcdctl endpoint status --write-out fields | grep Revision | awk '{print $3}')
-ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl compact "$rev" --physical   # --physical forces immediate application
-ETCDCTL_ENDPOINTS="http://127.0.0.1:2379" etcdctl defrag
-```
+Prefer a short K3s stop or `sqlite3 .backup` for consistency, then restic → B2. See `PLAN.md` for restore notes.
 
 ## Add debug container to pod
 
