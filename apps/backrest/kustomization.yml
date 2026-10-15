@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - backrest-deployment.yml
+  - backrest-pvcs.yml
+  - backrest-service.yml
+  - restic-daemonset.yml
+  - restic-configmap.yml
+  # - backrest-restic-secrets-sealed.yml  # generate via TEMPLATE, then uncomment
