@@ -306,7 +306,7 @@ Only after V2 has been used successfully for a few days.
 
 - [ ] Final optional Longhorn/V1 backup
 - [ ] Destroy unused nodes (California / Amsterdam / extra London / etc.)
-- [ ] Remove Longhorn and old inventory/firewall peer entries
+- [x] Remove Longhorn and old inventory/firewall peer entries (apps + UI/DNS/gatus cleaned 2026-10-15; cancel VPS still open)
 - [x] Update README, Ansible `hosts.ini`, and docs for 4-node topology (bazzite + london-1/2/3)
 - [ ] Cancel unused VPS subscriptions
 

@@ -67,7 +67,6 @@
     - { role: system-hardening }
     - { role: dotfiles }
     - { role: tools }
-    - { role: iscsid }
     - { role: k9s }
     - { role: optimizations }
     - { role: network-optimizations }
@@ -91,8 +90,6 @@
     - { role: k3s-common }
     - { role: kubernetes-control-plane }
     - { role: k3s-cert-renewal }
-    - { role: etcd-io-priority }
-    - { role: etcd-maintenance }
 
 - name: Kubernetes agent node configuration
   hosts: kubernetes_agent

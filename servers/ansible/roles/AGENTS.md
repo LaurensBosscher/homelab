@@ -10,7 +10,7 @@ roles/
 │   security_updates             │   kubernetes-control-plane│   kubernetes-agent
 │   system-hardening             │   etcd-io-priority        │
 │   dotfiles, tools, k9s         └───────────────────────────┘
-│   iscsid (Longhorn storage)
+│   iscsid (retired; Longhorn gone)
 │   optimizations, network-optimizations
 │   tailscale, kubecolor
 │   zswap (compressed cache + disk swap)

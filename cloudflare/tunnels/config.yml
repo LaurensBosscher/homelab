@@ -56,8 +56,6 @@
   service: https://argocd-server.argocd.svc.cluster.local
   originRequest:
     noTLSVerify: true
-- hostname: longhorn.bosscher.ch
-  service: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
 - hostname: gatus.bosscher.ch
   service: http://gatus.gatus.svc.cluster.local:8080
 - hostname: grafana.bosscher.ch

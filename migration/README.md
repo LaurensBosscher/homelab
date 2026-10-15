@@ -1,22 +1,7 @@
-# Homelab V2 migration working dir
+# Homelab V2 migration notes
 
-Operational notes for the in-place cutover. Secrets live **outside** git:
+Cutover is **complete**. Living status: [`STATUS.md`](STATUS.md). Plan/history: [`../PLAN.md`](../PLAN.md).
 
-- Offline secrets: `~/dev/homelab-migration-secrets/`
-- On `k3s-london-1`: `/root/homelab-migrate/`
-- Local durable stage on bazzite media disk: `/mnt/downloads/_migrate/`
-- Restic repo: `s3:https://s3.eu-central-003.backblazeb2.com/longhorn-backups-ay76/restic-homelab-migrate`
+Retired V1 manifests (Longhorn storage classes, regional cloudflared) live under `retired/` for reference only — not applied by ArgoCD.
 
-## Helpers on london-1
-
-```bash
-ssh -i ~/.ssh/id_rsa_kubernetes root@100.79.162.75
-/root/homelab-migrate/bin/export-pvc.sh <ns> <pvc> [deploy-to-scale]
-/root/homelab-migrate/bin/dump-postgres.sh <ns> <deploy> <db> <user> <tag>
-```
-
-`export-pvc.sh` scales the deploy down (optional), attaches the PVC on **bazzite**, writes `/mnt/downloads/_migrate/pvc/<ns>/<pvc>.tar`, and `restic backup`s the mount to B2, then scales back up.
-
-## Status
-
-See `INVENTORY.md` and `PLAN.md` at repo root.
+Secrets and restic helpers stay **outside** git (on bazzite under `/var/mnt/data/migrate/` and the offline secrets dir).

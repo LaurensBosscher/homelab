@@ -64,14 +64,6 @@ data:
           - "[STATUS] == 200"
           - "[CERTIFICATE_EXPIRATION] > 168h"
 
-      - name: longhorn
-        group: cluster
-        url: "http://longhorn-frontend.longhorn-system.svc.cluster.local:80"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1000"
-
       - name: kite
         group: cluster
         url: "http://kite.kube-system.svc.cluster.local:8080"
