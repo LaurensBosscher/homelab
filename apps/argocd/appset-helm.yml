@@ -29,7 +29,9 @@ spec:
         server: https://kubernetes.default.svc
         namespace: monitoring
       syncPolicy:
-        # Manual until V2 restore soak completes
+        automated:
+          prune: true
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true

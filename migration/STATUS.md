@@ -1,11 +1,11 @@
 # Migration status (2026-10-14)
 
 ## V2 cluster
-- **bazzite** control-plane SQLite Ready (LAN `192.168.1.104`)
+- **bazzite** control-plane SQLite Ready (home LAN)
 - **k3s-london-1**, **k3s-london-2**, **k3s-london-3** agents Ready
 - Disk: `/var/mnt/data/{downloads,local-path,migrate}`
 - local-path → `/var/mnt/data/local-path`
-- Sealed Secrets + Reloader + ArgoCD on **`v2`** (manual sync)
+- Sealed Secrets + Reloader + ArgoCD on **`v2`** (automated sync re-enabled 2026-10-15)
 
 ## Cutover progress
 | Area | State |
@@ -84,20 +84,20 @@
 **PLAN intent:** Tailscale = SSH/admin only; Flannel over public WAN + nftables peer allowlist.
 
 **Live fix applied:**
-- `bazzite`: `flannel-iface=enp2s0`, `node-ip=192.168.1.104`, `node-external-ip=84.226.17.204`, `flannel-external-ip=true` (backup `config.yaml.bak.*`)
+- `bazzite`: `flannel-iface=enp2s0`, `node-ip=<home-lan>`, `node-external-ip=<home-wan>`, `flannel-external-ip=true` (backup `config.yaml.bak.*`)
 - `k3s-london-1`: `flannel-iface=ens3`, `node-ip/external=46.33.10.93`
 - `k3s-london-3`: `flannel-iface=eth0`, `node-ip/external=85.121.120.36`
 - Restarted `k3s` / `k3s-agent`
 
 **Post-fix checks:**
-- WG peers on public WAN (`46.33.10.93` / `85.121.120.36` / `84.226.17.204`); flannel MTU **1420** (was 1200 nested)
+- WG peers on public WAN (London VPS WANs + home WAN); flannel MTU **1420** (was 1200 nested)
 - Tailscale tx_drops **0**/10–15s; TS bytes ~**40–600 KiB/15s** (was hundreds of MiB/10s)
 - london-1 API dial 15/15 OK ~110ms; **0** `ACTIVE→FAILED` in post-restart window
 - Smoke: alertmanager `/-/ready` OK; sonarr **200**
 - Keep watching through soak; still **do not** decommission legacy nodes yet.
 
 ## Soak check (2026-10-14 ~12:58Z) — post Flannel→WAN
-- All 3 nodes **Ready** with public/LAN InternalIPs (london-1=`46.33.10.93`, london-3=`85.121.120.36`, bazzite=`192.168.1.104`)
+- All nodes **Ready** with public/LAN InternalIPs (London VPS WANs + bazzite home LAN)
 - WG endpoints confirmed public WAN on all nodes (no `100.x` Flannel peers)
 - Tailscale drops **0**/20s; AM + metrics-server still on **bazzite** and Ready
 - london-1: **0** `ACTIVE→FAILED` in last 3m; API dials ~110ms stable
@@ -178,7 +178,7 @@ After provider reboot, SSH returned. Rejoined as V2 agent (was still pointed at 
 |---|---|
 | Version | `v1.36.2+k3s1` |
 | IPs | `46.33.10.90` / TS `100.107.92.7` |
-| Flannel | `ens3` wireguard → peers WAN (`84.226.17.204`, `46.33.10.93`, `85.121.120.36`) |
+| Flannel | `ens3` wireguard → peers on public WAN (home + London) |
 | PodCIDR | `10.42.3.0/24` |
 | SELinux | OS **Enforcing**; binary relabeled `container_runtime_exec_t` (download left `user_tmp_t` → 203/EXEC) |
 | Mitigations | `block-tailscale-on-flannel` + MTU 1200 / MSS 1100 |

@@ -284,7 +284,7 @@ No parallel V2 cluster. After exports are verified:
 - [x] Replace geo affinity with stateful pin to bazzite (`nodeSelector` / hostname affinity)
 - [x] Point media hostPaths at `/mnt/data/downloads/...`; local-path root `/mnt/data/local-path`
 - [x] Simplify Cloudflare tunnel manifests (single `cloudflared` on bazzite)
-- [ ] Point ArgoCD at `v2` / updated paths
+- [x] Point ArgoCD at `v2` / updated paths (automated sync re-enabled 2026-10-15)
 
 ### Phase 4 — Restore apps
 

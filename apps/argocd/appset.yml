@@ -29,8 +29,9 @@ spec:
         server: https://kubernetes.default.svc
         namespace: "{{path.basename}}"
       syncPolicy:
-        # Keep manual until PVC restores finish; enable automated after soak.
+        automated:
+          prune: false
+          selfHeal: true
         syncOptions:
           - CreateNamespace=true
           - Prune=false
-          - SelfHeal=true

@@ -1,7 +1,7 @@
 # AGENTS.md - Codebase Guide
 
 ## Project Overview
-Multi-region K3s Kubernetes homelab (7 nodes, 4 regions). GitOps CD via ArgoCD. IaC with Ansible for infrastructure.
+V2 K3s homelab: `bazzite` (SQLite control-plane + all `local-path` PVCs) + 3 London agents. GitOps CD via ArgoCD on branch `v2`. IaC with Ansible. V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
 
 ## Repository Structure
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
@@ -53,9 +53,10 @@ ansible-playbook -i hosts.ini site.yml --tags <role-name> --check
 - **Images**: Specific tags ONLY (NO `latest`). Renovate monitors for updates
 - **Resources**: Must include `requests` + `limits`
 - **Probes**: `livenessProbe` + `readinessProbe` required
-- **Affinity**: Use `nodeAffinity` for geo-placement (europe/us/zurich)
+- **Affinity**: Pin stateful apps to `bazzite` (`nodeSelector` / hostname affinity). Do not reintroduce V1 geo labels (`europe`/`us`/`zurich`)
 - **Pod affinity**: Use `app.kubernetes.io/part-of` for grouping
 - **Strategy**: `type: Recreate` for stateful workloads
+- **Storage**: `local-path` only (no Longhorn storage classes)
 
 ### Ansible
 - **Inventory**: `hosts.ini` with `ansible_python_interpreter` per host
@@ -143,10 +144,11 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 - Pattern B: `<app>-pvcs.yml` (19 apps)
 - Follow the existing pattern for the app
 
-### Multi-Region Deployment
-- Regions: `europe`, `us`, `zurich` (node labels)
-- Storage: `2replicas-europe` or `2replicas-us` storage classes
-- Tunnels: cluster (`config.yml`) + OpenStick (`config-openstick.yml`); GH Actions syncs both
+### V2 Placement
+- Stateful / PVC-backed: schedule on `bazzite` only
+- Stateless: London agents OK
+- Storage: `local-path` (data under `/var/mnt/data/local-path` on bazzite)
+- Tunnels: single cluster Cloudflare tunnel (`cloudflare/tunnels/config.yml`); GH Actions syncs DNS/config
 
 ## Testing Philosophy
 - Runtime health = primary test (probes + Gatus monitoring)
