@@ -30,7 +30,7 @@ spec:
                       - bazzite
       containers:
         - name: gatus
-          image: twinproduction/gatus:v5.36.0
+          image: twinproduction/gatus:v5.37.0
           env:
             - name: TZ
               value: Europe/Zurich

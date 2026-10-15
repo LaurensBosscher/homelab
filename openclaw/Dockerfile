@@ -1,11 +1,11 @@
-FROM ghcr.io/astral-sh/uv:0.12.13 AS uv
-FROM oven/bun:1.4.2 AS bun
+FROM ghcr.io/astral-sh/uv:0.13.1 AS uv
+FROM oven/bun:1.4.3 AS bun
 # Obscura: Rust headless browser (CDP-compatible). Pulled from the upstream
 # distroless image so we never vendor the 105MB binary in this repo.
 # Bump the tag to upgrade; binaries land in /usr/local/bin.
-FROM h4ckf0r0day/obscura:0.2.2 AS obscura
+FROM h4ckf0r0day/obscura:0.2.4 AS obscura
 
-FROM ghcr.io/openclaw/openclaw:2026.9.4
+FROM ghcr.io/openclaw/openclaw:2026.10.3
 
 USER root
 
