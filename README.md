@@ -15,7 +15,7 @@ Public showcase + working GitOps config for my hobby [Kubernetes](https://kubern
 | Pod overlay | Flannel `wireguard-native` (multi-region mesh) | Same CNI, peers on **public WAN** + tight nftables allowlist |
 | Admin access | Tailscale | Tailscale for SSH/admin **only** (not CNI underlay) |
 | Ingress | Cloudflare Tunnel(s) | Single Cloudflare Tunnel on bazzite |
-| GitOps branch | `main` | `v2` |
+| GitOps branch | `main` (pre-cutover) | `main` (V2 merged; was temporarily `v2`) |
 | Why change | Powerful, but high ops cost (Longhorn rebuilds, etcd, multi-region) | Cut complexity/cost; keep GitOps + apps |
 
 Cutover notes: [`PLAN.md`](PLAN.md), [`migration/STATUS.md`](migration/STATUS.md).
@@ -27,7 +27,7 @@ bazzite          K3s server (SQLite) + ALL local-path PVCs + media hostPaths
 k3s-london-1..3  K3s agents (stateless / overflow)
 
 Ingress:  Cloudflare Tunnel
-CD:       ArgoCD ApplicationSets → branch `v2`
+CD:       ArgoCD ApplicationSets → branch `main`
 Secrets:  Sealed Secrets
 Backup:   restic → Backblaze B2 (SQLite db/ + token + PVC data)
 ```
@@ -37,7 +37,7 @@ Production-like settings on V2:
 - Stateless fail-over across London agents + home control-plane
 - Persistent data on bazzite via `local-path` (backed up to [Backblaze](https://www.backblaze.com/) with restic)
 - CD via ArgoCD — changes under `apps/` auto-deploy when automated sync is enabled
-- Ingress via [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (GitHub Actions syncs tunnel DNS/config)
+- Ingress via [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (GitHub Actions syncs tunnel ingress; account/zones/DNS/tunnels adopted in Pulumi — see `infrastructure/cloudflare/`)
 - Pod overlay: Flannel WireGuard on public WAN + nftables peer allowlist (not nested in Tailscale)
 - Joining a new agent is a ~5 minute Ansible job
 - Kubernetes secrets encrypted at rest; Sealed Secrets for GitOps-friendly ciphertext

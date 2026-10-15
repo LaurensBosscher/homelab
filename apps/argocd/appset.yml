@@ -7,7 +7,7 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        revision: v2
+        revision: main
         directories:
           - path: apps/*
   template:
@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/LaurensBosscher/homelab.git
-        targetRevision: v2
+        targetRevision: main
         path: "{{path}}"
       destination:
         server: https://kubernetes.default.svc

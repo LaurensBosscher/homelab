@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: homelab-cloudflare
+Version: 0.1.0
+Summary: Pulumi project for Laurens homelab Cloudflare account
+Requires-Python: >=3.12
+Requires-Dist: pulumi<4,>=3.231.0
+Requires-Dist: pulumi-cloudflare<7,>=6.21.0

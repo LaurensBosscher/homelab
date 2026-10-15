@@ -41,3 +41,8 @@ Thumbs.db
 .vscode/
 *.iml
 .tgrep/
+
+# Pulumi / SOPS local artifacts
+infrastructure/cloudflare/.pulumi-state/
+infrastructure/cloudflare/local_secrets.env
+infrastructure/cloudflare/.venv/

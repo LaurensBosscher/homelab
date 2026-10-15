@@ -1,0 +1,11 @@
+name: homelab-cloudflare
+description: Laurens homelab Cloudflare account (zones, DNS, tunnels) — imported from live account
+runtime:
+  name: python
+  options:
+    toolchain: uv
+    virtualenv: .venv
+main: __main__.py
+# Local file backend (no AWS/S3 required). gitignored under .pulumi-state/
+backend:
+  url: file://./.pulumi-state

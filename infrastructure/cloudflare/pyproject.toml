@@ -1,0 +1,27 @@
+[project]
+name = "homelab-cloudflare"
+version = "0.1.0"
+description = "Pulumi project for Laurens homelab Cloudflare account"
+requires-python = ">=3.12"
+dependencies = [
+  "pulumi>=3.231.0,<4",
+  "pulumi-cloudflare>=6.21.0,<7",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["homelab_cloudflare*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"__main__.py" = ["INP001"]
+"homelab_cloudflare/dns.py" = ["E501"]

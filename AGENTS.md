@@ -1,12 +1,13 @@
 # AGENTS.md - Codebase Guide
 
 ## Project Overview
-V2 K3s homelab: `bazzite` (SQLite control-plane + all `local-path` PVCs) + 3 London agents. GitOps CD via ArgoCD on branch `v2`. IaC with Ansible. V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
+V2 K3s homelab: `bazzite` (SQLite control-plane + all `local-path` PVCs) + 3 London agents. GitOps CD via ArgoCD on branch `main`. IaC with Ansible + Pulumi/SOPS for Cloudflare (`infrastructure/cloudflare`). V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
 
 ## Repository Structure
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
 - `servers/ansible/` - Ansible playbooks/roles
-- `cloudflare/` - Python automation for Cloudflare tunnels
+- `cloudflare/` - Tunnel ingress YAML + GH Actions sync helpers
+- `infrastructure/cloudflare/` - Pulumi (zones/DNS/tunnels) + SOPS-encrypted API token
 - `helm/` - Helm chart wrappers
 
 ## Commands
@@ -24,7 +25,7 @@ ansible-playbook --check -i hosts.ini site.yml      # dry-run
 ansible-playbook -i hosts.ini site.yml -u root --private-key ~/.ssh/id_rsa_kubernetes
 ```
 
-### Python (Cloudflare scripts)
+### Python (Cloudflare tunnel scripts)
 ```bash
 cd cloudflare/tunnels
 uv sync
@@ -32,6 +33,14 @@ uv run python update_config.py
 uv run ruff check .          # linting
 uv run ruff format .         # formatting
 uv run mypy update_config.py # type checking
+```
+
+### Pulumi Cloudflare (account import)
+```bash
+cd infrastructure/cloudflare
+./pulumi_preview.sh          # sops decrypt → pulumi preview (stack: homelab)
+./pulumi_up.sh               # apply / re-import
+# Edit secrets: sops --input-type dotenv --output-type dotenv secrets.enc.env
 ```
 
 ### Test Single Resource

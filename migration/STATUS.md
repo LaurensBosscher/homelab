@@ -5,7 +5,7 @@
 - **k3s-london-1**, **k3s-london-2**, **k3s-london-3** agents Ready
 - Disk: `/var/mnt/data/{downloads,local-path,migrate}`
 - local-path → `/var/mnt/data/local-path`
-- Sealed Secrets + Reloader + ArgoCD on **`v2`** (automated sync re-enabled 2026-10-15)
+- Sealed Secrets + Reloader + ArgoCD on **`main`** (automated sync; retargeted from `v2` 2026-10-15)
 
 ## Cutover progress
 | Area | State |

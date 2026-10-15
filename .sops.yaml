@@ -1,0 +1,18 @@
+# Homelab SOPS — encrypt tokens for the public repo without committing plaintext.
+# Edit:  sops --input-type dotenv --output-type dotenv infrastructure/cloudflare/secrets.enc.env
+# Encrypt new file:
+#   sops encrypt --filename-override infrastructure/cloudflare/secrets.enc.env plaintext.env \
+#     > infrastructure/cloudflare/secrets.enc.env
+# Decrypt check: sops -d --input-type dotenv --output-type dotenv infrastructure/cloudflare/secrets.enc.env
+creation_rules:
+  - path_regex: infrastructure/cloudflare/secrets\.enc\.env$
+    key_groups:
+      - age:
+          # LaurensBosscher GitHub SSH keys (also ~/.ssh/id_ed25519)
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII3zJiPBQoxRmKFw4Jnbocfd51xaSXzcHBpf2Mzf7MV9 # LaurensBosscher
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUXuiW7ZcpMT23cs+mVd3WEpQe4zBOOqpFiuc/AG0gm # LaurensBosscher
+  - path_regex: .*\.enc\.env$
+    key_groups:
+      - age:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII3zJiPBQoxRmKFw4Jnbocfd51xaSXzcHBpf2Mzf7MV9 # LaurensBosscher
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUXuiW7ZcpMT23cs+mVd3WEpQe4zBOOqpFiuc/AG0gm # LaurensBosscher

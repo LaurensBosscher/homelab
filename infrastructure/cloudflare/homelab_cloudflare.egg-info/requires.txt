@@ -1,0 +1,2 @@
+pulumi<4,>=3.231.0
+pulumi-cloudflare<7,>=6.21.0
