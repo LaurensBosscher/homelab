@@ -48,13 +48,12 @@ data:
 
       - name: homepage
         group: core
-        url: "http://homepage.homepage.svc.cluster.local:3000"
+        # In-cluster call without Host returns 400; Go also ignores Host header overrides.
+        url: "https://home.bosscher.ch"
         interval: 5m
-        headers:
-          Host: home.bosscher.ch
         conditions:
           - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 1000"
+          - "[RESPONSE_TIME] < 2500"
 
       - name: argocd
         group: cluster
