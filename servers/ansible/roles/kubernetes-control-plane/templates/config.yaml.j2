@@ -8,7 +8,10 @@ prefer-bundled-bin: true
 
 node-ip: {{ cluster_network_ip }}
 node-external-ip: {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
-advertise-address: {{ cluster_network_ip }}
+# Advertise an address other nodes/pods can actually reach. Home LAN node-ip is
+# not routable from London VPS agents; kubernetes Endpoints use advertise-address,
+# so prefer Tailscale (admin plane) when present. Agents already join via it.
+advertise-address: {{ tailscale_ip if (tailscale_ip is defined and tailscale_ip) else cluster_network_ip }}
 
 tls-san:
   - {{ cluster_network_ip }}

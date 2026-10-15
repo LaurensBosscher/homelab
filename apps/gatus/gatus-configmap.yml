@@ -50,6 +50,8 @@ data:
         group: core
         url: "http://homepage.homepage.svc.cluster.local:3000"
         interval: 5m
+        headers:
+          Host: home.bosscher.ch
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
@@ -216,13 +218,7 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: qbittorrent
-        group: media
-        url: "http://qbittorrent.qbittorrent.svc.cluster.local:8080"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
+      # qbittorrent intentionally replicas:0 for now — re-enable when scaled up.
 
       - name: your-spotify
         group: media
@@ -264,13 +260,7 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: norish
-        group: food
-        url: "http://norish.norish.svc.cluster.local:3000/api/v1/health"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
+      # norish intentionally replicas:0 for now — re-enable when scaled up.
 
       - name: flaresolver
         group: cluster
@@ -324,16 +314,11 @@ data:
         url: "http://couchdb.obsidian-live-sync.svc.cluster.local:5984"
         interval: 5m
         conditions:
-          - "[STATUS] == 200"
+          # CouchDB requires auth even on /; 401 means the service is up.
+          - "[STATUS] == 401"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: stacks
-        group: media
-        url: "http://stacks.books.svc.cluster.local:7788"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
+      # stacks intentionally replicas:0 for now — re-enable when scaled up.
 
       - name: openclaw
         group: ai
@@ -343,13 +328,7 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: termix
-        group: infrastructure
-        url: "http://termix.termix.svc.cluster.local:8080"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
+      # termix intentionally replicas:0 for now — re-enable when scaled up.
 
       - name: opencode
         group: ai

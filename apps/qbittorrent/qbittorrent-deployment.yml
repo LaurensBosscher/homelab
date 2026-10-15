@@ -90,8 +90,8 @@ spec:
           image: lscr.io/linuxserver/qbittorrent:20.04.1
           securityContext:
             allowPrivilegeEscalation: false
-          runAsUser: 1000
-          runAsGroup: 1000
+            runAsUser: 1000
+            runAsGroup: 1000
           env:
             - name: PUID
               value: "1000"
