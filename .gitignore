@@ -46,3 +46,4 @@ Thumbs.db
 infrastructure/cloudflare/.pulumi-state/
 infrastructure/cloudflare/local_secrets.env
 infrastructure/cloudflare/.venv/
+*.egg-info/
