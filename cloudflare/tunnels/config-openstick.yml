@@ -10,3 +10,5 @@
   service: http://localhost:8888
 - hostname: beszel_openstick.bosscher.ch
   service: http://localhost:8090
+- hostname: zeroclaw_openstick.bosscher.ch
+  service: http://localhost:42617
