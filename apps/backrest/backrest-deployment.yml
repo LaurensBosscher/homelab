@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backrest
+  labels:
+    app.kubernetes.io/name: backrest
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: backrest
+  template:
+    metadata:
+      labels:
+        app: backrest
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
+      containers:
+        - name: backrest
+          image: garethgeorge/backrest:v1.9.2
+          ports:
+            - containerPort: 9898
+              name: http
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: BACKREST_PORT
+              value: "9898"
+            - name: BACKREST_DATA_DIR
+              value: /config
+            - name: BACKREST_CONFIG
+              value: /config/backrest-config.json
+            - name: XDG_CACHE_HOME
+              value: /cache
+            - name: RESTIC_REPOSITORY
+              value: "s3:https://s3.eu-central-003.backblazeb2.com/restic-k3s-backups"
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: RESTIC_PASSWORD
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backrest-restic-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: cache
+              mountPath: /cache
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9898
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9898
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: backrest-config
+        - name: cache
+          emptyDir:
+            sizeLimit: 2Gi
