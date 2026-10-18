@@ -20,18 +20,6 @@ spec:
         runAsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-      # local-path PVCs live only on bazzite. London nodes do not have
-      # /var/lib/rancher/k3s/storage, so a cluster-wide DaemonSet stays
-      # ContainerCreating there.
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
       containers:
         - name: restic
           image: restic/restic:0.19.1
@@ -77,8 +65,9 @@ spec:
               mountPath: /scripts
               readOnly: true
       volumes:
-        # k3s local-path provisioner root; each PVC lives under
-        # /var/lib/rancher/k3s/storage/pvc-*_<namespace>_<pvc-name>/
+        # Ansible (k3s-common) creates this path on every node. London stores
+        # local-path PVCs here. On bazzite it is a symlink to
+        # /var/mnt/data/local-path. Each PVC is pvc-*_<namespace>_<name>/.
         - name: pvc-data
           hostPath:
             path: /var/lib/rancher/k3s/storage

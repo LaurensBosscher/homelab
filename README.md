@@ -10,7 +10,7 @@ Public showcase + working GitOps config for my hobby [Kubernetes](https://kubern
 |---|---|---|
 | Nodes | 7 nodes / 4 regions (CA ×2, London ×3, Amsterdam, Zurich/home) | 4 nodes: home `bazzite` + London agents ×3 |
 | Control plane | Multi-server embedded **etcd** HA | Single K3s server on **bazzite** with **SQLite** |
-| Storage | [Longhorn](https://longhorn.io/) + geo storage classes | K3s **`local-path`** on bazzite NVMe/disk (all PVCs pinned home) |
+| Storage | [Longhorn](https://longhorn.io/) + geo storage classes | K3s **`local-path`**: bazzite data disk, `/var/lib/rancher/k3s/storage` on London |
 | Workload placement | Geo affinity (`europe` / `us` / `zurich`) | Stateful → bazzite; stateless can schedule on London |
 | Pod overlay | Flannel `wireguard-native` (multi-region mesh) | Same CNI, peers on **public WAN** + tight nftables allowlist |
 | Admin access | Tailscale | Tailscale for SSH/admin **only** (not CNI underlay) |
@@ -23,8 +23,8 @@ Cutover notes: [`PLAN.md`](PLAN.md), [`migration/STATUS.md`](migration/STATUS.md
 ## V2 at a glance
 
 ```text
-bazzite          K3s server (SQLite) + ALL local-path PVCs + media hostPaths
-k3s-london-1..3  K3s agents (stateless / overflow)
+bazzite          K3s server (SQLite) + data-disk local-path PVCs + media hostPaths
+k3s-london-1..3  K3s agents; local-path allowed at /var/lib/rancher/k3s/storage
 
 Ingress:  Cloudflare Tunnel
 CD:       ArgoCD ApplicationSets → branch `main`

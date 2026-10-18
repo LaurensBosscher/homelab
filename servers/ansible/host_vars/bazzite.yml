@@ -3,6 +3,8 @@
 # Put the zswap backing store on the writable NVMe-backed /var.
 zswap_swapfile_path: /var/swapfile
 k3s_selinux_enabled: true
-# local-path PVC root (see local-path-config). /var/mnt ≡ /mnt for SELinux fcontext.
+# local-path PVC root. Same directory as /mnt/data/local-path (local-path-config).
+# k3s-common points /var/lib/rancher/k3s/storage at this path so restic can
+# mount one hostPath on every node.
 k3s_local_path_storage: /var/mnt/data/local-path
 k3s_local_path_fcontext: /mnt/data/local-path(/.*)?

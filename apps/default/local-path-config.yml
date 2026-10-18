@@ -1,6 +1,6 @@
-# V2: point local-path-provisioner at the bazzite data disk.
-# Apply after K3s install / before restoring PVCs.
-# Path assumes cutover rename: /mnt/downloads → /mnt/data with local-path/ subdirectory.
+# Bazzite keeps PVCs on the data disk. Every other node uses the k3s default
+# path, which Ansible creates before restic mounts it. An empty path list
+# disables provisioning on that node.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,7 +12,7 @@ data:
       "nodePathMap": [
         {
           "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
-          "paths": []
+          "paths": ["/var/lib/rancher/k3s/storage"]
         },
         {
           "node": "bazzite",

@@ -47,6 +47,10 @@ k3s_version: "v1.36.2+k3s1"
 # V2: embedded SQLite on single server (bazzite). Set to 'etcd' only for legacy HA.
 k3s_datastore: sqlite
 
+# local-path PVC root. Restic mounts /var/lib/rancher/k3s/storage on every node.
+# k3s-common symlinks that path here when a host overrides it (bazzite data disk).
+k3s_local_path_storage: /var/lib/rancher/k3s/storage
+
 # System tuning
 # 1200 avoids TLS ClientHello blackholes on agent→API over Tailscale/WG paths.
 tailscale_mtu: 1200
