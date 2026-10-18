@@ -50,7 +50,7 @@ spec:
             - name: XDG_CACHE_HOME
               value: /cache
             - name: RESTIC_REPOSITORY
-              value: "s3:https://s3.eu-central-003.backblazeb2.com/longhorn-backups-ay76/homelab-restic"
+              value: "s3:https://s3.eu-central-003.backblazeb2.com/restic-k3s-backups"
             - name: RESTIC_PASSWORD
               valueFrom:
                 secretKeyRef:
