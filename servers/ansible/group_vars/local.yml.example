@@ -31,5 +31,5 @@ firewall_k3s_api_extra_allowed_ips:
 # Optional per-host override (set in hosts.ini / host_vars), required for NAT/home nodes:
 # cluster_wan_ip is the public IP other nodes observe for Flannel WireGuard (UDP/51820).
 # Example inventory line:
-#   mini-pc ansible_host=100.x.x.x cluster_wan_ip=84.226.17.204
+#   mini-pc ansible_host=100.x.x.x cluster_wan_ip=203.0.113.10
 # Also set node-external-ip / flannel to advertise that same public IP on the home node.

@@ -7,7 +7,7 @@ V2 K3s homelab: `bazzite` (SQLite control-plane + data-disk `local-path` PVCs) +
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
 - `servers/ansible/` - Ansible playbooks/roles
 - `cloudflare/` - Tunnel ingress YAML + GH Actions sync helpers
-- `infrastructure/cloudflare/` - Pulumi (zones/DNS/tunnels) + SOPS-encrypted API token
+- `infrastructure/cloudflare/` - Pulumi (zones/DNS/tunnels) + SOPS (`secrets.enc.env`: API token, home CIDR, alert/allow emails)
 - `helm/` - Helm chart wrappers
 
 ## Commands

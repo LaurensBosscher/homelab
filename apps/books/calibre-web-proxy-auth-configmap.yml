@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calibre-web-proxy-auth
+  labels:
+    app.kubernetes.io/name: calibre-web
+    app.kubernetes.io/part-of: homelab
+data:
+  enable-proxy-auth.py: |
+    #!/usr/bin/env python3
+    """Turn on Calibre-Web header login before the app starts.
+
+    The CWA username must equal the Cloudflare Access email. Auto-create stays
+    off so an unknown header falls through to the password form.
+    """
+
+    from __future__ import annotations
+
+    import sqlite3
+    import sys
+    from pathlib import Path
+
+    HEADER = "Cf-Access-Authenticated-User-Email"
+    CANDIDATES = (Path("/config/app.db"), Path("/config/calibre-web/app.db"))
+    COLUMNS = (
+        "config_allow_reverse_proxy_header_login",
+        "config_reverse_proxy_login_header_name",
+        "config_reverse_proxy_auto_create_users",
+    )
+
+
+    def enable(db_path: Path) -> int:
+        with sqlite3.connect(db_path) as con:
+            columns = {row[1] for row in con.execute("PRAGMA table_info(settings)")}
+            missing = [name for name in COLUMNS if name not in columns]
+            if missing:
+                print(f"{db_path}: missing {', '.join(missing)}; leaving settings unchanged", file=sys.stderr)
+                return 0
+            cursor = con.execute(
+                """
+                UPDATE settings
+                SET config_allow_reverse_proxy_header_login = 1,
+                    config_reverse_proxy_login_header_name = ?,
+                    config_reverse_proxy_auto_create_users = 0
+                """,
+                (HEADER,),
+            )
+            con.commit()
+            print(f"{db_path}: reverse-proxy login header set ({cursor.rowcount} row)")
+            return 0
+
+
+    def main() -> int:
+        db_path = next((path for path in CANDIDATES if path.is_file()), None)
+        if db_path is None:
+            print("app.db not created yet; proxy login applies on the next restart", file=sys.stderr)
+            return 0
+        return enable(db_path)
+
+
+    if __name__ == "__main__":
+        raise SystemExit(main())

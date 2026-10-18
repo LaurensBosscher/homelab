@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pulumi
 
+from homelab_cloudflare.access import create_access
 from homelab_cloudflare.dmarc_management import create_dmarc_management
 from homelab_cloudflare.dns import create_dns_records
 from homelab_cloudflare.notifications import create_tunnel_notifications
@@ -20,5 +21,8 @@ dmarc = create_dmarc_management(zone_ids=zone_ids)
 r2 = create_r2_buckets()
 tunnels = create_tunnels()
 tunnel_notifications = create_tunnel_notifications(tunnels=tunnels)
+access = create_access()
+pulumi.export("access_agent_client_id", access.service_token.client_id)
+pulumi.export("access_agent_client_secret", access.service_token.client_secret)
 
-_ = (zones, dns, dmarc, r2, tunnels, tunnel_notifications)
+_ = (zones, dns, dmarc, r2, tunnels, tunnel_notifications, access)

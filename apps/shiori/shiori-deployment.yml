@@ -34,6 +34,13 @@ spec:
               value: Europe/Zurich
             - name: SHIORI_DIR
               value: /data
+            # Username must equal the Access email. Unknown users keep the password form.
+            - name: SHIORI_SSO_PROXY_AUTH_ENABLED
+              value: "true"
+            - name: SHIORI_SSO_PROXY_AUTH_HEADER_NAME
+              value: Cf-Access-Authenticated-User-Email
+            - name: SHIORI_SSO_PROXY_AUTH_TRUSTED
+              value: 10.42.0.0/16
           volumeMounts:
             - name: data
               mountPath: /data

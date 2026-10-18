@@ -6,6 +6,9 @@ metadata:
     app: beszel
 spec:
   type: ClusterIP
+  # Pinned so node agents keep a stable HUB_URL. Host resolvers cannot see
+  # cluster DNS, and https://beszel.bosscher.ch is behind Cloudflare Access.
+  clusterIP: 10.43.103.22
   ports:
     - name: http
       port: 8090

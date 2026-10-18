@@ -1,0 +1,252 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: couchdb-access-proxy
+  labels:
+    app.kubernetes.io/name: couchdb
+    app.kubernetes.io/part-of: obsidian-live-sync
+data:
+  proxy.py: |
+    #!/usr/bin/env python3
+    """Forward CouchDB and attach proxy-auth for Cloudflare Access browsers.
+
+    Client X-Auth-CouchDB-* headers are always removed. Obsidian sends
+    Authorization and is forwarded unchanged. A browser request with a
+    Cf-Access-Authenticated-User-Email in the allowed domain is signed in as
+    the CouchDB admin (HMAC-SHA256 of the username, CouchDB 3.5 proxy auth).
+    """
+
+    from __future__ import annotations
+
+    import hashlib
+    import hmac
+    import http.client
+    import os
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+    HOP = {
+        "connection",
+        "keep-alive",
+        "proxy-authenticate",
+        "proxy-authorization",
+        "te",
+        "trailers",
+        "transfer-encoding",
+        "upgrade",
+    }
+    STRIP = {
+        "x-auth-couchdb-username",
+        "x-auth-couchdb-roles",
+        "x-auth-couchdb-token",
+    }
+    MAX_CHUNKED_BODY = 32 * 1024 * 1024
+
+
+    def token_for(username: str, secret: str) -> str:
+        digest = hmac.new(secret.encode(), username.encode(), hashlib.sha256)
+        return digest.hexdigest()
+
+
+    def header_value(headers, name: str) -> str:
+        for key, value in headers.items():
+            if key.lower() == name.lower():
+                return value.strip()
+        return ""
+
+
+    def proxy_auth_headers(
+        headers,
+        *,
+        admin_user: str,
+        secret: str,
+        email_domain: str,
+    ) -> dict[str, str]:
+        if header_value(headers, "Authorization"):
+            return {}
+        email = header_value(headers, "Cf-Access-Authenticated-User-Email")
+        domain = email.rpartition("@")[2]
+        if not email or domain.lower() != email_domain.lower():
+            return {}
+        return {
+            "X-Auth-CouchDB-UserName": admin_user,
+            "X-Auth-CouchDB-Roles": "_admin",
+            "X-Auth-CouchDB-Token": token_for(admin_user, secret),
+        }
+
+
+    def read_chunked(raw, limit: int) -> bytes:
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            line = raw.readline()
+            if not line:
+                break
+            size = int(line.split(b";", 1)[0], 16)
+            if size == 0:
+                while True:
+                    trailer = raw.readline()
+                    if trailer in (b"\r\n", b"\n", b""):
+                        break
+                break
+            if total + size > limit:
+                raise ValueError("chunked body exceeds limit")
+            data = raw.read(size)
+            raw.read(2)
+            chunks.append(data)
+            total += len(data)
+        return b"".join(chunks)
+
+
+    class LimitedReader:
+        def __init__(self, raw, remaining: int) -> None:
+            self.raw = raw
+            self.remaining = remaining
+
+        def read(self, size: int = -1) -> bytes:
+            if self.remaining <= 0:
+                return b""
+            if size is None or size < 0 or size > self.remaining:
+                size = self.remaining
+            data = self.raw.read(size)
+            self.remaining -= len(data)
+            return data
+
+
+    class Proxy(BaseHTTPRequestHandler):
+        protocol_version = "HTTP/1.1"
+        admin_user = ""
+        secret = ""
+        email_domain = ""
+        upstream_host = "127.0.0.1"
+        upstream_port = 5985
+
+        def log_message(self, fmt: str, *args) -> None:
+            # Request line only. Do not log Authorization or the HMAC.
+            super().log_message(fmt, *args)
+
+        def __getattr__(self, name: str):
+            # CouchDB uses OPTIONS and COPY as well as the common verbs.
+            if name.startswith("do_"):
+                return self._forward
+            raise AttributeError(name)
+
+        def _forward(self) -> None:
+            if self.command == "GET" and self.path.split("?", 1)[0] == "/healthz":
+                self._healthz()
+                return
+            try:
+                headers, body = self._request_parts()
+            except ValueError as exc:
+                self.send_error(413, str(exc))
+                return
+            conn = http.client.HTTPConnection(
+                self.upstream_host,
+                self.upstream_port,
+                timeout=3600,
+            )
+            try:
+                conn.request(self.command, self.path, body=body, headers=headers)
+                resp = conn.getresponse()
+                self._write_response(resp)
+            except OSError as exc:
+                if not self.wfile.closed:
+                    self.send_error(502, f"couchdb unavailable: {exc}")
+            finally:
+                conn.close()
+            self.close_connection = True
+
+        def _healthz(self) -> None:
+            conn = http.client.HTTPConnection(self.upstream_host, self.upstream_port, timeout=2)
+            try:
+                conn.request("GET", "/_up")
+                resp = conn.getresponse()
+                resp.read()
+                status = 200 if resp.status < 500 else 503
+            except OSError:
+                status = 503
+            finally:
+                conn.close()
+            self.send_response(status)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            self.close_connection = True
+
+        def _request_parts(self):
+            headers: dict[str, str] = {}
+            for key, value in self.headers.items():
+                if key.lower() in HOP or key.lower() in STRIP:
+                    continue
+                headers[key] = value
+            headers.update(
+                proxy_auth_headers(
+                    self.headers,
+                    admin_user=self.admin_user,
+                    secret=self.secret,
+                    email_domain=self.email_domain,
+                )
+            )
+            headers["Connection"] = "close"
+            chunked = "chunked" in header_value(self.headers, "Transfer-Encoding").lower()
+            if chunked:
+                payload = read_chunked(self.rfile, MAX_CHUNKED_BODY)
+                headers["Content-Length"] = str(len(payload))
+                return headers, payload
+            length = int(self.headers.get("Content-Length", "0") or "0")
+            if length < 0:
+                raise ValueError("invalid content length")
+            if length == 0:
+                headers.pop("Content-Length", None)
+                return headers, None
+            headers["Content-Length"] = str(length)
+            return headers, LimitedReader(self.rfile, length)
+
+        def _write_response(self, resp: http.client.HTTPResponse) -> None:
+            self.send_response(resp.status)
+            length = resp.getheader("Content-Length")
+            for key, value in resp.getheaders():
+                if key.lower() in HOP or key.lower() == "content-length":
+                    continue
+                self.send_header(key, value)
+            if self.command == "HEAD" or resp.status in (204, 304):
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            if length is not None:
+                self.send_header("Content-Length", length)
+                self.end_headers()
+                remaining = int(length)
+                while remaining:
+                    chunk = resp.read(min(65536, remaining))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    remaining -= len(chunk)
+                return
+            self.send_header("Transfer-Encoding", "chunked")
+            self.end_headers()
+            while True:
+                chunk = resp.read(65536)
+                if not chunk:
+                    break
+                self.wfile.write(f"{len(chunk):X}\r\n".encode())
+                self.wfile.write(chunk)
+                self.wfile.write(b"\r\n")
+                self.wfile.flush()
+            self.wfile.write(b"0\r\n\r\n")
+
+
+    def main() -> None:
+        admin_user = os.environ["COUCHDB_USER"]
+        secret = os.environ["COUCHDB_PASSWORD"]
+        Proxy.admin_user = admin_user
+        Proxy.secret = secret
+        Proxy.email_domain = os.environ.get("ACCESS_EMAIL_DOMAIN", "laurensbosscher.nl")
+        Proxy.upstream_host = os.environ.get("COUCHDB_UPSTREAM_HOST", "127.0.0.1")
+        Proxy.upstream_port = int(os.environ.get("COUCHDB_UPSTREAM_PORT", "5985"))
+        port = int(os.environ.get("PROXY_PORT", "5984"))
+        server = ThreadingHTTPServer(("0.0.0.0", port), Proxy)
+        server.serve_forever()
+
+
+    if __name__ == "__main__":
+        main()

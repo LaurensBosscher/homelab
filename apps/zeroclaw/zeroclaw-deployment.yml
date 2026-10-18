@@ -19,19 +19,6 @@ spec:
         app.kubernetes.io/part-of: homelab
     spec:
       automountServiceAccountToken: false
-      # Same DNS path as OpenClaw: blocky first, kube-dns fallback.
-      dnsPolicy: None
-      dnsConfig:
-        nameservers:
-          - 10.43.53.53
-          - 10.43.0.10
-        searches:
-          - zeroclaw.svc.cluster.local
-          - svc.cluster.local
-          - cluster.local
-        options:
-          - name: ndots
-            value: "5"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

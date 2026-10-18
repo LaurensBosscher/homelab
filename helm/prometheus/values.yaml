@@ -94,6 +94,16 @@ kube-prometheus-stack:
       server:
         root_url: https://grafana.bosscher.ch
         domain: grafana.bosscher.ch
+      users:
+        # Proxy sign-up is the only open registration path (allow_sign_up stays false).
+        auto_assign_org_role: Admin
+      auth.proxy:
+        enabled: true
+        header_name: Cf-Access-Authenticated-User-Email
+        header_property: email
+        auto_sign_up: true
+        # cloudflared pod CIDR. Requests from anywhere else keep the login form.
+        whitelist: 10.42.0.0/16
     resources:
       requests:
         cpu: 100m

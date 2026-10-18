@@ -1,11 +1,15 @@
 - hostname: ssh_openstick.bosscher.ch
   service: ssh://localhost:22
-- hostname: fusion_openstick.bosscher.ch
-  service: http://localhost:8080
 - hostname: gatus_openstick.bosscher.ch
   service: http://localhost:8081
 - hostname: pico_openstick.bosscher.ch
   service: http://localhost:18800
+# Dozzle itself is not in this repo (OpenStick localhost:8888).
+# Its container needs:
+#   DOZZLE_AUTH_PROVIDER=forward-proxy
+#   DOZZLE_AUTH_HEADER_USER=Cf-Access-Authenticated-User-Email
+#   DOZZLE_AUTH_HEADER_EMAIL=Cf-Access-Authenticated-User-Email
+#   DOZZLE_AUTH_HEADER_NAME=Cf-Access-Authenticated-User-Email
 - hostname: dozzle_openstick.bosscher.ch
   service: http://localhost:8888
 - hostname: beszel_openstick.bosscher.ch

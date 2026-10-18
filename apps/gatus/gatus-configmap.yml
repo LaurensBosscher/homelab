@@ -186,6 +186,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: nzbget
+        group: media
+        url: "http://nzbget.nzbget.svc.cluster.local:6789"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: prowlarr
         group: media
         url: "http://prowlarr.prowlarr.svc.cluster.local:9696"
@@ -260,8 +268,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      # norish intentionally replicas:0 for now — re-enable when scaled up.
-
       - name: flaresolver
         group: cluster
         url: "http://flaresolver.flaresolver.svc.cluster.local:8191"
@@ -270,9 +276,25 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
+      - name: backrest
+        group: cluster
+        url: "http://backrest.backrest.svc.cluster.local:9898"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
+      - name: forgejo
+        group: cluster
+        url: "http://forgejo.forgejo.svc.cluster.local:3000/api/healthz"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: grafana
         group: cluster
-        url: "http://prometheus-grafana.monitoring.svc.cluster.local:80"
+        url: "http://prometheus-grafana.monitoring.svc.cluster.local:80/api/health"
         interval: 5m
         conditions:
           - "[STATUS] == 200"
@@ -318,8 +340,6 @@ data:
           - "[STATUS] == 401"
           - "[RESPONSE_TIME] < 2500"
 
-      # stacks intentionally replicas:0 for now — re-enable when scaled up.
-
       - name: openclaw
         group: ai
         url: "http://openclaw-gateway.openclaw.svc.cluster.local:18789"
@@ -327,5 +347,3 @@ data:
         conditions:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
-
-      # termix intentionally replicas:0 for now — re-enable when scaled up.

@@ -12,10 +12,6 @@
   service: http://your-spotify-server.your-spotify.svc.cluster.local:8080
 - hostname: wanderer.bosscher.ch
   service: http://wanderer.wanderer.svc.cluster.local:3000
-- hostname: norish.bosscher.ch
-  service: http://norish.norish.svc.cluster.local:3000
-- hostname: stacks.bosscher.ch
-  service: http://stacks.books.svc.cluster.local:7788
 - hostname: calibre-web.bosscher.ch
   service: http://calibre-web.books.svc.cluster.local:8083
 - hostname: audiobookshelf.bosscher.ch
@@ -38,6 +34,8 @@
   service: http://it-tools.it-tools.svc.cluster.local:8080
 - hostname: sabnzbd.bosscher.ch
   service: http://sabnzbd.sabnzbd.svc.cluster.local:8085
+- hostname: nzbget.bosscher.ch
+  service: http://nzbget.nzbget.svc.cluster.local:6789
 - hostname: prowlarr.bosscher.ch
   service: http://prowlarr.prowlarr.svc.cluster.local:9696
 - hostname: rdt-client.bosscher.ch
@@ -52,6 +50,12 @@
   service: http://mydia.mydia.svc.cluster.local:4000
 - hostname: kite.bosscher.ch
   service: http://kite.kube-system.svc.cluster.local:8080
+- hostname: backrest.bosscher.ch
+  service: http://backrest.backrest.svc.cluster.local:9898
+- hostname: flaresolver.bosscher.ch
+  service: http://flaresolver.flaresolver.svc.cluster.local:8191
+- hostname: forgejo.bosscher.ch
+  service: http://forgejo.forgejo.svc.cluster.local:3000
 - hostname: argocd.bosscher.ch
   service: https://argocd-server.argocd.svc.cluster.local
   originRequest:
@@ -70,13 +74,9 @@
   service: http://bentopdf.bentopdf.svc.cluster.local:8080
 - hostname: linkwarden.bosscher.ch
   service: http://linkwarden.linkwarden.svc.cluster.local:3000
-- hostname: termix.bosscher.ch
-  service: http://termix.termix.svc.cluster.local:8080
 - hostname: openclaw.bosscher.ch
   service: http://openclaw-gateway.openclaw.svc.cluster.local:18789
 - hostname: zeroclaw.bosscher.ch
   service: http://zeroclaw.zeroclaw.svc.cluster.local:42617
-- hostname: nanobot.bosscher.ch
-  service: http://nanobot.nanobot.svc.cluster.local:8765
 - hostname: redlib.bosscher.ch
   service: http://redlib.redlib.svc.cluster.local:8080
