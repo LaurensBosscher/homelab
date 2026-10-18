@@ -168,7 +168,6 @@ I'm currently running the following apps:
 - [Norish](https://github.com/norish-recipes/norish) - Real-time, self-hosted recipe app for families & friends
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
-- [opencode](https://github.com/OpenCode-Org/opencode) - AI-powered development environment
 - [playarr](https://github.com/maikboarder/playerr) - Audiobook manager for Plex
 - [prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer manager
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client

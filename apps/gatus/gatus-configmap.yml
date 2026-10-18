@@ -329,11 +329,3 @@ data:
           - "[RESPONSE_TIME] < 2500"
 
       # termix intentionally replicas:0 for now — re-enable when scaled up.
-
-      - name: opencode
-        group: ai
-        url: "http://openclaw-opencode.openclaw.svc.cluster.local:4096"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"

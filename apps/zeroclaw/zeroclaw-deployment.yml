@@ -52,7 +52,7 @@ spec:
       containers:
         - name: zeroclaw
           # Built by .github/workflows/build-zeroclaw.yml. Bump with the workflow tag.
-          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-1
+          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-2
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -75,11 +75,6 @@ spec:
               value: "true"
             - name: ZEROCLAW_gateway__require_pairing
               value: "true"
-            - name: ZEROCLAW_channels__telegram__home__bot_token
-              valueFrom:
-                secretKeyRef:
-                  name: zeroclaw-secrets
-                  key: ZEROCLAW_channels__telegram__home__bot_token
             - name: ZEROCLAW_providers__models__openrouter__default__api_key
               valueFrom:
                 secretKeyRef:

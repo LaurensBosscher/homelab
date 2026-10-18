@@ -183,11 +183,6 @@ data:
                 description: AI agent gateway
                 icon: https://avatars.githubusercontent.com/u/252820863?s=48&v=4
                 siteMonitor: http://openclaw-gateway.openclaw.svc.cluster.local:18789
-            - OpenCode:
-                href: https://opencode.bosscher.ch
-                description: AI coding agent
-                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terminal.svg
-                siteMonitor: http://openclaw-opencode.openclaw.svc.cluster.local:4096
             - OpenRouter:
                 href: https://openrouter.ai/chat
                 description: OpenRouter AI Chat

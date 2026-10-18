@@ -8,8 +8,9 @@ data:
   config.toml: |
     # Seeded onto the PVC only when config.toml is absent.
     # Tokens are env overrides, not this file:
-    #   ZEROCLAW_channels__telegram__home__bot_token
     #   ZEROCLAW_providers__models__openrouter__default__api_key
+    # Telegram stays off until a dedicated bot token is sealed.
+    # Do not reuse the Gatus/Alertmanager bot.
     schema_version = 3
     default_provider = "openrouter"
     default_model = "z-ai/glm-5.3-flash"
@@ -26,18 +27,10 @@ data:
     model = "z-ai/glm-5.3-flash"
     context_window = 1048576
 
-    [channels.telegram.home]
-    enabled = true
-
     [agents.primary]
     model_provider = "openrouter.default"
-    channels = ["telegram.home"]
     risk_profile = "default"
     runtime_profile = "tools"
-
-    [opencode_cli]
-    enabled = true
-    timeout_secs = 600
 
     [browser]
     enabled = true
@@ -68,8 +61,8 @@ data:
       "bash", "sh", "ls", "cat", "grep", "rg", "find", "echo", "pwd", "wc",
       "head", "tail", "date", "df", "du", "uname", "uptime", "hostname", "free",
       "mkdir", "cp", "mv", "rm", "tar", "gzip", "git", "gh", "curl", "jq",
-      "ssh", "uv", "ruff", "mypy", "python3", "node", "bun", "opencode",
-      "oh-my-openagent", "sg", "ast-grep", "wrangler", "gws", "gog",
+      "ssh", "uv", "ruff", "mypy", "python3", "node", "bun", "sg", "ast-grep",
+      "wrangler", "gws", "gog",
       "summarize", "agent-browser", "omp", "ffmpeg", "brave-browser", "obscura",
       "kubectl", "timeout", "id", "ps", "sed", "awk", "diff", "patch", "xargs",
       "base64", "openssl", "dig", "nslookup"
@@ -81,8 +74,7 @@ data:
     auto_approve = [
       "file_read", "file_write", "file_edit", "memory_recall", "memory_store",
       "web_search_tool", "web_fetch", "calculator", "glob_search", "content_search",
-      "image_info", "weather", "git_operations", "shell", "browser", "browser_open",
-      "opencode_cli"
+      "image_info", "weather", "git_operations", "shell", "browser", "browser_open"
     ]
 
     [secrets]

@@ -3,9 +3,9 @@
 ARG ZEROCLAW_IMAGE=ghcr.io/zeroclaw-labs/zeroclaw:all-features-v0.8.6
 FROM ${ZEROCLAW_IMAGE} AS zeroclaw
 
-# Same CLI surface as OpenClaw (git, gh, kubectl, bun, opencode, browser, …).
+# Same CLI surface as OpenClaw (git, gh, kubectl, bun, browser, …).
 # The all-features binary is static, so it runs on this glibc image.
-FROM ghcr.io/laurensbosscher/openclaw-tools:2026.9.4
+FROM ghcr.io/laurensbosscher/openclaw-tools:2026.10.4
 
 USER root
 
