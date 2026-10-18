@@ -35,7 +35,7 @@ spec:
                       - bazzite
       containers:
         - name: access-proxy
-          image: python:3.13.7-alpine
+          image: python:3.15.0-alpine
           command: ["python3", "-B", "/proxy/proxy.py"]
           env:
             - name: PYTHONDONTWRITEBYTECODE
