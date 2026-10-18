@@ -50,3 +50,11 @@ patches:
         name: argocd-cm
       data:
         url: https://argocd.bosscher.ch
+        # Reconcile every 5 min instead of the ~3 min default loop;
+        # merges still sync quickly once the GitHub webhook is configured.
+        timeout.reconciliation: 300s
+        timeout.hard.reconciliation: 600s
+        # GitHub webhook (optional, requires sealed secret argocd-secret with
+        # webhook.github.secret): uncomment after sealing.
+        # See: https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/
+        # webhook.github.secret: $argocd-secret:webhook.github.secret
