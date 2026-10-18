@@ -13,8 +13,17 @@ with per-resource `import_` IDs, plus **SOPS** for the API token.
 |---|---|
 | Account | Laurens@laurensbosscher.nl's Account |
 | Zones | `bosscher.ch`, `bossscher.org`, `laurensbosscher.nl` |
+| Zone settings | TLS 1.2 minimum, HTTPS redirect, Rocket Loader off. SSL mode stays live: `full` / `full` / `flexible` (strict breaks `www` and `direct`) |
+| DNSSEC | On. `bossscher.org` and `laurensbosscher.nl` stay pending until the registrar publishes the DS |
+| Precursor | `min-friction` on all three zones |
+| Bot Management | AI bots blocked. Fight Mode only on `laurensbosscher.nl` (app/media zones stay off) |
+| Tiered Cache | Smart Tiered Cache on for all three zones |
+| Cache Rules | Static extensions cached. Video/HLS/DASH extensions explicitly bypassed (Free-plan ToS) |
+| DMARC Management | On for all three zones. `_dmarc` TXT keeps the existing policy and adds the Cloudflare RUA |
+| R2 | `k3s-etcd`, `k3s-longhorn`, `save-games` (objects not managed) |
 | DNS | All live records (A/AAAA/CNAME/MX/TXT) under those zones |
-| Tunnels | `k8s-tunnel`, `openstick` (tunnel objects only; ingress still driven by `cloudflare/tunnels/*.yml` + GH Actions for now) |
+| Tunnels | `k8s-tunnel`, `openstick` objects, plus health and create/delete email alerts. Ingress stays in `cloudflare/tunnels/*.yml` + GH Actions |
+| Not in this stack | Entra, device posture, WARP, split tunnel, Gateway, Access for Infrastructure. The `alameda` Worker (D1/KV and secret bindings) stays dashboard-managed |
 
 ## Auth
 
@@ -60,9 +69,14 @@ infrastructure/cloudflare/
     pulumi_run.py
   homelab_cloudflare/
     helpers.py
+    cloudflare_api.py
     zones.py
+    bot_management.py
+    dmarc_management.py
     dns.py
+    r2.py
     tunnels.py
+    notifications.py
     inventory/tunnels.py
 ```
 
@@ -71,5 +85,8 @@ infrastructure/cloudflare/
 - First successful `pulumi up` **imports** live resources (no recreate) while
   `homelab-cloudflare:importExisting` is `true`.
 - Tunnel **ingress / public hostnames** remain in `cloudflare/tunnels/config.yml`
-  (+ OpenStick companion) until those are migrated into Pulumi configs.
+  (+ OpenStick companion). Pulumi does not also own `ZeroTrustTunnelCloudflaredConfig`,
+  or it would fight the GitHub Action.
+- Cache rules never cache video extensions (`mp4`, `mkv`, `webm`, HLS/DASH, and the
+  rest of the list in `zones.py`). The Free plan is not Cloudflare Stream.
 - Do **not** commit `credentials.env` or decrypted dotenv files.

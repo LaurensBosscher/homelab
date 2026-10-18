@@ -129,18 +129,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bosscher-ch-cname-beszel-openstick-bosscher-ch-cd48de0b"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-cname-beszel-openstick-bosscher-ch-cd48de0b",
-        zone_id=zone_ids["bosscher.ch"],
-        name="beszel_openstick.bosscher.ch",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/cd48de0bfd93b027fe5588f0b4db4c07",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bosscher-ch-cname-beszel-openstick-bosscher-ch-cd48de0b"] = (
+        cloudflare.DnsRecord(
+            "dns-bosscher-ch-cname-beszel-openstick-bosscher-ch-cd48de0b",
+            zone_id=zone_ids["bosscher.ch"],
+            name="beszel_openstick.bosscher.ch",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="e32ce9cb10fafea8ee531b713afdcc10/cd48de0bfd93b027fe5588f0b4db4c07",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bosscher-ch-cname-bookshelf-bosscher-ch-4becfdeb"] = cloudflare.DnsRecord(
@@ -171,18 +173,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bosscher-ch-cname-dozzle-openstick-bosscher-ch-ef0ba1da"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-cname-dozzle-openstick-bosscher-ch-ef0ba1da",
-        zone_id=zone_ids["bosscher.ch"],
-        name="dozzle_openstick.bosscher.ch",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/ef0ba1dabdb38b05320fd1055e3b83f6",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bosscher-ch-cname-dozzle-openstick-bosscher-ch-ef0ba1da"] = (
+        cloudflare.DnsRecord(
+            "dns-bosscher-ch-cname-dozzle-openstick-bosscher-ch-ef0ba1da",
+            zone_id=zone_ids["bosscher.ch"],
+            name="dozzle_openstick.bosscher.ch",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="e32ce9cb10fafea8ee531b713afdcc10/ef0ba1dabdb38b05320fd1055e3b83f6",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bosscher-ch-cname-fusion-bosscher-ch-2e31b4e1"] = cloudflare.DnsRecord(
@@ -199,18 +203,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bosscher-ch-cname-fusion-openstick-bosscher-ch-ac6d272c"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-cname-fusion-openstick-bosscher-ch-ac6d272c",
-        zone_id=zone_ids["bosscher.ch"],
-        name="fusion_openstick.bosscher.ch",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/ac6d272c3468d55bba7361641ebc0cbd",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bosscher-ch-cname-fusion-openstick-bosscher-ch-ac6d272c"] = (
+        cloudflare.DnsRecord(
+            "dns-bosscher-ch-cname-fusion-openstick-bosscher-ch-ac6d272c",
+            zone_id=zone_ids["bosscher.ch"],
+            name="fusion_openstick.bosscher.ch",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="9ec2e211-3f7b-4664-b720-29d02010af13.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="e32ce9cb10fafea8ee531b713afdcc10/ac6d272c3468d55bba7361641ebc0cbd",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bosscher-ch-cname-gatus-bosscher-ch-3411fc95"] = cloudflare.DnsRecord(
@@ -367,18 +373,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9",
-        zone_id=zone_ids["bosscher.ch"],
-        name="obsidian-live-sync.bosscher.ch",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/4155feb9aa1fd17b9f6c0a5814de1e7f",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9"] = (
+        cloudflare.DnsRecord(
+            "dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9",
+            zone_id=zone_ids["bosscher.ch"],
+            name="obsidian-live-sync.bosscher.ch",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="e32ce9cb10fafea8ee531b713afdcc10/4155feb9aa1fd17b9f6c0a5814de1e7f",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bosscher-ch-cname-openclaw-bosscher-ch-2c95f2a8"] = cloudflare.DnsRecord(
@@ -661,18 +669,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bosscher-ch-cname-your-spotify-api-bosscher-ch-3ef70019"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-cname-your-spotify-api-bosscher-ch-3ef70019",
-        zone_id=zone_ids["bosscher.ch"],
-        name="your-spotify-api.bosscher.ch",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/3ef70019570294f15f02e85610633d3b",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bosscher-ch-cname-your-spotify-api-bosscher-ch-3ef70019"] = (
+        cloudflare.DnsRecord(
+            "dns-bosscher-ch-cname-your-spotify-api-bosscher-ch-3ef70019",
+            zone_id=zone_ids["bosscher.ch"],
+            name="your-spotify-api.bosscher.ch",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="e32ce9cb10fafea8ee531b713afdcc10/3ef70019570294f15f02e85610633d3b",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bosscher-ch-cname-your-spotify-bosscher-ch-6167bedb"] = cloudflare.DnsRecord(
@@ -765,7 +775,7 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         name="bosscher.ch",
         type="TXT",
         ttl=3600.0,
-        content="\"v=spf1 include:_spf.google.com -all\"",
+        content='"v=spf1 include:_spf.google.com -all"',
         opts=resource_opts(
             import_id="e32ce9cb10fafea8ee531b713afdcc10/1a18277637671e2f2d95f8a23166e685",
             ignore_changes=["tags", "meta", "proxiable"],
@@ -778,7 +788,7 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         name="bosscher.ch",
         type="TXT",
         ttl=3600.0,
-        content="\"google-site-verification=IazzZBMjPprsjeE9Pv16bX7z0FXmVFjj0Lw9RQ7eP0A\"",
+        content='"google-site-verification=IazzZBMjPprsjeE9Pv16bX7z0FXmVFjj0Lw9RQ7eP0A"',
         opts=resource_opts(
             import_id="e32ce9cb10fafea8ee531b713afdcc10/dad94f5e9cb9595a48c0b85e2ce2957d",
             ignore_changes=["tags", "meta", "proxiable"],
@@ -791,7 +801,10 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         name="_dmarc.bosscher.ch",
         type="TXT",
         ttl=CLOUDFLARE_AUTO,
-        content="\"v=DMARC1; p=reject; adkim=s; aspf=s; pct=100\"",
+        content=(
+            '"v=DMARC1; p=reject; adkim=s; aspf=s; pct=100; '
+            'rua=mailto:c278262b3c094b65baa2b45a0db51051@dmarc-reports.cloudflare.net;"'
+        ),
         opts=resource_opts(
             import_id="e32ce9cb10fafea8ee531b713afdcc10/bb26c997373ed0cf160cffe0ce8cf589",
             ignore_changes=["tags", "meta", "proxiable"],
@@ -804,7 +817,7 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         name="google._domainkey.bosscher.ch",
         type="TXT",
         ttl=CLOUDFLARE_AUTO,
-        content="\"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBtbbVYxKj9ItpoiTeA2RfyJaRyo1UayyfKG3zkPe8xM8U120d+JYA5Oid8wsnG7H5e/pwzq4OcJqvAn/kIsIeP9InrQevX08jnNmziXoLNcQAv0F7jrnaucXXNExMVknhayvhPiRscrDr+Q2cYSmBnbXRLmclpuzB4fwsTzsPGwIDAQAB\"",
+        content='"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBtbbVYxKj9ItpoiTeA2RfyJaRyo1UayyfKG3zkPe8xM8U120d+JYA5Oid8wsnG7H5e/pwzq4OcJqvAn/kIsIeP9InrQevX08jnNmziXoLNcQAv0F7jrnaucXXNExMVknhayvhPiRscrDr+Q2cYSmBnbXRLmclpuzB4fwsTzsPGwIDAQAB"',
         opts=resource_opts(
             import_id="e32ce9cb10fafea8ee531b713afdcc10/10dc05eafbe3d5ce5296863f839eafec",
             ignore_changes=["tags", "meta", "proxiable"],
@@ -923,18 +936,20 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-bossscher-org-cname-books-download-bossscher-org-cbe4ec15"] = cloudflare.DnsRecord(
-        "dns-bossscher-org-cname-books-download-bossscher-org-cbe4ec15",
-        zone_id=zone_ids["bossscher.org"],
-        name="books-download.bossscher.org",
-        type="CNAME",
-        ttl=CLOUDFLARE_AUTO,
-        content="5e317939-f1e9-46e1-83c9-50f3d44d38b5.cfargotunnel.com",
-        proxied=True,
-        opts=resource_opts(
-            import_id="981bc8749d817cd910da39e8a8aefd7f/cbe4ec1500f89e517f901ba9ffef3910",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-bossscher-org-cname-books-download-bossscher-org-cbe4ec15"] = (
+        cloudflare.DnsRecord(
+            "dns-bossscher-org-cname-books-download-bossscher-org-cbe4ec15",
+            zone_id=zone_ids["bossscher.org"],
+            name="books-download.bossscher.org",
+            type="CNAME",
+            ttl=CLOUDFLARE_AUTO,
+            content="5e317939-f1e9-46e1-83c9-50f3d44d38b5.cfargotunnel.com",
+            proxied=True,
+            opts=resource_opts(
+                import_id="981bc8749d817cd910da39e8a8aefd7f/cbe4ec1500f89e517f901ba9ffef3910",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-bossscher-org-cname-cockpit-bossscher-org-c3662a72"] = cloudflare.DnsRecord(
@@ -1027,25 +1042,27 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         name="_dmarc.bossscher.org",
         type="TXT",
         ttl=CLOUDFLARE_AUTO,
-        content="\"v=DMARC1; p=none; rua=mailto:928143443818428bb46414882444e51d@dmarc-reports.cloudflare.net\"",
+        content='"v=DMARC1; p=none; rua=mailto:928143443818428bb46414882444e51d@dmarc-reports.cloudflare.net"',
         opts=resource_opts(
             import_id="981bc8749d817cd910da39e8a8aefd7f/cfb7832b471c31cc911490aca76c401f",
             ignore_changes=["tags", "meta", "proxiable"],
         ),
     )
 
-    by_logical["dns-laurensbosscher-nl-a-direct-laurensbosscher-nl-491104b4"] = cloudflare.DnsRecord(
-        "dns-laurensbosscher-nl-a-direct-laurensbosscher-nl-491104b4",
-        zone_id=zone_ids["laurensbosscher.nl"],
-        name="direct.laurensbosscher.nl",
-        type="A",
-        ttl=CLOUDFLARE_AUTO,
-        content="198.23.133.157",
-        proxied=True,
-        opts=resource_opts(
-            import_id="80109e07e6038846aa25d17367211948/491104b44d496505b5774256373855c9",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-laurensbosscher-nl-a-direct-laurensbosscher-nl-491104b4"] = (
+        cloudflare.DnsRecord(
+            "dns-laurensbosscher-nl-a-direct-laurensbosscher-nl-491104b4",
+            zone_id=zone_ids["laurensbosscher.nl"],
+            name="direct.laurensbosscher.nl",
+            type="A",
+            ttl=CLOUDFLARE_AUTO,
+            content="198.23.133.157",
+            proxied=True,
+            opts=resource_opts(
+                import_id="80109e07e6038846aa25d17367211948/491104b44d496505b5774256373855c9",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-laurensbosscher-nl-a-star-laurensbosscher-nl-898bd583"] = cloudflare.DnsRecord(
@@ -1160,30 +1177,37 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         ),
     )
 
-    by_logical["dns-laurensbosscher-nl-txt-dmarc-laurensbosscher-nl-e20753b3"] = cloudflare.DnsRecord(
-        "dns-laurensbosscher-nl-txt-dmarc-laurensbosscher-nl-e20753b3",
-        zone_id=zone_ids["laurensbosscher.nl"],
-        name="_dmarc.laurensbosscher.nl",
-        type="TXT",
-        ttl=CLOUDFLARE_AUTO,
-        content="v=DMARC1; p=reject; adkim=s; aspf=s; pct=100",
-        opts=resource_opts(
-            import_id="80109e07e6038846aa25d17367211948/e20753b3d67d812937df0aa32733a757",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-laurensbosscher-nl-txt-dmarc-laurensbosscher-nl-e20753b3"] = (
+        cloudflare.DnsRecord(
+            "dns-laurensbosscher-nl-txt-dmarc-laurensbosscher-nl-e20753b3",
+            zone_id=zone_ids["laurensbosscher.nl"],
+            name="_dmarc.laurensbosscher.nl",
+            type="TXT",
+            ttl=CLOUDFLARE_AUTO,
+            content=(
+                "v=DMARC1; p=reject; adkim=s; aspf=s; pct=100; "
+                "rua=mailto:308afe0d93e04d63948cd70eb6af15ab@dmarc-reports.cloudflare.net;"
+            ),
+            opts=resource_opts(
+                import_id="80109e07e6038846aa25d17367211948/e20753b3d67d812937df0aa32733a757",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
-    by_logical["dns-laurensbosscher-nl-txt-google-domainkey-laurensbosscher-nl-4e94351d"] = cloudflare.DnsRecord(
-        "dns-laurensbosscher-nl-txt-google-domainkey-laurensbosscher-nl-4e94351d",
-        zone_id=zone_ids["laurensbosscher.nl"],
-        name="google._domainkey.laurensbosscher.nl",
-        type="TXT",
-        ttl=CLOUDFLARE_AUTO,
-        content="v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBtbbVYxKj9ItpoiTeA2RfyJaRyo1UayyfKG3zkPe8xM8U120d+JYA5Oid8wsnG7H5e/pwzq4OcJqvAn/kIsIeP9InrQevX08jnNmziXoLNcQAv0F7jrnaucXXNExMVknhayvhPiRscrDr+Q2cYSmBnbXRLmclpuzB4fwsTzsPGwIDAQAB",
-        opts=resource_opts(
-            import_id="80109e07e6038846aa25d17367211948/4e94351d5d9f8fcf5efaec1af28b8988",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
+    by_logical["dns-laurensbosscher-nl-txt-google-domainkey-laurensbosscher-nl-4e94351d"] = (
+        cloudflare.DnsRecord(
+            "dns-laurensbosscher-nl-txt-google-domainkey-laurensbosscher-nl-4e94351d",
+            zone_id=zone_ids["laurensbosscher.nl"],
+            name="google._domainkey.laurensbosscher.nl",
+            type="TXT",
+            ttl=CLOUDFLARE_AUTO,
+            content="v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBtbbVYxKj9ItpoiTeA2RfyJaRyo1UayyfKG3zkPe8xM8U120d+JYA5Oid8wsnG7H5e/pwzq4OcJqvAn/kIsIeP9InrQevX08jnNmziXoLNcQAv0F7jrnaucXXNExMVknhayvhPiRscrDr+Q2cYSmBnbXRLmclpuzB4fwsTzsPGwIDAQAB",
+            opts=resource_opts(
+                import_id="80109e07e6038846aa25d17367211948/4e94351d5d9f8fcf5efaec1af28b8988",
+                ignore_changes=["tags", "meta", "proxiable"],
+            ),
+        )
     )
 
     by_logical["dns-laurensbosscher-nl-txt-laurensbosscher-nl-0efa3ed1"] = cloudflare.DnsRecord(
@@ -1200,4 +1224,3 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
     )
 
     return DnsRecords(by_logical_name=by_logical)
-
