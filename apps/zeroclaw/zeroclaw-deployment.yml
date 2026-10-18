@@ -75,6 +75,11 @@ spec:
               value: "true"
             - name: ZEROCLAW_gateway__require_pairing
               value: "true"
+            - name: ZEROCLAW_channels__telegram__home__bot_token
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_channels__telegram__home__bot_token
             - name: ZEROCLAW_providers__models__openrouter__default__api_key
               valueFrom:
                 secretKeyRef:

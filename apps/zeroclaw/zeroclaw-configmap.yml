@@ -8,9 +8,8 @@ data:
   config.toml: |
     # Seeded onto the PVC only when config.toml is absent.
     # Tokens are env overrides, not this file:
+    #   ZEROCLAW_channels__telegram__home__bot_token
     #   ZEROCLAW_providers__models__openrouter__default__api_key
-    # Telegram stays off until a dedicated bot token is sealed.
-    # Do not reuse the Gatus/Alertmanager bot.
     schema_version = 3
     default_provider = "openrouter"
     default_model = "z-ai/glm-5.3-flash"
@@ -27,8 +26,12 @@ data:
     model = "z-ai/glm-5.3-flash"
     context_window = 1048576
 
+    [channels.telegram.home]
+    enabled = true
+
     [agents.primary]
     model_provider = "openrouter.default"
+    channels = ["telegram.home"]
     risk_profile = "default"
     runtime_profile = "tools"
 
