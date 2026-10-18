@@ -1,11 +1,12 @@
-name: Build and Push OpenCode Container
+name: Build and Push ZeroClaw Container
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'opencode/**'
+      - 'zeroclaw/**'
+      - '.github/workflows/build-zeroclaw.yml'
   workflow_dispatch:
     inputs:
       commit_hash:
@@ -15,7 +16,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/opencode
+  IMAGE_NAME: ${{ github.repository_owner }}/zeroclaw-tools
 
 jobs:
   build-and-push:
@@ -44,14 +45,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
             type=sha,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=0.8.6-2
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./opencode
+          context: ./zeroclaw
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

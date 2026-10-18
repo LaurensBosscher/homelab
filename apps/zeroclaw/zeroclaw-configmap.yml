@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zeroclaw-config
+  labels:
+    app.kubernetes.io/name: zeroclaw
+data:
+  config.toml: |
+    # Seeded onto the PVC only when config.toml is absent.
+    # Tokens are env overrides, not this file:
+    #   ZEROCLAW_channels__telegram__home__bot_token
+    #   ZEROCLAW_providers__models__openrouter__default__api_key
+    schema_version = 3
+    default_provider = "openrouter"
+    default_model = "z-ai/glm-5.3-flash"
+    default_temperature = 0.7
+
+    [gateway]
+    port = 42617
+    host = "[::]"
+    allow_public_bind = true
+    require_pairing = true
+    web_dist_dir = "/usr/share/zeroclawlabs/web/dist"
+
+    [providers.models.openrouter.default]
+    model = "z-ai/glm-5.3-flash"
+    context_window = 1048576
+
+    [channels.telegram.home]
+    enabled = true
+
+    [agents.primary]
+    model_provider = "openrouter.default"
+    channels = ["telegram.home"]
+    risk_profile = "default"
+    runtime_profile = "tools"
+
+    [browser]
+    enabled = true
+    backend = "agent_browser"
+    native_chrome_path = "/usr/bin/brave-browser"
+    allowed_domains = ["*"]
+
+    [memory]
+    backend = "sqlite"
+    search_mode = "bm25"
+
+    [runtime]
+    kind = "native"
+    shell = "/bin/bash"
+
+    [runtime_profiles.tools]
+    agentic = true
+    max_tool_iterations = 40
+    max_actions_per_hour = 120
+    shell_timeout_secs = 180
+    max_cost_per_day_cents = 2000
+
+    [risk_profiles.default]
+    level = "supervised"
+    workspace_only = false
+    block_high_risk_commands = true
+    allowed_commands = [
+      "bash", "sh", "ls", "cat", "grep", "rg", "find", "echo", "pwd", "wc",
+      "head", "tail", "date", "df", "du", "uname", "uptime", "hostname", "free",
+      "mkdir", "cp", "mv", "rm", "tar", "gzip", "git", "gh", "curl", "jq",
+      "ssh", "uv", "ruff", "mypy", "python3", "node", "bun", "sg", "ast-grep",
+      "wrangler", "gws", "gog",
+      "summarize", "agent-browser", "omp", "ffmpeg", "brave-browser", "obscura",
+      "kubectl", "timeout", "id", "ps", "sed", "awk", "diff", "patch", "xargs",
+      "base64", "openssl", "dig", "nslookup"
+    ]
+    forbidden_paths = [
+      "/etc/shadow", "/etc/kubernetes", "/var/run/secrets",
+      "/proc", "/sys", "~/.ssh", "~/.gnupg", "~/.aws"
+    ]
+    auto_approve = [
+      "file_read", "file_write", "file_edit", "memory_recall", "memory_store",
+      "web_search_tool", "web_fetch", "calculator", "glob_search", "content_search",
+      "image_info", "weather", "git_operations", "shell", "browser", "browser_open"
+    ]
+
+    [secrets]
+    encrypt = true

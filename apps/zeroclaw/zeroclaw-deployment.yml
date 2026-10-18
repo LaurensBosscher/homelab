@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zeroclaw
+  labels:
+    app.kubernetes.io/name: zeroclaw
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zeroclaw
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: zeroclaw
+        app.kubernetes.io/part-of: homelab
+    spec:
+      automountServiceAccountToken: false
+      # Same DNS path as OpenClaw: blocky first, kube-dns fallback.
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.43.53.53
+          - 10.43.0.10
+        searches:
+          - zeroclaw.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "5"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
+      containers:
+        - name: zeroclaw
+          # Built by .github/workflows/build-zeroclaw.yml. Bump with the workflow tag.
+          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 42617
+              protocol: TCP
+          env:
+            - name: TZ
+              value: Europe/Zurich
+            - name: HOME
+              value: /zeroclaw-data
+            - name: SHELL
+              value: /bin/bash
+            - name: ZEROCLAW_DATA_DIR
+              value: /zeroclaw-data/data
+            - name: ZEROCLAW_gateway__host
+              value: "[::]"
+            - name: ZEROCLAW_gateway__port
+              value: "42617"
+            - name: ZEROCLAW_gateway__allow_public_bind
+              value: "true"
+            - name: ZEROCLAW_gateway__require_pairing
+              value: "true"
+            - name: ZEROCLAW_channels__telegram__home__bot_token
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_channels__telegram__home__bot_token
+            - name: ZEROCLAW_providers__models__openrouter__default__api_key
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_providers__models__openrouter__default__api_key
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /zeroclaw-data
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 6Gi
+          startupProbe:
+            exec:
+              command:
+                - zeroclaw
+                - status
+                - --format=exit-code
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            exec:
+              command:
+                - zeroclaw
+                - status
+                - --format=exit-code
+            periodSeconds: 60
+            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: zeroclaw-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: zeroclaw-data
+        - name: tmp
+          emptyDir: {}
