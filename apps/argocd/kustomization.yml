@@ -13,6 +13,7 @@ resources:
   - default-appproject.yml
   - argocd-notifications-cm.yml
   - argocd-notifications-secret-sealed.yml
+  - argocd-github-webhook-sealed.yml
 
 patches:
   # Upstream core-install ships an empty notifications secret; SealedSecret owns it.
@@ -26,6 +27,20 @@ patches:
       kind: Secret
       metadata:
         name: argocd-notifications-secret
+  # Merge webhook.github.secret into the existing argocd-secret.
+  # Do not set sealedsecrets.bitnami.com/managed: the controller would own
+  # argocd-secret and delete the server key with the SealedSecret.
+  - target:
+      version: v1
+      kind: Secret
+      name: argocd-secret
+    patch: |-
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: argocd-secret
+        annotations:
+          sealedsecrets.bitnami.com/patch: "true"
   - target:
       group: apiextensions.k8s.io
       version: v1
@@ -54,7 +69,5 @@ patches:
         # merges still sync quickly once the GitHub webhook is configured.
         timeout.reconciliation: 300s
         timeout.hard.reconciliation: 600s
-        # GitHub webhook (optional, requires sealed secret argocd-secret with
-        # webhook.github.secret): uncomment after sealing.
-        # See: https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/
-        # webhook.github.secret: $argocd-secret:webhook.github.secret
+        # https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/
+        webhook.github.secret: $argocd-secret:webhook.github.secret

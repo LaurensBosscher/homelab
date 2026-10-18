@@ -1,0 +1,15 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: argocd-secret
+  namespace: argocd
+spec:
+  encryptedData:
+    webhook.github.secret: AgA7zA2kGyNcPihX5iCJiK7zf19ug/tr/gX/dMJVuwlHoJqQ/ePA9lAXfZw3k3zgLLpr2Z9pHPr6bIUZnJmxaXC6AfrNNxToYlhk73mlJMv+Ec7q3Gr4g1Q2tEUHQD/g964i+lk9qN7PR4iIOSALJ3FgDR3kMplirc/qIfzYz9h3Fw6X9zlDPr3r0QGH7262FhtDS3WFbCEBeRiYB24jSXlQY50Wcn7WoukZND5JW7Bfluxl22GCbzL2yW12It8ZipvgVrlehMM08a2TbuPzSI+nDnlbNSWHMMuU8roJw208MGYjt4V74V+o40E9JNAnEKwHMd4NNhKkxwXAnq+Zak63zU9MFTtEBoDZMH2y+FDjG9NRLTxvHHTy4ZSc82IrkfZHy+hu4cvhnMprEjanCX3QvjU6bqN90pdS0IXga6RUVJGG4ju1XedBO8T1IHSGD45K+S9l4nvAQWNV3fKpM2ChTB+u7HkUe6zKhA751DVHit1f1hgqPmvxgJRTpiA9Nsu6KWoHEwGF9Fufqo5HrVwXEquntBIgft+f7RmLbgWt1AEYbha+659iZzOsg+1QJGMJc53l8q++HZPWaXpqfbTbfxwKspgVk2tbPhgSdWFdvvUOmXCf6eIB+Tho3unO7l8AVVDWoh9/vQ8GkTa3GxMAh+GbV2h24oguFq7wYN9JOp3iIKGl1hUOKIDQyh1qAt1Kp6Z9FZEX20sM/YbIFAdKPRZLFJRpcddDiiuPLkVgRz2F4KXO1FjsV771471Vn0JYhI9VPUq1LFm5QyCzpgty
+  template:
+    metadata:
+      name: argocd-secret
+      namespace: argocd
+      annotations:
+        sealedsecrets.bitnami.com/patch: "true"
+    type: Opaque
