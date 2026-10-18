@@ -20,18 +20,6 @@ spec:
         runAsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
-      # local-path PVCs live only on bazzite. London nodes do not have
-      # /var/lib/rancher/k3s/storage, so a cluster-wide DaemonSet stays
-      # ContainerCreating there.
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
       containers:
         - name: restic
           image: restic/restic:0.18.0
