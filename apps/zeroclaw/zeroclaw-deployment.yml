@@ -6,19 +6,34 @@ metadata:
     app.kubernetes.io/name: zeroclaw
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 0 # TEST DEPLOYMENT — set to 1 after sealing secrets + configuring
+  replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: zeroclaw
+      app.kubernetes.io/name: zeroclaw
   template:
     metadata:
       labels:
-        app: zeroclaw
+        app.kubernetes.io/name: zeroclaw
+        app.kubernetes.io/part-of: homelab
     spec:
       automountServiceAccountToken: false
+      # Same DNS path as OpenClaw: blocky first, kube-dns fallback.
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.43.53.53
+          - 10.43.0.10
+        searches:
+          - zeroclaw.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "5"
       securityContext:
+        runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
@@ -34,87 +49,93 @@ spec:
                     operator: In
                     values:
                       - bazzite
-      initContainers:
-        # No official OCI image: fetch the pinned static musl binary once,
-        # verify SHA256, drop into a shared emptyDir.
-        - name: fetch-binary
-          image: curlimages/curl:8.16.0
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-          env:
-            - name: ZEROCLAW_VERSION
-              value: v0.8.5
-            - name: ZEROCLAW_SHA256
-              value: "REPLACE_WITH_SHA256_FROM_SHA256SUMS"
-          command:
-            - sh
-            - -c
-            - |
-              set -eu
-              url="https://github.com/zeroclaw-labs/zeroclaw/releases/download/${ZEROCLAW_VERSION}/zeroclaw-x86_64-unknown-linux-musl.tar.gz"
-              curl -fsSL -A "Alameda/1.0" "$url" -o /tmp/zc.tar.gz
-              echo "${ZEROCLAW_SHA256}  /tmp/zc.tar.gz" | sha256sum -c -
-              tar -xzf /tmp/zc.tar.gz -C /bin-zero --strip-components=0
-              chmod +x /bin-zero/zeroclaw*
-          volumeMounts:
-            - name: bin
-              mountPath: /bin-zero
       containers:
         - name: zeroclaw
-          image: gcr.io/distroless/static-debian12:nonroot
-          command: ["/usr/local/bin/zeroclaw"]
-          args: ["service", "run"] # verify: check zeroclaw --help; may be `gateway`/`serve`
+          # Built by .github/workflows/build-zeroclaw.yml. Bump with the workflow tag.
+          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-1
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3210
-              name: http
+            - name: http
+              containerPort: 42617
+              protocol: TCP
           env:
             - name: TZ
               value: Europe/Zurich
-            - name: ZEROCLAW_CONFIG
-              value: /config/config.toml
-            - name: ZEROCLAW_BOT_TOKEN
+            - name: HOME
+              value: /zeroclaw-data
+            - name: SHELL
+              value: /bin/bash
+            - name: ZEROCLAW_DATA_DIR
+              value: /zeroclaw-data/data
+            - name: ZEROCLAW_gateway__host
+              value: "[::]"
+            - name: ZEROCLAW_gateway__port
+              value: "42617"
+            - name: ZEROCLAW_gateway__allow_public_bind
+              value: "true"
+            - name: ZEROCLAW_gateway__require_pairing
+              value: "true"
+            - name: ZEROCLAW_channels__telegram__home__bot_token
               valueFrom:
                 secretKeyRef:
                   name: zeroclaw-secrets
-                  key: ZEROCLAW_BOT_TOKEN
-            - name: ZEROCLAW_LLM_API_KEY
+                  key: ZEROCLAW_channels__telegram__home__bot_token
+            - name: ZEROCLAW_providers__models__openrouter__default__api_key
               valueFrom:
                 secretKeyRef:
                   name: zeroclaw-secrets
-                  key: ZEROCLAW_LLM_API_KEY
+                  key: ZEROCLAW_providers__models__openrouter__default__api_key
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
-            - name: bin
-              mountPath: /usr/local/bin
-              readOnly: true
             - name: config
               mountPath: /config
+              readOnly: true
             - name: data
-              mountPath: /home/nonuser/.zeroclaw
+              mountPath: /zeroclaw-data
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
-              cpu: 10m
-              memory: 16Mi
+              cpu: 100m
+              memory: 512Mi
             limits:
-              memory: 128Mi
+              memory: 6Gi
+          startupProbe:
+            exec:
+              command:
+                - zeroclaw
+                - status
+                - --format=exit-code
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
           livenessProbe:
-            tcpSocket:
-              port: 3210
-            initialDelaySeconds: 15
+            exec:
+              command:
+                - zeroclaw
+                - status
+                - --format=exit-code
             periodSeconds: 60
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: 3210
-            initialDelaySeconds: 10
+              port: http
             periodSeconds: 30
             timeoutSeconds: 5
       volumes:
-        - name: bin
-          emptyDir: {}
         - name: config
           configMap:
             name: zeroclaw-config
         - name: data
           persistentVolumeClaim:
             claimName: zeroclaw-data
+        - name: tmp
+          emptyDir: {}

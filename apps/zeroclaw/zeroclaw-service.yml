@@ -3,13 +3,13 @@ kind: Service
 metadata:
   name: zeroclaw
   labels:
-    app: zeroclaw
+    app.kubernetes.io/name: zeroclaw
 spec:
   type: ClusterIP
-  ports:
-    - port: 3210
-      targetPort: 3210
-      protocol: TCP
-      name: http
   selector:
-    app: zeroclaw
+    app.kubernetes.io/name: zeroclaw
+  ports:
+    - name: http
+      port: 42617
+      targetPort: http
+      protocol: TCP

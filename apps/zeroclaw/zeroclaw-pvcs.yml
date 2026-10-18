@@ -3,11 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: zeroclaw-data
   labels:
-    app: zeroclaw
+    app.kubernetes.io/name: zeroclaw
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: local-path
   resources:
     requests:
-      storage: 2Gi
-  storageClassName: local-path
+      storage: 20Gi
