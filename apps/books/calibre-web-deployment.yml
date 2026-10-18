@@ -32,6 +32,13 @@ spec:
       containers:
         - name: calibre-web
           image: ghcr.io/crocodilestick/calibre-web-automated:V4.0.6
+          # Apply the header setting before s6 starts CWA. /init must stay PID 1.
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python3 /cwa-auth/enable-proxy-auth.py
+              exec /init
           ports:
             - containerPort: 8083
           env:
@@ -50,6 +57,9 @@ spec:
               mountPath: /calibre-library
             - name: ingest
               mountPath: /cwa-book-ingest
+            - name: proxy-auth
+              mountPath: /cwa-auth
+              readOnly: true
           resources:
             requests:
               cpu: 50m
@@ -84,3 +94,6 @@ spec:
         - name: ingest
           persistentVolumeClaim:
             claimName: calibre-web-ingest
+        - name: proxy-auth
+          configMap:
+            name: calibre-web-proxy-auth

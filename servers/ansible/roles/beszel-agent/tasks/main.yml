@@ -1,10 +1,53 @@
 ---
 - name: Assert agent public key is configured
   ansible.builtin.assert:
-    that: beszel_agent_public_key | length > 0
+    that:
+      - beszel_agent_public_key | length > 0
+      - beszel_agent_hub_url | length > 0
     fail_msg: >-
-      Set beszel_agent_public_key (the hub's ed25519 public key) in
+      Set beszel_agent_public_key and beszel_agent_hub_url in
       group_vars/all.yml before rolling out agents.
+  tags: [beszel]
+
+- name: Decrypt Beszel agent token
+  ansible.builtin.command:
+    argv:
+      - sops
+      - -d
+      - --input-type
+      - dotenv
+      - --output-type
+      - dotenv
+      - "{{ playbook_dir }}/secrets.enc.env"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: false
+  check_mode: false
+  no_log: true
+  register: beszel_agent_sops
+  tags: [beszel]
+
+- name: Publish Beszel agent token
+  ansible.builtin.set_fact:
+    beszel_agent_token: "{{ (beszel_agent_sops.stdout | regex_search('(?m)^BESZEL_AGENT_TOKEN=(.+)$', '\\1'))[0] }}"
+  delegate_to: localhost
+  delegate_facts: true
+  become: false
+  run_once: true
+  no_log: true
+  tags: [beszel]
+
+- name: Use Beszel agent token on this host
+  ansible.builtin.set_fact:
+    beszel_agent_token: "{{ hostvars['localhost']['beszel_agent_token'] }}"
+  no_log: true
+  tags: [beszel]
+
+- name: Assert Beszel agent token is present
+  ansible.builtin.assert:
+    that: beszel_agent_token | length > 0
+    fail_msg: BESZEL_AGENT_TOKEN is missing from servers/ansible/secrets.enc.env.
   tags: [beszel]
 
 - name: Create beszel system group
@@ -29,6 +72,16 @@
       'amd64' if ansible_facts.architecture == 'x86_64' else 'arm64' }}.tar.gz
     dest: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
     mode: "0644"
+    checksum: "sha256:{{ beszel_agent_checksums[ansible_facts.architecture] }}"
+  register: beszel_agent_archive
+  tags: [beszel]
+
+- name: Stop beszel-agent before replacing the binary
+  ansible.builtin.systemd:
+    name: beszel-agent
+    state: stopped
+  when: beszel_agent_archive.changed
+  failed_when: false
   tags: [beszel]
 
 - name: Install beszel-agent binary
@@ -56,6 +109,7 @@
     group: root
     mode: "0644"
   notify: Restart beszel-agent
+  no_log: true
   tags: [beszel, config]
 
 - name: Enable and start beszel-agent

@@ -32,6 +32,16 @@ spec:
           env:
             - name: TZ
               value: Europe/Zurich
+            # Cloudflare Access sets this header and strips client copies of it.
+            # The Beszel user email must match that address. Password login stays
+            # for requests without the header.
+            - name: APP_URL
+              value: https://beszel.bosscher.ch
+            - name: TRUSTED_AUTH_HEADER
+              value: Cf-Access-Authenticated-User-Email
+            # Source address is the cloudflared pod, not X-Forwarded-For.
+            - name: TRUSTED_PROXY_IPS
+              value: 10.42.0.0/16
           ports:
             - name: http
               containerPort: 8090

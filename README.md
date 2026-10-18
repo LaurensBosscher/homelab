@@ -152,11 +152,13 @@ I'm currently running the following apps:
 - [AIOStreams](https://github.com/Viren070/AIOStreams) - Streaming content aggregator
 - [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) - Declarative GitOps CD for Kubernetes
 - [Audiobookshelf](https://www.audiobookshelf.org/) - Self-hosted audiobook and podcast server
+- [Backrest](https://github.com/garethgeorge/backrest) - Web UI for restic backups
 - [BentoPDF](https://github.com/bentopdf/bentopdf) - Convert HTML to PDF
 - [Bookshelf](https://github.com/pennydreadful/bookshelf) - Self-hosted book catalog for web novels and fanfiction
 - [Calibre Web](https://github.com/crocodilestick/Calibre-Web-Automated) - Enhanced version of Calibre web
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) - Secure ingress to the cluster
 - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) - Proxy server to bypass Cloudflare protection
+- [Forgejo](https://forgejo.org/) - Self-hosted Git service
 - [Fusion](https://github.com/0x2E/fusion) - Lightweight RSS Reader
 - [Gatus](https://github.com/TwiN/gatus) - Synthetic uptime monitoring and status page
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
@@ -165,7 +167,7 @@ I'm currently running the following apps:
 - [Linkwarden](https://github.com/linkwarden/linkwarden) - Collaborative bookmark manager
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
 - [mydia](https://github.com/getmydia/mydia) - Self-hosted media manager
-- [Norish](https://github.com/norish-recipes/norish) - Real-time, self-hosted recipe app for families & friends
+- [NZBGet](https://nzbget.com/) - Usenet downloader
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
 - [playarr](https://github.com/maikboarder/playerr) - Audiobook manager for Plex
@@ -178,9 +180,7 @@ I'm currently running the following apps:
 - [shelfarr](https://github.com/DerGoogler/Shelfarr) - Audiobook library manager
 - [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager
 - [sonarr](https://github.com/Sonarr/Sonarr) - TV show collection manager
-- [Stacks](https://github.com/zelestcarlyone/stacks) - Download Manager for Anna's Archive
 - [Stremio](https://www.stremio.com/) - Media streaming platform
-- [termix](https://github.com/willdoescode/termix) - Terminal-based matrix client
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
 - [your-spotify](https://github.com/Yooooomi/your_spotify) - Self-hosted Spotify statistics and analytics
 

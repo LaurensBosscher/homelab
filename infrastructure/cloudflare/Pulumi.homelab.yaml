@@ -2,7 +2,7 @@ config:
   # Cloudflare provider authenticates via CLOUDFLARE_API_TOKEN in the environment
   # (set by scripts/pulumi_run.py via sops). Do not put the token in this file.
   homelab-cloudflare:accountId: "1ce5b40c4616a803216dff853ef6bc81"
-  homelab-cloudflare:accountName: Laurens@laurensbosscher.nl's Account
+  homelab-cloudflare:accountName: Laurens homelab
   # Leave true: ResourceOptions(import_=...) adopt live resources on first up.
   homelab-cloudflare:importExisting: "true"
 encryptionsalt: v1:ymCyTLsfQCg=:v1:ISiY/6LMr4xTFjbW:5VKVkrKECIXBsqII2QVAmxI78jtyVg==

@@ -1,0 +1,8 @@
+---
+- name: Install Beszel agent on K3s nodes
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: beszel-agent

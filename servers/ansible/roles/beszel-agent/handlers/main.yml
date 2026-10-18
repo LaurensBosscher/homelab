@@ -3,3 +3,4 @@
   ansible.builtin.systemd:
     name: beszel-agent
     state: restarted
+    daemon_reload: true

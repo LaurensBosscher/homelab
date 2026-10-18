@@ -9,14 +9,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import pulumi
 import pulumi_cloudflare as cloudflare
 
-from homelab_cloudflare.helpers import account_id, resource_opts
+from homelab_cloudflare.helpers import account_id, require_env, resource_opts
 from homelab_cloudflare.tunnels import Tunnels
-
-# Same mailbox already used by the account's Cloudflare alerts.
-TUNNEL_ALERT_EMAILS: tuple[str, ...] = ("laurens@laurensbosscher.nl",)
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,11 +23,9 @@ class TunnelNotifications:
 
 def create_tunnel_notifications(*, tunnels: Tunnels) -> TunnelNotifications:
     acct = account_id()
+    alert_email = require_env("ACCESS_EMAIL_LAURENS")
     mechanisms = cloudflare.NotificationPolicyMechanismsArgs(
-        emails=[
-            cloudflare.NotificationPolicyMechanismsEmailArgs(id=email)
-            for email in TUNNEL_ALERT_EMAILS
-        ],
+        emails=[cloudflare.NotificationPolicyMechanismsEmailArgs(id=alert_email)],
     )
     health = cloudflare.NotificationPolicy(
         "notify-tunnel-health",
@@ -56,5 +50,4 @@ def create_tunnel_notifications(*, tunnels: Tunnels) -> TunnelNotifications:
         mechanisms=mechanisms,
         opts=resource_opts(),
     )
-    pulumi.export("tunnel_alert_emails", list(TUNNEL_ALERT_EMAILS))
     return TunnelNotifications(health=health, lifecycle=lifecycle)
