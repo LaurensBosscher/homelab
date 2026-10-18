@@ -34,7 +34,7 @@ spec:
                       - bazzite
       containers:
         - name: restic
-          image: restic/restic:0.18.0
+          image: restic/restic:0.19.1
           command: ["/bin/sh", "/scripts/backup-loop.sh"]
           env:
             - name: TZ
