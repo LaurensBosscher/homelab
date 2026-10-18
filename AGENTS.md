@@ -1,7 +1,7 @@
 # AGENTS.md - Codebase Guide
 
 ## Project Overview
-V2 K3s homelab: `bazzite` (SQLite control-plane + all `local-path` PVCs) + 3 London agents. GitOps CD via ArgoCD on branch `main`. IaC with Ansible + Pulumi/SOPS for Cloudflare (`infrastructure/cloudflare`). V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
+V2 K3s homelab: `bazzite` (SQLite control-plane + data-disk `local-path` PVCs) + 3 London agents (`local-path` at `/var/lib/rancher/k3s/storage`). GitOps CD via ArgoCD on branch `main`. IaC with Ansible + Pulumi/SOPS for Cloudflare (`infrastructure/cloudflare`). V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
 
 ## Repository Structure
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
@@ -154,9 +154,9 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 - Follow the existing pattern for the app
 
 ### V2 Placement
-- Stateful / PVC-backed: schedule on `bazzite` only
+- Stateful apps: keep scheduling on `bazzite` unless the manifest says otherwise
 - Stateless: London agents OK
-- Storage: `local-path` (data under `/var/mnt/data/local-path` on bazzite)
+- Storage: `local-path` on every node. Bazzite data disk is `/var/mnt/data/local-path` (same directory as `/mnt/data/local-path`). London uses `/var/lib/rancher/k3s/storage`, created by Ansible. Restic mounts that k3s path on every node; on bazzite Ansible symlinks it to the data disk.
 - Tunnels: single cluster Cloudflare tunnel (`cloudflare/tunnels/config.yml`); GH Actions syncs DNS/config
 
 ## Testing Philosophy

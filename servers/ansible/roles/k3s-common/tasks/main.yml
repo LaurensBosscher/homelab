@@ -188,6 +188,50 @@
   changed_when: k3s_run_fcontext_mod.rc == 0
   tags: [k3s, selinux]
 
+# Restic's DaemonSet hostPath is /var/lib/rancher/k3s/storage (type Directory),
+# so the path has to exist before the pod can start. London uses that directory
+# as its local-path root. Bazzite's PVCs live on the data disk, so the k3s path
+# becomes a symlink and the cluster-wide DaemonSet sees them too.
+- name: Ensure local-path storage directory exists
+  ansible.builtin.file:
+    path: "{{ k3s_local_path_storage }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [k3s, local-path]
+
+# One step: a gap between rmdir and ln lets kubelet recreate the empty
+# directory, and the file module then refuses to replace it.
+- name: Point the restic hostPath at the local-path root
+  ansible.builtin.command:
+    argv:
+      - /bin/bash
+      - -c
+      - |
+        set -euo pipefail
+        dest=/var/lib/rancher/k3s/storage
+        src=$1
+        if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+          echo unchanged
+          exit 0
+        fi
+        if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+          if [ ! -d "$dest" ] || [ -n "$(ls -A "$dest")" ]; then
+            echo "$dest is not an empty directory, refusing to replace it with a symlink to $src" >&2
+            exit 1
+          fi
+          rmdir "$dest"
+        fi
+        ln -sfn "$src" "$dest"
+        echo changed
+      - _
+      - "{{ k3s_local_path_storage }}"
+  register: k3s_storage_link
+  changed_when: k3s_storage_link.stdout | trim == 'changed'
+  when: k3s_local_path_storage != '/var/lib/rancher/k3s/storage'
+  tags: [k3s, local-path]
+
 - name: Restore SELinux labels on k3s paths
   ansible.builtin.command: >
     restorecon -Rv
