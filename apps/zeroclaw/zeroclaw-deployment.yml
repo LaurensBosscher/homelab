@@ -19,19 +19,6 @@ spec:
         app.kubernetes.io/part-of: homelab
     spec:
       automountServiceAccountToken: false
-      # Same DNS path as OpenClaw: blocky first, kube-dns fallback.
-      dnsPolicy: None
-      dnsConfig:
-        nameservers:
-          - 10.43.53.53
-          - 10.43.0.10
-        searches:
-          - zeroclaw.svc.cluster.local
-          - svc.cluster.local
-          - cluster.local
-        options:
-          - name: ndots
-            value: "5"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -74,13 +61,23 @@ spec:
             - name: ZEROCLAW_gateway__allow_public_bind
               value: "true"
             - name: ZEROCLAW_gateway__require_pairing
-              value: "true"
+              value: "false"
             - name: ZEROCLAW_channels__telegram__home__bot_token
               valueFrom:
                 secretKeyRef:
                   name: zeroclaw-secrets
                   key: ZEROCLAW_channels__telegram__home__bot_token
+            - name: ZEROCLAW_providers__models__zai__default__api_key
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_providers__models__zai__default__api_key
             - name: ZEROCLAW_providers__models__openrouter__default__api_key
+              valueFrom:
+                secretKeyRef:
+                  name: zeroclaw-secrets
+                  key: ZEROCLAW_providers__models__openrouter__default__api_key
+            - name: ZEROCLAW_memory__embedding_api_key
               valueFrom:
                 secretKeyRef:
                   name: zeroclaw-secrets

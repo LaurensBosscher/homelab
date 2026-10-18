@@ -9,18 +9,26 @@ data:
     # Seeded onto the PVC only when config.toml is absent.
     # Tokens are env overrides, not this file:
     #   ZEROCLAW_channels__telegram__home__bot_token
+    #   ZEROCLAW_providers__models__zai__default__api_key
     #   ZEROCLAW_providers__models__openrouter__default__api_key
+    #   ZEROCLAW_memory__embedding_api_key
     schema_version = 3
-    default_provider = "openrouter"
-    default_model = "z-ai/glm-5.3-flash"
+    default_provider = "zai"
+    default_model = "glm-5.3-flash"
     default_temperature = 0.7
 
     [gateway]
     port = 42617
     host = "[::]"
     allow_public_bind = true
-    require_pairing = true
+    require_pairing = false
     web_dist_dir = "/usr/share/zeroclawlabs/web/dist"
+
+    [providers.models.zai.default]
+    endpoint = "global"
+    model = "glm-5.3-flash"
+    context_window = 1048576
+    fallback = ["openrouter.default"]
 
     [providers.models.openrouter.default]
     model = "z-ai/glm-5.3-flash"
@@ -30,9 +38,9 @@ data:
     enabled = true
 
     [agents.primary]
-    model_provider = "openrouter.default"
+    model_provider = "zai.default"
     channels = ["telegram.home"]
-    risk_profile = "default"
+    risk_profile = "yolo"
     runtime_profile = "tools"
 
     [browser]
@@ -43,7 +51,10 @@ data:
 
     [memory]
     backend = "sqlite"
-    search_mode = "bm25"
+    search_mode = "hybrid"
+    embedding_provider = "openrouter"
+    embedding_model = "openai/text-embedding-3-small"
+    embedding_dimensions = 1536
 
     [runtime]
     kind = "native"
@@ -51,34 +62,36 @@ data:
 
     [runtime_profiles.tools]
     agentic = true
-    max_tool_iterations = 40
+    max_tool_iterations = 50
     max_actions_per_hour = 120
     shell_timeout_secs = 180
     max_cost_per_day_cents = 2000
 
-    [risk_profiles.default]
-    level = "supervised"
+    [risk_profiles.yolo]
+    level = "full"
     workspace_only = false
-    block_high_risk_commands = true
-    allowed_commands = [
-      "bash", "sh", "ls", "cat", "grep", "rg", "find", "echo", "pwd", "wc",
-      "head", "tail", "date", "df", "du", "uname", "uptime", "hostname", "free",
-      "mkdir", "cp", "mv", "rm", "tar", "gzip", "git", "gh", "curl", "jq",
-      "ssh", "uv", "ruff", "mypy", "python3", "node", "bun", "sg", "ast-grep",
-      "wrangler", "gws", "gog",
-      "summarize", "agent-browser", "omp", "ffmpeg", "brave-browser", "obscura",
-      "kubectl", "timeout", "id", "ps", "sed", "awk", "diff", "patch", "xargs",
-      "base64", "openssl", "dig", "nslookup"
-    ]
-    forbidden_paths = [
-      "/etc/shadow", "/etc/kubernetes", "/var/run/secrets",
-      "/proc", "/sys", "~/.ssh", "~/.gnupg", "~/.aws"
-    ]
-    auto_approve = [
-      "file_read", "file_write", "file_edit", "memory_recall", "memory_store",
-      "web_search_tool", "web_fetch", "calculator", "glob_search", "content_search",
-      "image_info", "weather", "git_operations", "shell", "browser", "browser_open"
-    ]
+    allowed_commands = ["*"]
+    forbidden_paths = []
+    require_approval_for_medium_risk = false
+    block_high_risk_commands = false
+    auto_approve = ["*"]
+    always_ask = []
+    sandbox_enabled = false
+
+    [risk_profiles.yolo.delegation_policy]
+    mode = "allow"
+
+    [security.otp]
+    enabled = false
+
+    [security.estop]
+    enabled = false
+
+    [security.leak_detection]
+    enabled = false
 
     [secrets]
     encrypt = true
+
+    [tools]
+    optional = ["*"]
