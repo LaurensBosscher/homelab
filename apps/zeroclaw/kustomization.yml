@@ -5,4 +5,7 @@ resources:
   - zeroclaw-configmap.yml
   - zeroclaw-pvcs.yml
   - zeroclaw-service.yml
-  # - zeroclaw-secrets-sealed.yml  # generate via TEMPLATE, then uncomment
+  - zeroclaw-secrets-sealed.yml
+
+
+[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/.omp/wt/399-46ffd06/apps/zeroclaw/kustomization.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]
