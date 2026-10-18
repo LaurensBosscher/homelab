@@ -10,6 +10,7 @@ __pycache__/
 
 # Credentials and secrets
 credentials.env
+apps/argocd/webhook.github.secret
 ssh_key*
 openclaw-scrips-backup-repo*
 servers/ansible/group_vars/kubernetes-agent.yml
