@@ -385,6 +385,11 @@ data:
                 description: Server metrics hub
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/beszel.png
                 siteMonitor: https://beszel_openstick.bosscher.ch
+            - AdGuard Home:
+                href: https://adguard_openstick.bosscher.ch
+                description: Network-wide ads & tracker blocking DNS
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/adguard-home.png
+                siteMonitor: https://adguard_openstick.bosscher.ch
     bookmarks.yaml: |
         - Developer:
             - GitHub:
