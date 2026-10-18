@@ -74,6 +74,8 @@
   service: http://termix.termix.svc.cluster.local:8080
 - hostname: openclaw.bosscher.ch
   service: http://openclaw-gateway.openclaw.svc.cluster.local:18789
+- hostname: zeroclaw.bosscher.ch
+  service: http://zeroclaw.zeroclaw.svc.cluster.local:42617
 - hostname: nanobot.bosscher.ch
   service: http://nanobot.nanobot.svc.cluster.local:8765
 - hostname: redlib.bosscher.ch
