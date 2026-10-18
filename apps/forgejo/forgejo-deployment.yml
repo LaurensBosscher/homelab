@@ -34,7 +34,7 @@ spec:
                       - bazzite
       containers:
         - name: forgejo
-          image: codeberg.org/forgejo/forgejo:14
+          image: codeberg.org/forgejo/forgejo:17
           ports:
             - containerPort: 3000
               name: http
