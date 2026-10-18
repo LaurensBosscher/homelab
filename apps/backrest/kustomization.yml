@@ -6,4 +6,4 @@ resources:
   - backrest-service.yml
   - restic-daemonset.yml
   - restic-configmap.yml
-  # - backrest-restic-secrets-sealed.yml  # generate via TEMPLATE, then uncomment
+  - backrest-restic-secrets-sealed.yml

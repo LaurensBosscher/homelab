@@ -33,7 +33,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: RESTIC_REPOSITORY
-              value: "b2:CHANGE_ME_BUCKET/homelab-restic"
+              value: "s3:https://s3.eu-central-003.backblazeb2.com/longhorn-backups-ay76/homelab-restic"
             - name: RESTIC_PASSWORD
               valueFrom:
                 secretKeyRef:
