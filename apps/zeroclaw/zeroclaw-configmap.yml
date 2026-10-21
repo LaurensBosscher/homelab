@@ -36,6 +36,9 @@ data:
 
     [channels.telegram.home]
     enabled = true
+    # Existing volumes keep the config already on disk. The deployment sets
+    # ZEROCLAW_channels__telegram__home__rich_messages so this still applies.
+    rich_messages = true
 
     [agents.primary]
     model_provider = "zai.default"

@@ -1,6 +1,9 @@
 # Published all-features build (StageX, statically linked musl, no package
 # manager). v0.8.6 tag matrix: all-features-v0.8.6 == floating all-features.
-ARG ZEROCLAW_IMAGE=ghcr.io/zeroclaw-labs/zeroclaw:all-features-v0.8.6
+# Fork image from LaurensBosscher/zeroclaw .github/workflows/fork-build.yml
+# (all-features Containerfile, tag pr-11862). Paths match the upstream image:
+# /usr/bin/zeroclaw, /usr/bin/zerocode, /usr/share/zeroclawlabs.
+ARG ZEROCLAW_IMAGE=ghcr.io/laurensbosscher/zeroclaw:pr-11862
 FROM ${ZEROCLAW_IMAGE} AS zeroclaw
 
 # Same CLI surface as OpenClaw (git, gh, kubectl, bun, browser, …).
