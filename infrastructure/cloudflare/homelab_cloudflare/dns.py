@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import pulumi
 import pulumi_cloudflare as cloudflare
 
+from homelab_cloudflare.dns_delete import install_dns_delete_workaround
 from homelab_cloudflare.helpers import CLOUDFLARE_AUTO, resource_opts
 
 
@@ -14,6 +15,7 @@ class DnsRecords:
 
 
 def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
+    install_dns_delete_workaround()
     by_logical: dict[str, cloudflare.DnsRecord] = {}
     by_logical["dns-bosscher-ch-a-bosscher-ch-c2770f07"] = cloudflare.DnsRecord(
         "dns-bosscher-ch-a-bosscher-ch-c2770f07",
