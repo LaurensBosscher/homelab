@@ -106,6 +106,10 @@ table inet homelab {
     # Pod egress (interface-based rules above usually cover this; this is a safety net)
     ip saddr 10.42.0.0/16 accept comment "Pods egress"
 
+{% if firewall_openstick_backup | default(false) %}
+    ip saddr {{ firewall_openstick_usb_cidr }} oifname "{{ firewall_lan_interface }}" accept comment "OpenStick USB backup egress"
+{% endif %}
+
     # Default: block new inbound WAN -> pods (prevents accidental NodePort exposure on eth0).
     # If you intentionally expose services via NodePort/MetalLB on eth0, add explicit allows above.
 
@@ -117,3 +121,12 @@ table inet homelab {
     type filter hook output priority -10; policy accept;
   }
 }
+{% if firewall_openstick_backup | default(false) %}
+
+table ip openstick-backup {
+  chain postrouting {
+    type nat hook postrouting priority srcnat + 5; policy accept;
+    ip saddr {{ firewall_openstick_usb_cidr }} oifname "{{ firewall_lan_interface }}" masquerade comment "OpenStick USB backup egress"
+  }
+}
+{% endif %}

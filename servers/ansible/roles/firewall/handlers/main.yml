@@ -11,6 +11,7 @@
       conf=/etc/nftables.conf
     fi
     nft delete table inet homelab 2>/dev/null || true
+    nft delete table ip openstick-backup 2>/dev/null || true
     nft -f "$conf"
   args:
     executable: /bin/bash
