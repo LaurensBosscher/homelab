@@ -1,0 +1,25 @@
+[Container]
+Image=docker.io/crazymax/diun:latest
+AutoUpdate=registry
+PublishPort=10.88.0.1:9092:9090
+Volume=/opt/stack/diun/diun.yml:/etc/diun/diun.yml:ro
+Volume=/opt/stack/diun/telegram-token:/run/secrets/telegram-token:ro
+Volume=/opt/stack/diun:/data
+Volume=/run/podman/podman.sock:/var/run/docker.sock:ro
+Volume=/bin/busybox:/bin/busybox:ro
+Exec=serve --config /etc/diun/diun.yml
+HealthCmd=["/bin/busybox","wget","-q","-O","/dev/null","http://127.0.0.1:9090/metrics"]
+HealthInterval=60s
+HealthRetries=3
+HealthTimeout=10s
+HealthStartPeriod=60s
+HealthOnFailure=kill
+[Service]
+Environment=NETAVARK_FW=iptables
+MemoryMax=150M
+Restart=always
+RestartSec=5s
+LogRateLimitIntervalSec=30
+LogRateLimitBurst=300
+[Install]
+WantedBy=multi-user.target

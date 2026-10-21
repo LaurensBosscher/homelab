@@ -1,0 +1,10 @@
+[Unit]
+Description=zram swap
+After=local-fs.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/zram-start
+ExecStop=/usr/local/sbin/zram-stop
+[Install]
+WantedBy=multi-user.target

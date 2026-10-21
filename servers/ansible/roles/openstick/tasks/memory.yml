@@ -1,0 +1,112 @@
+---
+# vm.swappiness=180 and vm.page-cluster=0 favor the compressed zram cache.
+# Dirty pages are flushed slowly so the eMMC is not written on every change.
+# systemd-oomd is not running; earlyoom is the killer. The slice drop-in
+# only takes effect if systemd-oomd is started later.
+
+- name: Ensure sysctl directory exists
+  ansible.builtin.file:
+    path: /etc/sysctl.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_memory]
+
+- name: Install OpenStick sysctl
+  ansible.builtin.copy:
+    src: 90-ozstick-power.conf
+    dest: /etc/sysctl.d/90-ozstick-power.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: apply openstick sysctl
+  tags: [openstick, openstick_memory]
+
+- name: Ensure system slice drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/system.slice.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_memory]
+
+- name: Ask systemd-oomd to kill on swap pressure
+  ansible.builtin.copy:
+    src: oomd.conf
+    dest: /etc/systemd/system/system.slice.d/oomd.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+  tags: [openstick, openstick_memory]
+
+- name: Ensure /usr/local/sbin exists
+  ansible.builtin.file:
+    path: /usr/local/sbin
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_memory]
+
+- name: Install zram swap scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/usr/local/sbin/{{ item }}"
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - zram-start
+    - zram-stop
+  notify: reload systemd
+  tags: [openstick, openstick_memory]
+
+- name: Install zram swap unit
+  ansible.builtin.copy:
+    src: zram-swap.service
+    dest: /etc/systemd/system/zram-swap.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+  tags: [openstick, openstick_memory]
+
+- name: Check whether earlyoom is installed
+  ansible.builtin.command:
+    argv: [dpkg, -s, earlyoom]
+  register: openstick_earlyoom_pkg
+  changed_when: false
+  failed_when: false
+  when: openstick_earlyoom_enable | bool
+  tags: [openstick, openstick_memory]
+
+- name: Install earlyoom
+  ansible.builtin.apt:
+    name: earlyoom
+    state: present
+    update_cache: false
+  when:
+    - openstick_earlyoom_enable | bool
+    - openstick_earlyoom_pkg.rc | default(1) != 0
+  tags: [openstick, openstick_memory]
+
+- name: Reload systemd before enabling memory units
+  ansible.builtin.meta: flush_handlers
+  tags: [openstick, openstick_memory]
+
+- name: Enable zram swap
+  ansible.builtin.systemd:
+    name: zram-swap.service
+    enabled: "{{ openstick_zram_enable | bool }}"
+    state: "{{ 'started' if (openstick_zram_enable | bool) else 'stopped' }}"
+  tags: [openstick, openstick_memory]
+
+- name: Enable earlyoom
+  ansible.builtin.systemd:
+    name: earlyoom.service
+    enabled: "{{ openstick_earlyoom_enable | bool }}"
+    state: "{{ 'started' if (openstick_earlyoom_enable | bool) else 'stopped' }}"
+  tags: [openstick, openstick_memory]

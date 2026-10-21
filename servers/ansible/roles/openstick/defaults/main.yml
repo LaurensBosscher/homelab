@@ -1,0 +1,10 @@
+---
+# This kernel is 6.6 msm8916 with CONFIG_ZSWAP unset and CONFIG_ZRAM=m.
+# Compressed swap is the zram unit in files/, not zswap.
+openstick_zram_enable: true
+openstick_earlyoom_enable: true
+
+# The update units are installed, but the timer is disabled on the stick.
+openstick_cloudflared_auto_update: false
+
+openstick_secrets_file: "{{ playbook_dir }}/secrets.enc.env"

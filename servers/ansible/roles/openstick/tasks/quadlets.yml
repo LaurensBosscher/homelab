@@ -1,0 +1,125 @@
+---
+# Quadlet files only. Secret values that these units read from disk stay
+# on the stick and out of git:
+#   /opt/stack/diun/telegram-token
+#   /opt/stack/zeroclaw/secrets.env
+# The PicoClaw launcher token is the exception: it is rendered from SOPS.
+
+- name: Ensure quadlet directory exists
+  ansible.builtin.file:
+    path: /etc/containers/systemd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_quadlets]
+
+- name: Install AdGuard Home quadlet
+  ansible.builtin.copy:
+    src: quadlets/adguardhome.container
+    dest: /etc/containers/systemd/adguardhome.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart adguardhome
+  tags: [openstick, openstick_quadlets]
+
+- name: Install Beszel agent quadlet
+  ansible.builtin.copy:
+    src: quadlets/beszel-agent.container
+    dest: /etc/containers/systemd/beszel-agent.container
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart beszel-agent
+  tags: [openstick, openstick_quadlets]
+
+- name: Install Beszel hub quadlet
+  ansible.builtin.copy:
+    src: quadlets/beszel-hub.container
+    dest: /etc/containers/systemd/beszel-hub.container
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart beszel-hub
+  tags: [openstick, openstick_quadlets]
+
+- name: Install CastSponsorSkip quadlet
+  ansible.builtin.copy:
+    src: quadlets/castsponsorskip.container
+    dest: /etc/containers/systemd/castsponsorskip.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart castsponsorskip
+  tags: [openstick, openstick_quadlets]
+
+- name: Ensure CastSponsorSkip drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/containers/systemd/castsponsorskip.container.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_quadlets]
+
+- name: Install CastSponsorSkip start timeout
+  ansible.builtin.copy:
+    src: quadlets/castsponsorskip.container.d/10-start-timeout.conf
+    dest: /etc/containers/systemd/castsponsorskip.container.d/10-start-timeout.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart castsponsorskip
+  tags: [openstick, openstick_quadlets]
+
+- name: Install Diun quadlet
+  ansible.builtin.copy:
+    src: quadlets/diun.container
+    dest: /etc/containers/systemd/diun.container
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart diun
+  tags: [openstick, openstick_quadlets]
+
+- name: Install Dozzle quadlet
+  ansible.builtin.copy:
+    src: quadlets/dozzle.container
+    dest: /etc/containers/systemd/dozzle.container
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart dozzle
+  tags: [openstick, openstick_quadlets]
+
+- name: Install Gatus quadlet
+  ansible.builtin.copy:
+    src: quadlets/gatus.container
+    dest: /etc/containers/systemd/gatus.container
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart gatus
+  tags: [openstick, openstick_quadlets]
+
+- name: Install PicoClaw quadlet
+  ansible.builtin.template:
+    src: picoclaw.container.j2
+    dest: /etc/containers/systemd/picoclaw.container
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+  notify: restart picoclaw
+  tags: [openstick, openstick_quadlets]
+
+- name: Install ZeroClaw quadlet
+  ansible.builtin.copy:
+    src: quadlets/zeroclaw.container
+    dest: /etc/containers/systemd/zeroclaw.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart zeroclaw
+  tags: [openstick, openstick_quadlets]

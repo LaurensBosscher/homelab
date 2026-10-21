@@ -1,0 +1,74 @@
+---
+- name: Require the cloudflared binary
+  ansible.builtin.command:
+    argv: [/usr/bin/cloudflared, version]
+  changed_when: false
+  tags: [openstick, openstick_cloudflared]
+
+- name: Ensure cloudflared config directory exists
+  ansible.builtin.file:
+    path: /etc/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [openstick, openstick_cloudflared]
+
+- name: Install cloudflared service
+  ansible.builtin.copy:
+    src: cloudflared.service
+    dest: /etc/systemd/system/cloudflared.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart cloudflared
+  tags: [openstick, openstick_cloudflared]
+
+- name: Install cloudflared update service
+  ansible.builtin.copy:
+    src: cloudflared-update.service
+    dest: /etc/systemd/system/cloudflared-update.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+  tags: [openstick, openstick_cloudflared]
+
+- name: Install cloudflared update timer
+  ansible.builtin.copy:
+    src: cloudflared-update.timer
+    dest: /etc/systemd/system/cloudflared-update.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+  tags: [openstick, openstick_cloudflared]
+
+- name: Install Cloudflare tunnel token
+  ansible.builtin.copy:
+    dest: /etc/cloudflared/token
+    owner: root
+    group: root
+    mode: "0600"
+    content: "{{ openstick_cloudflared_token }}"
+  no_log: true
+  notify: restart cloudflared
+  tags: [openstick, openstick_cloudflared]
+
+- name: Reload systemd before enabling cloudflared
+  ansible.builtin.meta: flush_handlers
+  tags: [openstick, openstick_cloudflared]
+
+- name: Enable cloudflared
+  ansible.builtin.systemd:
+    name: cloudflared.service
+    enabled: true
+    state: started
+  tags: [openstick, openstick_cloudflared]
+
+- name: Set cloudflared update timer state
+  ansible.builtin.systemd:
+    name: cloudflared-update.timer
+    enabled: "{{ openstick_cloudflared_auto_update | bool }}"
+    state: "{{ 'started' if (openstick_cloudflared_auto_update | bool) else 'stopped' }}"
+  tags: [openstick, openstick_cloudflared]

@@ -1,0 +1,22 @@
+[Container]
+Image=docker.io/henrygd/beszel-agent:latest
+AutoUpdate=registry
+Network=host
+Volume=/run/podman/podman.sock:/var/run/docker.sock:ro
+Volume=/bin/busybox:/bin/busybox:ro
+Environment=PORT=45876
+Environment="KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPTG+n6+kgv56HGaefE8EOlMdFBP2DioQBqYlctVC071"
+HealthCmd=["/bin/busybox","nc","-w3","127.0.0.1","45876"]
+HealthInterval=60s
+HealthRetries=3
+HealthTimeout=10s
+HealthStartPeriod=30s
+HealthOnFailure=kill
+[Service]
+MemoryMax=100M
+RestartSec=5s
+LogRateLimitIntervalSec=30
+LogRateLimitBurst=300
+Restart=always
+[Install]
+WantedBy=multi-user.target

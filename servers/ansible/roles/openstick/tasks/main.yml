@@ -1,0 +1,16 @@
+---
+- name: Load OpenStick secrets
+  ansible.builtin.import_tasks: secrets.yml
+  tags: [openstick, openstick_quadlets, openstick_cloudflared]
+
+- name: Configure OpenStick memory
+  ansible.builtin.import_tasks: memory.yml
+  tags: [openstick, openstick_memory]
+
+- name: Configure OpenStick quadlets
+  ansible.builtin.import_tasks: quadlets.yml
+  tags: [openstick, openstick_quadlets]
+
+- name: Configure OpenStick Cloudflare tunnel
+  ansible.builtin.import_tasks: cloudflared.yml
+  tags: [openstick, openstick_cloudflared]

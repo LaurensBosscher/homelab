@@ -1,0 +1,34 @@
+[Container]
+Image=docker.io/library/zeroclaw:v0.8.6-debian-ssh
+ContainerName=zeroclaw
+# distroless image defaults to non-root; native unit ran as root, keep parity
+User=0
+# env overrides FIRST: bind container-non-loopback + acknowledge it (host-side
+# PublishPort on 127.0.0.1 remains the real boundary; require_pairing stays true)
+Environment=ZEROCLAW_gateway__host=0.0.0.0
+Environment=ZEROCLAW_gateway__allow_public_bind=true
+# secrets via env-file (values unquoted -> safe for podman --env-file)
+EnvironmentFile=/opt/stack/zeroclaw/secrets.env
+# same on-disk layout as native --config-dir: zero file migration
+Volume=/opt/stack/zeroclaw:/zeroclaw-data
+PublishPort=127.0.0.1:42617:42617
+# dashboard ships in-image at /usr/share/zeroclawlabs/web/dist; bind mount only
+# replaces /zeroclaw-data, so it stays visible. No AutoUpdate: we pin versions.
+Exec=--config-dir /zeroclaw-data daemon
+
+HealthCmd=curl -sf http://127.0.0.1:42617/health
+HealthInterval=60s
+HealthRetries=2
+HealthStartPeriod=90s
+HealthOnFailure=kill
+[Service]
+Environment=NETAVARK_FW=iptables
+MemoryMax=150M
+Nice=5
+Restart=always
+RestartSec=5s
+LogRateLimitIntervalSec=30
+LogRateLimitBurst=300
+
+[Install]
+WantedBy=multi-user.target

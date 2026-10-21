@@ -1,0 +1,73 @@
+---
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: apply openstick sysctl
+  ansible.builtin.command:
+    argv: [sysctl, -p, /etc/sysctl.d/90-ozstick-power.conf]
+
+- name: restart earlyoom
+  ansible.builtin.systemd:
+    name: earlyoom.service
+    state: restarted
+
+- name: restart adguardhome
+  ansible.builtin.systemd:
+    name: adguardhome.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart beszel-agent
+  ansible.builtin.systemd:
+    name: beszel-agent.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart beszel-hub
+  ansible.builtin.systemd:
+    name: beszel-hub.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart castsponsorskip
+  ansible.builtin.systemd:
+    name: castsponsorskip.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart diun
+  ansible.builtin.systemd:
+    name: diun.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart dozzle
+  ansible.builtin.systemd:
+    name: dozzle.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart gatus
+  ansible.builtin.systemd:
+    name: gatus.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart picoclaw
+  ansible.builtin.systemd:
+    name: picoclaw.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart zeroclaw
+  ansible.builtin.systemd:
+    name: zeroclaw.service
+    state: restarted
+    daemon_reload: true
+
+- name: restart cloudflared
+  ansible.builtin.systemd:
+    name: cloudflared.service
+    state: restarted
+    daemon_reload: true
