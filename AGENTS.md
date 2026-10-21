@@ -51,6 +51,10 @@ kubectl apply -f <file> -n test-namespace
 # Ansible - test single role
 cd servers/ansible
 ansible-playbook -i hosts.ini site.yml --tags <role-name> --check
+
+# OpenStick (separate inventory; not a K3s node)
+ansible-playbook --syntax-check -i hosts-openstick.ini openstick.yml
+ansible-playbook -i hosts-openstick.ini openstick.yml --check
 ```
 
 ## Code Style Guidelines
@@ -69,7 +73,7 @@ ansible-playbook -i hosts.ini site.yml --tags <role-name> --check
 
 ### Ansible
 - **Inventory**: `hosts.ini` with `ansible_python_interpreter` per host
-- **Roles**: 22 roles under `roles/`, referenced in `site.yml`
+- **Roles**: roles under `roles/`, referenced in `site.yml`. `openstick` is the exception: `openstick.yml` + `hosts-openstick.ini` only
 - **Variables**: Use `vars:` in playbooks, avoid inline Jinja2
 - **Handlers**: Use `notify` + `handlers/main.yml`
 - **Facts**: Use `ansible_facts` over `ansible_*` variables

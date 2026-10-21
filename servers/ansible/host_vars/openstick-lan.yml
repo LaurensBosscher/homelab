@@ -1,0 +1,10 @@
+---
+# Admin key is local only (~/.ssh/id_openstick). It is not in this repo.
+# The jump host is Bazzite, which is on the stick's LAN.
+ansible_user: user
+ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_private_key_file: ~/.ssh/id_openstick
+ansible_ssh_common_args: >-
+  -o IdentitiesOnly=yes
+  -o StrictHostKeyChecking=accept-new
+  -o ProxyCommand="{{ playbook_dir }}/openstick-ssh-proxy.sh %h %p"

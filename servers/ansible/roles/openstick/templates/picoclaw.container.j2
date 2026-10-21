@@ -1,0 +1,23 @@
+[Container]
+Image=docker.io/sipeed/picoclaw:launcher
+AutoUpdate=registry
+PublishPort=18800:18800
+PublishPort=18790:18790
+Volume=/opt/stack/picoclaw:/root/.picoclaw
+Volume=/bin/busybox:/bin/busybox:ro
+Environment=PICOCLAW_GATEWAY_HOST=0.0.0.0
+Environment=PICOCLAW_LAUNCHER_TOKEN={{ openstick_picoclaw_launcher_token }}
+
+HealthCmd=wget -q -O /dev/null http://127.0.0.1:18800/
+HealthInterval=60s
+HealthRetries=3
+HealthTimeout=10s
+HealthStartPeriod=60s
+HealthOnFailure=kill
+[Service]
+MemoryMax=200M
+Environment=NETAVARK_FW=iptables
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

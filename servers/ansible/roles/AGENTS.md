@@ -1,6 +1,6 @@
 # ANSIBLE ROLES
 
-22 roles for complete node provisioning: security, K3s prerequisites, optimization, and tooling.
+K3s node roles, plus `openstick` which is applied only from `../openstick.yml`.
 
 ## STRUCTURE
 ```
@@ -17,6 +17,8 @@ roles/
 │   ssh (hardening; access limited by firewall)
 │   crowdsec, k3s-oom-protection
 │   k3s-install, firewall
+│
+│   openstick (separate playbook, NOT in site.yml)
 ```
 
 ## WHERE TO LOOK
@@ -24,6 +26,7 @@ roles/
 |------|----------|
 | Add new role | Create `roles/<name>/tasks/main.yml` |
 | Role execution order | `../site.yml` (3 plays: all→control-plane→agent) |
+| OpenStick (Debian, not K3s) | `../openstick.yml` with `../hosts-openstick.ini`. Never add that host to `hosts.ini` |
 | Handler definitions | `roles/<name>/handlers/main.yml` (9 roles have handlers) |
 | K3s config templates | `kubernetes-{control-plane,agent}/templates/config.yaml.j2` |
 | Kubelet settings | `k3s-common/tasks/main.yml` (swap, resources, GC) |
@@ -33,8 +36,8 @@ roles/
 ### Role Structure
 - **Minimal**: `tasks/main.yml` only (most roles)
 - **With handlers**: Add `handlers/main.yml` for service restarts
-- **With templates**: Add `templates/*.j2` (only k8s roles)
-- **With defaults**: Add `defaults/main.yml` (only dotfiles)
+- **With templates**: Add `templates/*.j2` (k8s roles, and openstick for the PicoClaw token)
+- **With defaults**: Add `defaults/main.yml` (dotfiles, openstick)
 
 ### Task Patterns
 ```yaml

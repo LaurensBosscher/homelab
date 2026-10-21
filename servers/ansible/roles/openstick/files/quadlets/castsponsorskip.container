@@ -1,0 +1,15 @@
+[Container]
+Image=ghcr.io/gabe565/castsponsorskip:latest
+Network=host
+Volume=/bin/busybox:/bin/busybox:ro
+HealthCmd=["/bin/busybox","grep","-q",".","/proc/1/cmdline"]
+HealthInterval=60s
+HealthRetries=3
+HealthTimeout=10s
+HealthStartPeriod=30s
+[Service]
+MemoryMax=64M
+Restart=on-failure
+RestartSec=10s
+[Install]
+WantedBy=multi-user.target

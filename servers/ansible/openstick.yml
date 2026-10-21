@@ -1,0 +1,13 @@
+---
+# OpenStick is Debian on the USB stick, not a K3s node.
+# Keep it out of hosts.ini. site.yml targets every host in that file
+# and would try to install K3s here.
+- name: Configure OpenStick
+  hosts: openstick
+  become: true
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: openstick
+      tags: [openstick]

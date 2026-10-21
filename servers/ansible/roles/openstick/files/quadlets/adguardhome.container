@@ -1,0 +1,27 @@
+[Container]
+Image=docker.io/adguard/adguardhome:latest
+AutoUpdate=registry
+# DHCP uses broadcasts on wlan0. The podman bridge never receives them.
+Network=host
+AddCapability=NET_RAW
+AddCapability=NET_ADMIN
+Volume=/opt/stack/adguardhome/work:/opt/adguardhome/work
+Volume=/opt/stack/adguardhome/conf:/opt/adguardhome/conf
+Volume=/opt/stack/adguardhome/dhcpcd.conf:/etc/dhcpcd.conf:ro
+Volume=/bin/busybox:/bin/busybox:ro
+
+HealthCmd=["/bin/busybox","wget","-q","-O","/dev/null","http://127.0.0.1:3000/"]
+HealthInterval=60s
+HealthRetries=3
+HealthTimeout=10s
+HealthStartPeriod=60s
+HealthOnFailure=kill
+[Service]
+Environment=NETAVARK_FW=iptables
+MemoryMax=150M
+Restart=always
+RestartSec=5s
+LogRateLimitIntervalSec=30
+LogRateLimitBurst=300
+[Install]
+WantedBy=multi-user.target
