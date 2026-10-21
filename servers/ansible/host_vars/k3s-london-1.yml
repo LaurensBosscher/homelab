@@ -1,0 +1,3 @@
+# Cloned from k3s-london-2, so /etc/machine-id matches and Beszel would treat
+# both nodes as one system. Pin a fingerprint derived from this hostname.
+beszel_agent_fingerprint: e49f941c635768b2018fc9cc0561f9c640b7c1f2869d6f9d

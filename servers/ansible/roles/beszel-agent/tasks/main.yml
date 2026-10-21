@@ -65,6 +65,27 @@
     shell: /usr/sbin/nologin
   tags: [beszel]
 
+- name: Ensure Beszel agent data directory
+  ansible.builtin.file:
+    path: /var/lib/beszel-agent
+    state: directory
+    owner: beszel
+    group: beszel
+    mode: "0755"
+  when: beszel_agent_fingerprint | default('') | length > 0
+  tags: [beszel]
+
+- name: Pin Beszel fingerprint
+  ansible.builtin.copy:
+    dest: /var/lib/beszel-agent/fingerprint
+    content: "{{ beszel_agent_fingerprint }}\n"
+    owner: beszel
+    group: beszel
+    mode: "0644"
+  when: beszel_agent_fingerprint | default('') | length > 0
+  notify: Restart beszel-agent
+  tags: [beszel]
+
 - name: Download beszel-agent {{ beszel_agent_version }} release tarball
   ansible.builtin.get_url:
     url: >-
