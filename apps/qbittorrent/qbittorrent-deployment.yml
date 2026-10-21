@@ -87,7 +87,7 @@ spec:
               memory: 512Mi
       containers:
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:20.04.1
+          image: lscr.io/linuxserver/qbittorrent:5.3.0
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 1000

@@ -31,7 +31,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: calibre-web
-          image: ghcr.io/crocodilestick/calibre-web-automated:V4.0.6
+          image: ghcr.io/crocodilestick/calibre-web-automated:v4.0.8
           # Apply the header setting before s6 starts CWA. /init must stay PID 1.
           command: ["/bin/sh", "-c"]
           args:

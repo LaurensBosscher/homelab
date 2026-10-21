@@ -33,7 +33,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: bookshelf
-          image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20
+          image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.21
           ports:
             - containerPort: 8787
               name: http
