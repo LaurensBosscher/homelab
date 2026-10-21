@@ -34,7 +34,7 @@ metadata:
 data:
   config.yaml: |
     superUser:
-      username: "admin"
+      username: "admin_kite"
       password: "${KITE_PASSWORD}"
 ---
 apiVersion: apps/v1
