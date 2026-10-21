@@ -34,7 +34,7 @@ spec:
                       - bazzite
       containers:
         - name: nzbget
-          image: lscr.io/linuxserver/nzbget:version-v25.2
+          image: lscr.io/linuxserver/nzbget:version-v26.3
           securityContext:
             allowPrivilegeEscalation: false
           ports:

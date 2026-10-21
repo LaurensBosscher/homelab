@@ -10,7 +10,8 @@
     "argocd",
     "dockerfile",
     "kustomize",
-    "kubernetes"
+    "kubernetes",
+    "regex"
   ],
   "dockerfile": {
     "managerFilePatterns": [
@@ -37,6 +38,45 @@
         "uv tool install (?<depName>[\\w.-]+)==(?<currentValue>[^\\s&]+)"
       ],
       "datasourceTemplate": "pypi"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)apps/nzbget/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*lscr\\.io/linuxserver/nzbget:version-v(?<currentValue>\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "lscr.io/linuxserver/nzbget",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker",
+      "extractVersionTemplate": "^version-v(?<version>\\d+\\.\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)apps/bookshelf/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*ghcr\\.io/pennydreadful/bookshelf:hardcover-v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "ghcr.io/pennydreadful/bookshelf",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker",
+      "extractVersionTemplate": "^hardcover-v(?<version>\\d+\\.\\d+\\.\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)apps/listenarr/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*ghcr\\.io/listenarrs/listenarr:canary-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "ghcr.io/listenarrs/listenarr",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker",
+      "extractVersionTemplate": "^canary-(?<version>\\d+\\.\\d+\\.\\d+)$"
     }
   ],
   "argocd": {
@@ -59,7 +99,8 @@
       "matchManagers": [
         "kubernetes",
         "argocd",
-        "kustomize"
+        "kustomize",
+        "regex"
       ],
       "matchDatasources": [
         "docker"
@@ -74,6 +115,15 @@
       ],
       "enabled": false,
       "description": "Meilisearch needs to be updated manually"
+    },
+    {
+      "matchPackageNames": [
+        "lscr.io/linuxserver/qbittorrent"
+      ],
+      "allowedVersions": "/^v?[0-9]\\./",
+      "description": "Legacy linuxserver tags such as 20.04.1 sort above qBittorrent 5.x"
     }
   ]
 }
+
+
