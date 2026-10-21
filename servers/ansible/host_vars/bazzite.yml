@@ -8,3 +8,10 @@ k3s_selinux_enabled: true
 # mount one hostPath on every node.
 k3s_local_path_storage: /var/mnt/data/local-path
 k3s_local_path_fcontext: /mnt/data/local-path(/.*)?
+# OpenStick USB clients (192.168.5.0/24) may use this host as a backup
+# gateway when the stick's Wi-Fi path is down. The homelab forward chain
+# drops that traffic unless it is allowed, and the router has no route back
+# to the USB subnet, so masquerade it out the LAN NIC.
+firewall_openstick_backup: true
+firewall_openstick_usb_cidr: 192.168.5.0/24
+firewall_lan_interface: enp2s0
