@@ -12,6 +12,8 @@ data:
     #   ZEROCLAW_providers__models__zai__default__api_key
     #   ZEROCLAW_providers__models__openrouter__default__api_key
     #   ZEROCLAW_memory__embedding_api_key
+    #
+    # Security flags kept in sync with the hardened live config (2026-10-21).
     schema_version = 3
     default_provider = "zai"
     default_model = "glm-5.3-flash"
@@ -74,9 +76,9 @@ data:
     level = "full"
     workspace_only = false
     allowed_commands = ["*"]
-    forbidden_paths = []
+    forbidden_paths = ["/etc/shadow", "/etc/kubernetes", "/var/run/secrets"]
     require_approval_for_medium_risk = false
-    block_high_risk_commands = false
+    block_high_risk_commands = true
     auto_approve = ["*"]
     always_ask = []
     sandbox_enabled = false
@@ -88,10 +90,10 @@ data:
     enabled = false
 
     [security.estop]
-    enabled = false
+    enabled = true
 
     [security.leak_detection]
-    enabled = false
+    enabled = true
 
     [secrets]
     encrypt = true
