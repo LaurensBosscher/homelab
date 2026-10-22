@@ -365,11 +365,6 @@ data:
                 description: OpenStick uptime monitoring
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
                 siteMonitor: https://gatus_openstick.bosscher.ch
-            - Pico:
-                href: https://pico_openstick.bosscher.ch
-                description: Pico service on OpenStick
-                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/docker.png
-                siteMonitor: https://pico_openstick.bosscher.ch
             - Dozzle:
                 href: https://dozzle_openstick.bosscher.ch
                 description: Docker log viewer
