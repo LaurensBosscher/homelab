@@ -47,6 +47,9 @@ spec:
         image: getmeili/meilisearch:v1.25.0
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 7700
         env:
@@ -133,9 +136,12 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: db
-        image: flomp/wanderer-db:v0.21.0
+        image: flomp/wanderer-db:v0.21.1
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 8090
         env:
@@ -227,9 +233,12 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: wanderer
-        image: flomp/wanderer-web:v0.21.0
+        image: flomp/wanderer-web:v0.21.1
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 3000
         env:

@@ -1,4 +1,3 @@
-apiVersion: rbac.authorization.k8s.io/v1
 # Scoped dashboard role. Kite's standalone install manifest ships cluster-admin,
 # but upstream explicitly calls that an evaluation default: "Review and restrict
 # these permissions before using it outside a test environment."
@@ -183,6 +182,9 @@ spec:
         app: kite
         app.kubernetes.io/name: kite
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -195,6 +197,11 @@ spec:
       serviceAccountName: kite
       containers:
         - image: ghcr.io/kite-org/kite:v0.16.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           name: kite
           env:
             - name: KITE_CONFIG_FILE

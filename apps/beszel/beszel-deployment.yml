@@ -34,9 +34,12 @@ spec:
                 - bazzite
       containers:
       - name: beszel
-        image: henrygd/beszel:0.21.0
+        image: henrygd/beszel:0.21.1
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         env:
         - name: TZ
           value: Europe/Zurich

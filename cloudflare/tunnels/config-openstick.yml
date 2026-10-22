@@ -2,8 +2,6 @@
   service: ssh://localhost:22
 - hostname: gatus_openstick.bosscher.ch
   service: http://localhost:8081
-- hostname: pico_openstick.bosscher.ch
-  service: http://localhost:18800
 # Dozzle itself is not in this repo (OpenStick localhost:8888).
 # Its container needs:
 #   DOZZLE_AUTH_PROVIDER=forward-proxy

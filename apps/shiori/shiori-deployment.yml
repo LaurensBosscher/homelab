@@ -35,6 +35,9 @@ spec:
         image: ghcr.io/go-shiori/shiori:v1.8.0
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 8080
         env:

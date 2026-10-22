@@ -104,7 +104,8 @@ def create_access() -> Access:
     email_laurens = require_env("ACCESS_EMAIL_LAURENS")
     email_jagoda = require_env("ACCESS_EMAIL_JAGODA")
     home_cidr = require_env("ACCESS_HOME_CIDR")
-    # Home CIDR is always included. Add Jagoda later with ACCESS_AIOSTREAMS_EXTRA_CIDRS.
+    # Home CIDR is always included. Household extras (Jagoda) live in
+    # ACCESS_AIOSTREAMS_EXTRA_CIDRS inside secrets.enc.env.
     aiostreams_cidrs = env_cidrs("ACCESS_HOME_CIDR", "ACCESS_AIOSTREAMS_EXTRA_CIDRS")
     policies: dict[str, cloudflare.ZeroTrustAccessPolicy] = {}
 

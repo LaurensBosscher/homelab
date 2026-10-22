@@ -39,6 +39,9 @@ spec:
         image: twinproduction/gatus:v5.37.0
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         env:
         - name: TZ
           value: Europe/Zurich

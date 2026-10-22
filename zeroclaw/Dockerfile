@@ -3,7 +3,7 @@
 # Fork image from LaurensBosscher/zeroclaw branch ci/homelab-image
 # (all-features Containerfile). Paths match the upstream image:
 # /usr/bin/zeroclaw, /usr/bin/zerocode, /usr/share/zeroclawlabs.
-ARG ZEROCLAW_IMAGE=ghcr.io/laurensbosscher/zeroclaw:sha-d76d058a2e9b580a6364b734e11e10b820f385df
+ARG ZEROCLAW_IMAGE=ghcr.io/laurensbosscher/zeroclaw:sha-4828243ffe26cf0325a666bb23737a9ae428328b
 FROM ${ZEROCLAW_IMAGE} AS zeroclaw
 
 # Same CLI surface as OpenClaw (git, gh, kubectl, bun, browser, …).

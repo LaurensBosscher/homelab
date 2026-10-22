@@ -22,6 +22,9 @@ spec:
         image: bentopdf/bentopdf:v1.15.3
         securityContext:
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         ports:
         - containerPort: 8080
         env:
