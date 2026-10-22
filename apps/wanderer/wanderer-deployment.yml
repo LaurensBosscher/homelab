@@ -19,6 +19,9 @@ spec:
         app: wanderer-search
         app.kubernetes.io/name: wanderer
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -38,6 +41,11 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: search
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: getmeili/meilisearch:v1.25.0
           ports:
             - containerPort: 7700
@@ -100,6 +108,9 @@ spec:
         app: wanderer-db
         app.kubernetes.io/name: wanderer
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -119,6 +130,11 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: db
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: flomp/wanderer-db:v0.21.1
           ports:
             - containerPort: 8090
@@ -186,6 +202,9 @@ spec:
         app: wanderer
         app.kubernetes.io/name: wanderer
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -205,6 +224,11 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: wanderer
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: flomp/wanderer-web:v0.21.1
           ports:
             - containerPort: 3000

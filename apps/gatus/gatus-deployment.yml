@@ -19,6 +19,9 @@ spec:
       labels:
         app: gatus
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -30,6 +33,11 @@ spec:
                       - bazzite
       containers:
         - name: gatus
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: twinproduction/gatus:v5.37.0
           env:
             - name: TZ

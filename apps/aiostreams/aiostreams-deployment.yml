@@ -17,6 +17,9 @@ spec:
       labels:
         app: aiostreams
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +31,11 @@ spec:
                       - bazzite
       containers:
         - name: aiostreams
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: ghcr.io/viren070/aiostreams:v2.36.0
           ports:
             - containerPort: 3000

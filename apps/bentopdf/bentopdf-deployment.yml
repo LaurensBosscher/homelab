@@ -17,8 +17,16 @@ spec:
       labels:
         app: bentopdf
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: bentopdf
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: bentopdf/bentopdf:v1.15.3
           ports:
             - containerPort: 8080

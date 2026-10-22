@@ -16,8 +16,13 @@ spec:
       labels:
         app: flaresolver
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: flaresolver
+          securityContext:
+            allowPrivilegeEscalation: false
           image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
           ports:
             - containerPort: 8191
