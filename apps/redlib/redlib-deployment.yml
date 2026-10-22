@@ -6,7 +6,10 @@ metadata:
     app.kubernetes.io/name: redlib
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 1
+  # Scaled to 0 (2026-10-22): Reddit 403-blocks the cluster egress IP on the
+  # /r/*/hot.json endpoints redlib depends on → homepage 404 → CrashLoop.
+  # See PR for details; scale back up only with a proxy in front of Reddit traffic.
+  replicas: 0
   strategy:
     type: Recreate
   selector:
