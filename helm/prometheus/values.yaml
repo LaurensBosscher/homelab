@@ -22,6 +22,11 @@ kube-prometheus-stack:
 
   kubelet:
     serviceMonitor:
+      # Kubelet serving certs are signed by k3s-server-ca, which is the pod
+      # serviceaccount CA already referenced by this ServiceMonitor. Chart
+      # 65.8.1 only honors this flag on /metrics; cAdvisor and probes stay
+      # insecureSkipVerify in the upstream template.
+      insecureSkipVerify: false
       # Keep chart-default metrics_path label, then drop unreachable bazzite LAN IP.
       relabelings:
         - action: replace
@@ -240,8 +245,10 @@ kube-prometheus-stack:
         limits:
           memory: 128Mi
 metrics-server:
+  # Same CA as the kubelet serving certs (k3s-server-ca). Mounted into the pod
+  # via the serviceaccount; chart 3.13.0 appends these args to its defaults.
   args:
-    - --kubelet-insecure-tls
+    - --kubelet-certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   # Same as alertmanager — keep metrics API off flappy WAN agents during soak.
   nodeSelector:
     kubernetes.io/hostname: bazzite
