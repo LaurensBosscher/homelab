@@ -15,87 +15,94 @@ spec:
       labels:
         app.kubernetes.io/name: homepage
     spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
       serviceAccountName: homepage
       automountServiceAccountToken: true
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
       containers:
-        - name: homepage
-          image: "ghcr.io/gethomepage/homepage:v2.6.0"
-          imagePullPolicy: Always
-          env:
-            - name: HOMEPAGE_ALLOWED_HOSTS
-              value: home.bosscher.ch
-          ports:
-            - name: http
-              containerPort: 3000
-              protocol: TCP
-          volumeMounts:
-            - mountPath: /app/config/custom.css
-              name: homepage-config
-              subPath: custom.css
-            - mountPath: /app/config/bookmarks.yaml
-              name: homepage-config
-              subPath: bookmarks.yaml
-            - mountPath: /app/config/docker.yaml
-              name: homepage-config
-              subPath: docker.yaml
-            - mountPath: /app/config/kubernetes.yaml
-              name: homepage-config
-              subPath: kubernetes.yaml
-            - mountPath: /app/config/services.yaml
-              name: homepage-config
-              subPath: services.yaml
-            - mountPath: /app/config/settings.yaml
-              name: homepage-config
-              subPath: settings.yaml
-            - mountPath: /app/config/widgets.yaml
-              name: homepage-config
-              subPath: widgets.yaml
-            - mountPath: /app/config/logs
-              name: logs
-          resources:
-            requests:
-              cpu: 25m
-              memory: 128Mi
-            limits:
-              memory: 256Mi
+      - name: homepage
+        image: "ghcr.io/gethomepage/homepage:v2.6.0"
+        securityContext:
+          allowPrivilegeEscalation: false
+        imagePullPolicy: Always
+        env:
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: home.bosscher.ch
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/config/custom.css
+          name: homepage-config
+          subPath: custom.css
+        - mountPath: /app/config/bookmarks.yaml
+          name: homepage-config
+          subPath: bookmarks.yaml
+        - mountPath: /app/config/docker.yaml
+          name: homepage-config
+          subPath: docker.yaml
+        - mountPath: /app/config/kubernetes.yaml
+          name: homepage-config
+          subPath: kubernetes.yaml
+        - mountPath: /app/config/services.yaml
+          name: homepage-config
+          subPath: services.yaml
+        - mountPath: /app/config/settings.yaml
+          name: homepage-config
+          subPath: settings.yaml
+        - mountPath: /app/config/widgets.yaml
+          name: homepage-config
+          subPath: widgets.yaml
+        - mountPath: /app/config/logs
+          name: logs
+        resources:
+          requests:
+            cpu: 25m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
           # homepage >= v2.0.0 validates the Host header on ALL routes (including
           # / and /api/healthcheck) against HOMEPAGE_ALLOWED_HOSTS. Kubelet probes
           # arrive with Host: <podIP>:3000 and would get HTTP 400 -> CrashLoopBackOff.
           # Send an allowed Host and probe the same endpoint as the image HEALTHCHECK.
-          livenessProbe:
-            httpGet:
-              path: /api/healthcheck
-              port: 3000
-              httpHeaders:
-                - name: Host
-                  value: home.bosscher.ch
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /api/healthcheck
-              port: 3000
-              httpHeaders:
-                - name: Host
-                  value: home.bosscher.ch
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 3000
+            httpHeaders:
+            - name: Host
+              value: home.bosscher.ch
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 3000
+            httpHeaders:
+            - name: Host
+              value: home.bosscher.ch
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 5
       volumes:
-        - name: homepage-config
-          configMap:
-            name: homepage
-        - name: logs
-          emptyDir: {}
+      - name: homepage-config
+        configMap:
+          name: homepage
+      - name: logs
+        emptyDir: {}
