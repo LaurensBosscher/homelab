@@ -36,7 +36,7 @@ roles/
 ### Role Structure
 - **Minimal**: `tasks/main.yml` only (most roles)
 - **With handlers**: Add `handlers/main.yml` for service restarts
-- **With templates**: Add `templates/*.j2` (k8s roles, and openstick for the PicoClaw token)
+- **With templates**: Add `templates/*.j2` (k8s roles)
 - **With defaults**: Add `defaults/main.yml` (dotfiles, openstick)
 
 ### Task Patterns
