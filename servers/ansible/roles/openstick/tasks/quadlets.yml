@@ -3,7 +3,6 @@
 # on the stick and out of git:
 #   /opt/stack/diun/telegram-token
 #   /opt/stack/zeroclaw/secrets.env
-# The PicoClaw launcher token is the exception: it is rendered from SOPS.
 
 - name: Ensure quadlet directory exists
   ansible.builtin.file:
@@ -101,17 +100,6 @@
     group: root
     mode: "0600"
   notify: restart gatus
-  tags: [openstick, openstick_quadlets]
-
-- name: Install PicoClaw quadlet
-  ansible.builtin.template:
-    src: picoclaw.container.j2
-    dest: /etc/containers/systemd/picoclaw.container
-    owner: root
-    group: root
-    mode: "0600"
-  no_log: true
-  notify: restart picoclaw
   tags: [openstick, openstick_quadlets]
 
 - name: Install ZeroClaw quadlet
