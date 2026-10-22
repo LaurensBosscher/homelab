@@ -135,7 +135,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-          image: flomp/wanderer-db:v0.21.0
+          image: flomp/wanderer-db:v0.21.1
           ports:
             - containerPort: 8090
           env:
@@ -229,7 +229,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-          image: flomp/wanderer-web:v0.21.0
+          image: flomp/wanderer-web:v0.21.1
           ports:
             - containerPort: 3000
           env:
