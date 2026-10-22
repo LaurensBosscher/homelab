@@ -32,8 +32,14 @@ jobs:
       - name: Find Kubernetes manifests
         id: find-manifests
         run: |
-          # Find all YAML files that look like Kubernetes manifests
-          MANIFESTS=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -E "(deployment|service|configmap|secret|ingress|statefulset|daemonset|job|cronjob)" | tr '\n' ' ')
+          # Find all YAML files that look like Kubernetes manifests.
+          # NOTE: exclude the Ansible tree — its task files are top-level YAML
+          # *arrays* (e.g. roles/openstick/tasks/secrets.yml, which also matches
+          # the "secret" keyword below) and kubeval only decodes k8s manifests.
+          MANIFESTS=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \) \
+            -not -path "./servers/ansible/*" \
+            -not -path "./.git/*" \
+            | grep -E "(deployment|service|configmap|secret|ingress|statefulset|daemonset|job|cronjob)" | tr '\n' ' ')
           echo "manifests=$MANIFESTS" >> $GITHUB_OUTPUT
 
           if [ -z "$MANIFESTS" ]; then
