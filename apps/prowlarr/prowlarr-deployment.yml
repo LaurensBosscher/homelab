@@ -17,6 +17,9 @@ spec:
       labels:
         app: prowlarr
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +31,8 @@ spec:
                       - bazzite
       containers:
         - name: prowlarr
+          securityContext:
+            allowPrivilegeEscalation: false
           image: lscr.io/linuxserver/prowlarr:2.6.5
           ports:
             - containerPort: 9696

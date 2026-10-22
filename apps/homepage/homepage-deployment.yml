@@ -15,6 +15,9 @@ spec:
       labels:
         app.kubernetes.io/name: homepage
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -30,6 +33,11 @@ spec:
       enableServiceLinks: true
       containers:
         - name: homepage
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: "ghcr.io/gethomepage/homepage:v2.6.0"
           imagePullPolicy: Always
           env:

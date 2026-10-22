@@ -15,6 +15,9 @@ spec:
       labels:
         app: shiori
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -26,6 +29,11 @@ spec:
                       - bazzite
       containers:
         - name: shiori
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: ghcr.io/go-shiori/shiori:v1.8.0
           ports:
             - containerPort: 8080

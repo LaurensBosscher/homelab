@@ -17,6 +17,9 @@ spec:
       labels:
         app: beszel
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +31,11 @@ spec:
                       - bazzite
       containers:
         - name: beszel
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: henrygd/beszel:0.21.0
           env:
             - name: TZ

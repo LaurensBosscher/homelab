@@ -15,10 +15,15 @@ spec:
       labels:
         app: stremio
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector:
         kubernetes.io/hostname: bazzite
       containers:
         - name: stremio
+          securityContext:
+            allowPrivilegeEscalation: false
           image: tsaridas/stremio-docker:v1.3.14
           ports:
             - containerPort: 8080

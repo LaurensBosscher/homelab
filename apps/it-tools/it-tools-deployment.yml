@@ -16,8 +16,16 @@ spec:
       labels:
         app: it-tools
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: it-tools
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           image: docker.io/sharevb/it-tools:2026.9.27-baseurl-it-tools
           ports:
             - containerPort: 8080
