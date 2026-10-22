@@ -383,22 +383,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-openclaw-bosscher-ch-2c95f2a8"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-openclaw-bosscher-ch-2c95f2a8",
-            zone_id=zone_ids["bosscher.ch"],
-            name="openclaw.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/2c95f2a85037d1310e91cc23e7b578c9",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-pico-openstick-bosscher-ch-713efae2"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-pico-openstick-bosscher-ch-713efae2",

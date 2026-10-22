@@ -22,26 +22,6 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/(^|/)openclaw/Dockerfile$/"
-      ],
-      "matchStrings": [
-        "(?:RUN bun install\\s+|\\s+)(?<depName>(?:@[\\w.-]+/)?[\\w.-]+)@(?<currentValue>[^\\s&]+)"
-      ],
-      "datasourceTemplate": "npm"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|/)openclaw/Dockerfile$/"
-      ],
-      "matchStrings": [
-        "uv tool install (?<depName>[\\w.-]+)==(?<currentValue>[^\\s&]+)"
-      ],
-      "datasourceTemplate": "pypi"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
         "/(^|/)apps/nzbget/.+\\.ya?ml$/"
       ],
       "matchStrings": [
