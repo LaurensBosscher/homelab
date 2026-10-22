@@ -39,7 +39,7 @@ spec:
       containers:
         - name: zeroclaw
           # Built by .github/workflows/build-zeroclaw.yml. Bump with the workflow tag.
-          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-4
+          image: ghcr.io/laurensbosscher/zeroclaw-tools:0.8.6-5
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
