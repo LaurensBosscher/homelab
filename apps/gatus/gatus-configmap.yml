@@ -339,11 +339,3 @@ data:
           # CouchDB requires auth even on /; 401 means the service is up.
           - "[STATUS] == 401"
           - "[RESPONSE_TIME] < 2500"
-
-      - name: openclaw
-        group: ai
-        url: "http://openclaw-gateway.openclaw.svc.cluster.local:18789"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"

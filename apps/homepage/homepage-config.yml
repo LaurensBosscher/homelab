@@ -178,11 +178,6 @@ data:
                 href: https://grok.com/
                 description: Truth seeker
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grok-dark.svg
-            - Openclaw:
-                href: https://openclaw.bosscher.ch
-                description: AI agent gateway
-                icon: https://avatars.githubusercontent.com/u/252820863?s=48&v=4
-                siteMonitor: http://openclaw-gateway.openclaw.svc.cluster.local:18789
             - OpenRouter:
                 href: https://openrouter.ai/chat
                 description: OpenRouter AI Chat
