@@ -15,64 +15,67 @@ spec:
       labels:
         app: shiori
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
       containers:
-        - name: shiori
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          image: ghcr.io/go-shiori/shiori:v1.8.0
-          ports:
-            - containerPort: 8080
-          env:
-            - name: TZ
-              value: Europe/Zurich
-            - name: SHIORI_DIR
-              value: /data
+      - name: shiori
+        image: ghcr.io/go-shiori/shiori:v1.8.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TZ
+          value: Europe/Zurich
+        - name: SHIORI_DIR
+          value: /data
             # Username must equal the Access email. Unknown users keep the password form.
-            - name: SHIORI_SSO_PROXY_AUTH_ENABLED
-              value: "true"
-            - name: SHIORI_SSO_PROXY_AUTH_HEADER_NAME
-              value: Cf-Access-Authenticated-User-Email
-            - name: SHIORI_SSO_PROXY_AUTH_TRUSTED
-              value: 10.42.0.0/16
-          volumeMounts:
-            - name: data
-              mountPath: /data
-          resources:
-            requests:
-              cpu: 25m
-              memory: 16Mi
-            limits:
-              memory: 64Mi
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 60
-            timeoutSeconds: 5
-      volumes:
+        - name: SHIORI_SSO_PROXY_AUTH_ENABLED
+          value: "true"
+        - name: SHIORI_SSO_PROXY_AUTH_HEADER_NAME
+          value: Cf-Access-Authenticated-User-Email
+        - name: SHIORI_SSO_PROXY_AUTH_TRUSTED
+          value: 10.42.0.0/16
+        volumeMounts:
         - name: data
-          persistentVolumeClaim:
-            claimName: shiori-data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 25m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: shiori-data

@@ -16,39 +16,40 @@ spec:
       labels:
         app: flaresolver
     spec:
+      automountServiceAccountToken: false
       securityContext:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: flaresolver
-          securityContext:
-            allowPrivilegeEscalation: false
-          image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
-          ports:
-            - containerPort: 8191
-              name: http
-          env:
-            - name: LOG_LEVEL
-              value: "info"
-          resources:
-            requests:
-              cpu: 50m
-              memory: 256Mi
-            limits:
-              memory: 1Gi
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8191
-            initialDelaySeconds: 30
-            periodSeconds: 60
-            timeoutSeconds: 5
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8191
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 5
-            failureThreshold: 3
+      - name: flaresolver
+        image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
+        securityContext:
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 8191
+          name: http
+        env:
+        - name: LOG_LEVEL
+          value: "info"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8191
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8191
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 3

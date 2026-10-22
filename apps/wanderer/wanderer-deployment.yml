@@ -19,73 +19,76 @@ spec:
         app: wanderer-search
         app.kubernetes.io/name: wanderer
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: wanderer
-                topologyKey: kubernetes.io/hostname
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: wanderer
+              topologyKey: kubernetes.io/hostname
       containers:
-        - name: search
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          image: getmeili/meilisearch:v1.25.0
-          ports:
-            - containerPort: 7700
-          env:
-            - name: MEILI_URL
-              value: http://localhost:7700
-            - name: MEILI_MASTER_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: wanderer-secret
-                  key: meili_master_key
-            - name: MEILI_NO_ANALYTICS
-              value: "true"
-          volumeMounts:
-            - name: search-data
-              mountPath: /meili_data/
-          resources:
-            requests:
-              cpu: 25m
-              memory: 128Mi
-            limits:
-              memory: 1Gi
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 7700
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 7700
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 10
-      volumes:
+      - name: search
+        image: getmeili/meilisearch:v1.25.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 7700
+        env:
+        - name: MEILI_URL
+          value: http://localhost:7700
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secret
+              key: meili_master_key
+        - name: MEILI_NO_ANALYTICS
+          value: "true"
+        volumeMounts:
         - name: search-data
-          persistentVolumeClaim:
-            claimName: wanderer-search-data
+          mountPath: /meili_data/
+        resources:
+          requests:
+            cpu: 25m
+            memory: 128Mi
+          limits:
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 7700
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 7700
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10
+      volumes:
+      - name: search-data
+        persistentVolumeClaim:
+          claimName: wanderer-search-data
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -108,78 +111,81 @@ spec:
         app: wanderer-db
         app.kubernetes.io/name: wanderer
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: wanderer
-                topologyKey: kubernetes.io/hostname
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: wanderer
+              topologyKey: kubernetes.io/hostname
       containers:
-        - name: db
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          image: flomp/wanderer-db:v0.21.1
-          ports:
-            - containerPort: 8090
-          env:
-            - name: ORIGIN
-              value: https://wanderer.bosscher.ch
-            - name: MEILI_URL
-              value: http://wanderer-search:7700
-            - name: MEILI_MASTER_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: wanderer-secret
-                  key: meili_master_key
-            - name: POCKETBASE_ENCRYPTION_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: wanderer-secret
-                  key: pocketbase_encryption_key
-          volumeMounts:
-            - name: db-data
-              mountPath: /pb_data
-          resources:
-            requests:
-              cpu: 25m
-              memory: 128Mi
-            limits:
-              memory: 512Mi
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8090
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8090
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 10
-      volumes:
+      - name: db
+        image: flomp/wanderer-db:v0.21.1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 8090
+        env:
+        - name: ORIGIN
+          value: https://wanderer.bosscher.ch
+        - name: MEILI_URL
+          value: http://wanderer-search:7700
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secret
+              key: meili_master_key
+        - name: POCKETBASE_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secret
+              key: pocketbase_encryption_key
+        volumeMounts:
         - name: db-data
-          persistentVolumeClaim:
-            claimName: wanderer-db-data
+          mountPath: /pb_data
+        resources:
+          requests:
+            cpu: 25m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8090
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8090
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: wanderer-db-data
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -202,88 +208,91 @@ spec:
         app: wanderer
         app.kubernetes.io/name: wanderer
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: wanderer
-                topologyKey: kubernetes.io/hostname
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: wanderer
+              topologyKey: kubernetes.io/hostname
       containers:
-        - name: wanderer
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          image: flomp/wanderer-web:v0.21.1
-          ports:
-            - containerPort: 3000
-          env:
-            - name: MEILI_URL
-              value: http://wanderer-search:7700
-            - name: MEILI_MASTER_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: wanderer-secret
-                  key: meili_master_key
-            - name: ORIGIN
-              value: https://wanderer.bosscher.ch
-            - name: BODY_SIZE_LIMIT
-              value: Infinity
-            - name: PUBLIC_POCKETBASE_URL
-              value: http://wanderer-db:8090
-            - name: PUBLIC_DISABLE_SIGNUP
-              value: "false"
-            - name: UPLOAD_FOLDER
-              value: /app/uploads
-            - name: UPLOAD_USER
-              value: ""
-            - name: UPLOAD_PASSWORD
-              value: ""
-            - name: PUBLIC_OVERPASS_API_URL
-              value: https://overpass-api.de
-            - name: PUBLIC_VALHALLA_URL
-              value: https://valhalla1.openstreetmap.de
-            - name: PUBLIC_NOMINATIM_URL
-              value: https://nominatim.openstreetmap.org
-          volumeMounts:
-            - name: uploads
-              mountPath: /app/uploads
-          resources:
-            requests:
-              cpu: 25m
-              memory: 64Mi
-            limits:
-              memory: 128Mi
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 10
-      volumes:
+      - name: wanderer
+        image: flomp/wanderer-web:v0.21.1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MEILI_URL
+          value: http://wanderer-search:7700
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wanderer-secret
+              key: meili_master_key
+        - name: ORIGIN
+          value: https://wanderer.bosscher.ch
+        - name: BODY_SIZE_LIMIT
+          value: Infinity
+        - name: PUBLIC_POCKETBASE_URL
+          value: http://wanderer-db:8090
+        - name: PUBLIC_DISABLE_SIGNUP
+          value: "false"
+        - name: UPLOAD_FOLDER
+          value: /app/uploads
+        - name: UPLOAD_USER
+          value: ""
+        - name: UPLOAD_PASSWORD
+          value: ""
+        - name: PUBLIC_OVERPASS_API_URL
+          value: https://overpass-api.de
+        - name: PUBLIC_VALHALLA_URL
+          value: https://valhalla1.openstreetmap.de
+        - name: PUBLIC_NOMINATIM_URL
+          value: https://nominatim.openstreetmap.org
+        volumeMounts:
         - name: uploads
-          persistentVolumeClaim:
-            claimName: wanderer-data
+          mountPath: /app/uploads
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: wanderer-data

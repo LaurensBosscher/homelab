@@ -17,72 +17,75 @@ spec:
       labels:
         app: aiostreams
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - bazzite
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - bazzite
       containers:
-        - name: aiostreams
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          image: ghcr.io/viren070/aiostreams:v2.36.0
-          ports:
-            - containerPort: 3000
-          env:
-            - name: BASE_URL
-              value: https://aiostreams.bosscher.ch
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aiostreams-secret
-                  key: secret-key
-            - name: ADDON_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: aiostreams-secret
-                  key: addon-password
-            - name: AIOSTREAMS_AUTH
-              valueFrom:
-                secretKeyRef:
-                  name: aiostreams-auth-secret
-                  key: aiostreams-auth
-            - name: STREAM_CACHE_TTL
-              value: "3600"
-            - name: LOG_FORMAT
-              value: json
-          volumeMounts:
-            - name: data
-              mountPath: /app/data
-          resources:
-            requests:
-              cpu: 50m
-              memory: 200Mi
-            limits:
-              memory: 1Gi
-          livenessProbe:
-            httpGet:
-              path: /api/v1/status
-              port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 60
-          readinessProbe:
-            httpGet:
-              path: /api/v1/status
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 30
-      volumes:
+      - name: aiostreams
+        image: ghcr.io/viren070/aiostreams:v2.36.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 3000
+        env:
+        - name: BASE_URL
+          value: https://aiostreams.bosscher.ch
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aiostreams-secret
+              key: secret-key
+        - name: ADDON_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aiostreams-secret
+              key: addon-password
+        - name: AIOSTREAMS_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: aiostreams-auth-secret
+              key: aiostreams-auth
+        - name: STREAM_CACHE_TTL
+          value: "3600"
+        - name: LOG_FORMAT
+          value: json
+        volumeMounts:
         - name: data
-          persistentVolumeClaim:
-            claimName: aiostreams-data
+          mountPath: /app/data
+        resources:
+          requests:
+            cpu: 50m
+            memory: 200Mi
+          limits:
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /api/v1/status
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /api/v1/status
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: aiostreams-data

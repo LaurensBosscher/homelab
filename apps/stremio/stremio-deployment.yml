@@ -15,53 +15,56 @@ spec:
       labels:
         app: stremio
     spec:
+      automountServiceAccountToken: false
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       nodeSelector:
         kubernetes.io/hostname: bazzite
       containers:
-        - name: stremio
-          securityContext:
-            allowPrivilegeEscalation: false
-          image: tsaridas/stremio-docker:v1.3.14
-          ports:
-            - containerPort: 8080
-          env:
-            - name: NO_CORS
-              value: "1"
-            - name: AUTO_SERVER_URL
-              value: "1"
-          volumeMounts:
-            - name: data
-              mountPath: /root/.stremio-server
-            - name: dri
-              mountPath: /dev/dri
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              memory: 256Mi
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 60
-            timeoutSeconds: 5
-      volumes:
+      - name: stremio
+        image: tsaridas/stremio-docker:v1.3.14
+        securityContext:
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NO_CORS
+          value: "1"
+        - name: AUTO_SERVER_URL
+          value: "1"
+        volumeMounts:
         - name: data
-          persistentVolumeClaim:
-            claimName: stremio-data
+          mountPath: /root/.stremio-server
         - name: dri
-          hostPath:
-            path: /dev/dri/card0
-            type: CharDevice
+          mountPath: /dev/dri
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: stremio-data
+      - name: dri
+        hostPath:
+          path: /dev/dri/card0
+          type: CharDevice
