@@ -55,8 +55,9 @@ ACCESS_EMAIL_JAGODA=...       # household Access allow
 # is recoverable without reading Pulumi state.
 ACCESS_AGENT_CLIENT_ID=...
 ACCESS_AGENT_CLIENT_SECRET=...
-# Optional extra AIOStreams bypass CIDRs (comma-separated). Home CIDR is added automatically.
-# ACCESS_AIOSTREAMS_EXTRA_CIDRS=203.0.113.20/32
+# Extra AIOStreams bypass CIDRs (comma-separated). Home CIDR is added automatically.
+# Jagoda's addresses are stored here as a /32 and a /128. Never commit them in plaintext.
+ACCESS_AIOSTREAMS_EXTRA_CIDRS=...
 ```
 
 `ACCESS_EMAIL_LAURENS` is shared by the tunnel notification policies and the
