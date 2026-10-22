@@ -1,0 +1,17 @@
+# Imported into the CoreDNS .:53 block, before "forward . /etc/resolv.conf".
+# The first forward plugin owns the query, so external names cannot fall
+# through to the node resolver. Cluster names are answered earlier by the
+# kubernetes and NodeHosts plugins.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  blocky.override: |
+    forward . 10.43.0.53 {
+      health_check 5s
+      max_fails 3
+      expire 30s
+      policy sequential
+    }

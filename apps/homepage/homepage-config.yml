@@ -297,6 +297,10 @@ data:
                 description: Modern Kubernetes dashboard
                 icon: https://raw.githubusercontent.com/zxh326/kite/refs/heads/main/docs/assets/logo.svg
                 siteMonitor: http://kite.kube-system.svc.cluster.local:8080
+            - Blocky:
+                href: https://0xerr0r.github.io/blocky/
+                description: DNS blocklist in front of external lookups
+                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/blocky.png
             - ArgoCD:
                 href: https://argocd.bosscher.ch
                 description: GitOps continuous delivery

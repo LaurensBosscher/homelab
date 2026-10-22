@@ -17,3 +17,9 @@
     src: coredns-config.yaml.j2
     dest: /var/lib/rancher/k3s/server/manifests/coredns-config.yaml
     mode: "0644"
+
+- name: Forward external CoreDNS queries through the Blocky blocklist
+  ansible.builtin.template:
+    src: coredns-custom.yaml.j2
+    dest: /var/lib/rancher/k3s/server/manifests/coredns-custom.yaml
+    mode: "0644"

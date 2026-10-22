@@ -118,6 +118,9 @@ Critical services are protected against OOM (Out of Memory) kills:
 - **Network Policies**: Flannel CNI provides network segmentation
 - **Pod Security**: Security contexts enforced on all deployments
 
+### DNS egress filtering
+CoreDNS still answers `cluster.local` and node names. Names it does not know are forwarded to [Blocky](apps/blocky/) at `10.43.0.53`, which refreshes the HaGeZi threat-intel (medium) and encrypted-DNS bypass lists and answers blocked names with `NXDOMAIN`. The HTTP API is not exposed. This does not stop traffic to a raw IP, pods using host DNS, or DoH to a hardcoded address.
+
 ### Runtime Sandboxing
 - **Seccomp Default Enabled**: Kubelet runs with `seccompDefault: true`, applying RuntimeDefault seccomp profiles by default
 
