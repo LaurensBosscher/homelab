@@ -119,7 +119,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: db
-          image: flomp/wanderer-db:v0.21.0
+          image: flomp/wanderer-db:v0.21.1
           ports:
             - containerPort: 8090
           env:
