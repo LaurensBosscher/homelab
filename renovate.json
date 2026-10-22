@@ -11,7 +11,7 @@
     "dockerfile",
     "kustomize",
     "kubernetes",
-    "regex"
+    "custom.regex"
   ],
   "dockerfile": {
     "managerFilePatterns": [
@@ -80,7 +80,7 @@
         "kubernetes",
         "argocd",
         "kustomize",
-        "regex"
+        "custom.regex"
       ],
       "matchDatasources": [
         "docker"
