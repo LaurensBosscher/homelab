@@ -37,7 +37,7 @@ RUN if command -v apk >/dev/null; then \
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 
 RUN uv tool install ruff==0.15.21 && \
-    uv tool install mypy==2.2.0 && \
+    uv tool install mypy==2.4.0 && \
     uv cache clean
 
 WORKDIR /opt/openclaw-tools
