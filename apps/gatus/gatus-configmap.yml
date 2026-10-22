@@ -73,6 +73,28 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
+      - name: blocky
+        group: cluster
+        url: "10.43.0.53"
+        interval: 5m
+        dns:
+          query-name: example.com
+          query-type: A
+        conditions:
+          - "[DNS_RCODE] == NOERROR"
+          - "[RESPONSE_TIME] < 2000"
+
+      - name: cluster-dns
+        group: cluster
+        url: "10.43.0.10"
+        interval: 5m
+        dns:
+          query-name: example.com
+          query-type: A
+        conditions:
+          - "[DNS_RCODE] == NOERROR"
+          - "[RESPONSE_TIME] < 2000"
+
       - name: gatus
         group: cluster
         # Localhost avoids ClusterIP self-hairpin races right after restart.

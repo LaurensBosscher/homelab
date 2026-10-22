@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blocky
+  namespace: blocky
+  labels:
+    app: blocky
+    app.kubernetes.io/name: blocky
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: blocky
+  template:
+    metadata:
+      labels:
+        app: blocky
+        app.kubernetes.io/name: blocky
+    spec:
+      # Upstream and list hosts resolve here, never via CoreDNS (that forwards back to Blocky).
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 9.9.9.9
+          - 149.112.112.112
+        options:
+          - name: ndots
+            value: "2"
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    k8s-app: kube-dns
+                topologyKey: kubernetes.io/hostname
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: blocky
+                topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: blocky
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 100
+        fsGroup: 100
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: blocky
+          image: ghcr.io/0xerr0r/blocky:v0.35.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BLOCKY_CONFIG_FILE
+              value: /app/config.yml
+            - name: TMPDIR
+              value: /app/cache
+          ports:
+            - name: dns-udp
+              containerPort: 1053
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 1053
+              protocol: TCP
+          startupProbe:
+            exec:
+              command:
+                - /app/blocky
+                - healthcheck
+                - --port
+                - "1053"
+                - --bindip
+                - 127.0.0.1
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 48
+          readinessProbe:
+            exec:
+              command:
+                - /app/blocky
+                - healthcheck
+                - --port
+                - "1053"
+                - --bindip
+                - 127.0.0.1
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - /app/blocky
+                - healthcheck
+                - --port
+                - "1053"
+                - --bindip
+                - 127.0.0.1
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.yml
+              subPath: config.yml
+              readOnly: true
+            - name: cache
+              mountPath: /app/cache
+      volumes:
+        - name: config
+          configMap:
+            name: blocky-config
+        - name: cache
+          emptyDir: {}

@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blocky-config
+  namespace: blocky
+  labels:
+    app: blocky
+    app.kubernetes.io/name: blocky
+data:
+  # Blocky v0.35. Full HaGeZi TIF is ~2e6 wildcards and needs about 2 GB RAM;
+  # London nodes are 5 GB, so this uses the medium feed (most important sources).
+  config.yml: |
+    # yaml-language-server: $schema=https://raw.githubusercontent.com/0xERR0R/blocky/v0.35.0/docs/config.schema.json
+    connectIPVersion: v4
+    upstreams:
+      init:
+        strategy: failOnError
+      strategy: strict
+      timeout: 4s
+      groups:
+        default:
+          - 9.9.9.9
+          - 149.112.112.112
+          - 1.1.1.2
+          - 1.0.0.2
+    # Pod resolv.conf is public DNS, not CoreDNS, so list downloads cannot loop.
+    bootstrapDns:
+      - 9.9.9.9
+      - 149.112.112.112
+    blocking:
+      denylists:
+        threat:
+          - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/tif.medium.txt
+        # Hostnames of public DoH/DoT resolvers. A client that already has the IP still bypasses this.
+        doh:
+          - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/doh.txt
+      # Exceptions win over both groups. One domain per line, or *.example.com.
+      # allowlists:
+      #   exceptions:
+      #     - |
+      #       example.com
+      clientGroupsBlock:
+        default:
+          - threat
+          - doh
+      blockType: nxDomain
+      blockTTL: 5m
+      loading:
+        refreshPeriod: 6h
+        strategy: failOnError
+        downloads:
+          timeout: 60s
+          readTimeout: 60s
+          writeTimeout: 60s
+          readHeaderTimeout: 30s
+          attempts: 5
+          cooldown: 5s
+          cachePath: /app/cache
+    rebindingProtection:
+      enable: true
+    caching:
+      maxTime: 30m
+      maxItemsCount: 10000
+      prefetching: false
+      cacheTimeNegative: 5m
+    queryLog:
+      type: none
+    log:
+      level: warn
+      format: text
+    ports:
+      dns: 1053

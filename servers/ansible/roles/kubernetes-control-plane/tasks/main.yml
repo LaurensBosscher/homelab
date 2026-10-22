@@ -17,3 +17,12 @@
     src: coredns-config.yaml.j2
     dest: /var/lib/rancher/k3s/server/manifests/coredns-config.yaml
     mode: "0644"
+
+- name: Forward external CoreDNS queries through the Blocky blocklist
+  ansible.builtin.template:
+    src: coredns-custom.yaml.j2
+    dest: /var/lib/rancher/k3s/server/manifests/coredns-custom.yaml
+    mode: "0644"
+
+
+[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/dev/homelab/servers/ansible/roles/kubernetes-control-plane/tasks/main.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]
