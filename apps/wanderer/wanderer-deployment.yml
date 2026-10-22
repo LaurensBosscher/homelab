@@ -205,7 +205,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: wanderer
-          image: flomp/wanderer-web:v0.21.0
+          image: flomp/wanderer-web:v0.21.1
           ports:
             - containerPort: 3000
           env:
