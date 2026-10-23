@@ -166,7 +166,6 @@ I'm currently running the following apps:
 - [Homepage](https://gethomepage.dev/) - A highly customizable homepage/dashboard
 - [it-tools](https://github.com/corentinth/it-tools) - Collection of handy online tools for developers, with great UX
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
-- [Linkwarden](https://github.com/linkwarden/linkwarden) - Collaborative bookmark manager
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
 - [mydia](https://github.com/getmydia/mydia) - Self-hosted media manager
 - [NZBGet](https://nzbget.com/) - Usenet downloader
