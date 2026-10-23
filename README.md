@@ -61,7 +61,6 @@ Host firewalling is enabled via Ansible (`firewall_enable: true`) using an `inet
 - **SSH**: Allowed from the tailnet; off-tailnet SSH only from `firewall_k3s_api_extra_allowed_ips` (sshd still listens on `0.0.0.0` — restriction is nftables, not `ListenAddress`)
 - **Cluster Traffic Only**: Kubernetes host ports are allowlisted from authorized sources:
   - Flannel WireGuard (51820/udp) from node WAN/peer IPs (`cluster_network_ip`, plus optional per-host `cluster_wan_ip` / `ansible_host` for NAT/home nodes)
-  - node-exporter (9100/tcp) from node IPs and pod CIDR `10.42.0.0/16` (Prometheus scrapes from pods)
   - beszel-agent (45876/tcp) from node IPs and pod CIDR `10.42.0.0/16` (Beszel hub scrapes from its pod)
   - Kubelet API (10250/tcp) from cluster node IPs and pod CIDR `10.42.0.0/16` (metrics-server; node IPs cover pod-to-kubelet traffic SNATed to the source host)
   - K3s API (6443/tcp) and supervisor (9345/tcp) on control-plane nodes from cluster node IPs
@@ -281,11 +280,4 @@ kubectl debug -it my-pod --image=busybox
 
 ```bash
 kubectl run busybox-bazzite --image=busybox:latest --restart=Never --overrides='{"spec":{"nodeName":"k3s-london-1"}}' -- /bin/sleep 3600
-```
-
-## Monitoring configuration for Kite
-Kite resets its settings on every upgrade, URL to enable the prometheus integration is:
-
-```
-http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
 ```

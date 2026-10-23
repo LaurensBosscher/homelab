@@ -1,10 +1,9 @@
 apiVersion: v2
 name: prometheus
 version: 1.0.0
+# Directory name is the Argo CD app and Helm release. Keep it so this upgrade
+# only removes kube-prometheus-stack; a new directory would recreate metrics-server.
 dependencies:
-  - name: kube-prometheus-stack
-    version: 65.8.1
-    repository: https://prometheus-community.github.io/helm-charts
   - name: metrics-server
     version: 3.13.0
     repository: https://kubernetes-sigs.github.io/metrics-server/

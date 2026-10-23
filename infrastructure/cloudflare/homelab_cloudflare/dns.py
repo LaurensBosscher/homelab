@@ -63,22 +63,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-alertmanager-bosscher-ch-38eaba60"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-alertmanager-bosscher-ch-38eaba60",
-            zone_id=zone_ids["bosscher.ch"],
-            name="alertmanager.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/38eaba6082e21d571b2a9d07020149db",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-argocd-bosscher-ch-888f3136"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-argocd-bosscher-ch-888f3136",
@@ -255,22 +239,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-grafana-bosscher-ch-21f92fbc"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-grafana-bosscher-ch-21f92fbc",
-            zone_id=zone_ids["bosscher.ch"],
-            name="grafana.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/21f92fbce4210ce3353be4e78fd3d156",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-home-bosscher-ch-94998f9e"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-home-bosscher-ch-94998f9e",
@@ -394,22 +362,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
             proxied=True,
             opts=resource_opts(
                 import_id="e32ce9cb10fafea8ee531b713afdcc10/c3500f3a0f9973bd2b8724e32f0badb1",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
-    by_logical["dns-bosscher-ch-cname-prometheus-bosscher-ch-504f9a54"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-prometheus-bosscher-ch-504f9a54",
-            zone_id=zone_ids["bosscher.ch"],
-            name="prometheus.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/504f9a544f3e308f769eea785ddfafaa",
                 ignore_changes=["tags", "meta", "proxiable"],
             ),
         )
