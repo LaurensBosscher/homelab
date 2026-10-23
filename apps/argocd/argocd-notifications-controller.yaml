@@ -172,7 +172,7 @@ spec:
               key: notificationscontroller.repo.server.client.cert.key.path
               name: argocd-cmd-params-cm
               optional: true
-        image: quay.io/argoproj/argocd:v3.5.0
+        image: quay.io/argoproj/argocd:v3.5.6
         imagePullPolicy: Always
         livenessProbe:
           tcpSocket:
