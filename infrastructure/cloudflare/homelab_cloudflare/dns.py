@@ -335,22 +335,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-playarr-bosscher-ch-c3500f3a"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-playarr-bosscher-ch-c3500f3a",
-            zone_id=zone_ids["bosscher.ch"],
-            name="playarr.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/c3500f3a0f9973bd2b8724e32f0badb1",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-prowlarr-bosscher-ch-e739992a"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-prowlarr-bosscher-ch-e739992a",

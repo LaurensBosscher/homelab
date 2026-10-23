@@ -24,8 +24,6 @@
   service: http://shelfarr.shelfarr.svc.cluster.local:8084
 - hostname: questarr.bosscher.ch
   service: http://questarr.questarr.svc.cluster.local:5000
-- hostname: playarr.bosscher.ch
-  service: http://playarr.playarr.svc.cluster.local:2727
 - hostname: aiostreams.bosscher.ch
   service: http://aiostreams.aiostreams.svc.cluster.local:3000
 - hostname: it-tools.bosscher.ch

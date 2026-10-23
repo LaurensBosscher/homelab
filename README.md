@@ -171,10 +171,9 @@ I'm currently running the following apps:
 - [NZBGet](https://nzbget.com/) - Usenet downloader
 - [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
-- [playarr](https://github.com/maikboarder/playerr) - Audiobook manager for Plex
 - [prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer manager
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client
-- [questarr](https://github.com/doezer/questarr) - Quest manager for audiobooks
+- [questarr](https://github.com/doezer/questarr) - Video game discovery & download manager (IGDB/Steam)
 - [radarr](https://github.com/Radarr/Radarr) - Movie collection manager
 - [RDT-Client](https://github.com/rogerfar/rdt-client) - Real-Debrid torrent client
 - [SABnzbd](https://sabnzbd.org/) - Usenet downloader
