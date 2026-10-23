@@ -34,6 +34,12 @@ spec:
           kind: StatefulSet
           jqPathExpressions:
             - .spec.template.metadata.annotations["kubectl.kubernetes.io/restartedAt"]
+        # Chat id stays on the live ConfigMap. Do not let a sync publish it.
+        - group: ""
+          kind: ConfigMap
+          name: argocd-notifications-cm
+          jqPathExpressions:
+            - .data.subscriptions
       syncPolicy:
         automated:
           prune: false
@@ -41,3 +47,7 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - Prune=false
+          - RespectIgnoreDifferences=true
+
+
+[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/dev/homelab/apps/argocd/appset.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]

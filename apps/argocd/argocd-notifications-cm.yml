@@ -10,15 +10,10 @@ metadata:
 data:
   service.telegram: |
     token: $telegram-token
-  # Default subscriptions for every Application in this controller namespace.
-  # Avoid on-sync-succeeded / on-deployed to prevent alert fatigue.
-  subscriptions: |
-    - recipients:
-        - telegram:1265937934
-      triggers:
-        - on-sync-failed
-        - on-health-degraded
-        - on-sync-status-unknown
+  # Default subscriptions (on-sync-failed, on-health-degraded,
+  # on-sync-status-unknown) live only on the cluster ConfigMap.
+  # The chat id is TELEGRAM_CHAT_ID in servers/ansible/secrets.enc.env.
+  # Argo CD ignores .data.subscriptions so a sync cannot write it back here.
   context: |
     argocdUrl: https://argocd.bosscher.ch
   template.app-sync-failed: |
@@ -58,3 +53,6 @@ data:
       send:
         - app-sync-status-unknown
       when: app.status.sync.status == 'Unknown'
+
+
+[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/dev/homelab/apps/argocd/argocd-notifications-cm.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]
