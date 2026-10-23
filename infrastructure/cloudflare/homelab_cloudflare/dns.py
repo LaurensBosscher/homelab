@@ -543,22 +543,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-stremio-bosscher-ch-b681ae9a"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-stremio-bosscher-ch-b681ae9a",
-            zone_id=zone_ids["bosscher.ch"],
-            name="stremio.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/b681ae9a6d665b12f56e9ea5d72cdb2b",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-wanderer-bosscher-ch-e3ca1c4a"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-wanderer-bosscher-ch-e3ca1c4a",
@@ -953,22 +937,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
             proxied=True,
             opts=resource_opts(
                 import_id="981bc8749d817cd910da39e8a8aefd7f/015411fdaf13741e5471f609d4a96713",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
-    by_logical["dns-bossscher-org-cname-stremio-bossscher-org-9c66e105"] = (
-        cloudflare.DnsRecord(
-            "dns-bossscher-org-cname-stremio-bossscher-org-9c66e105",
-            zone_id=zone_ids["bossscher.org"],
-            name="stremio.bossscher.org",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="5e317939-f1e9-46e1-83c9-50f3d44d38b5.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="981bc8749d817cd910da39e8a8aefd7f/9c66e1058e513154cc6ed41b1b7f455d",
                 ignore_changes=["tags", "meta", "proxiable"],
             ),
         )

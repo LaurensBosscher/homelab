@@ -182,7 +182,6 @@ I'm currently running the following apps:
 - [shelfarr](https://github.com/DerGoogler/Shelfarr) - Audiobook library manager
 - [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager
 - [sonarr](https://github.com/Sonarr/Sonarr) - TV show collection manager
-- [Stremio](https://www.stremio.com/) - Media streaming platform
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner
 - [your-spotify](https://github.com/Yooooomi/your_spotify) - Self-hosted Spotify statistics and analytics
 
