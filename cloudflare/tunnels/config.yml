@@ -64,8 +64,6 @@
   service: http://beszel.beszel.svc.cluster.local:8090
 - hostname: bentopdf.bosscher.ch
   service: http://bentopdf.bentopdf.svc.cluster.local:8080
-- hostname: linkwarden.bosscher.ch
-  service: http://linkwarden.linkwarden.svc.cluster.local:3000
 - hostname: zeroclaw.bosscher.ch
   service: http://zeroclaw.zeroclaw.svc.cluster.local:42617
 - hostname: redlib.bosscher.ch
