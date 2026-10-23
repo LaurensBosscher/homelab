@@ -34,7 +34,7 @@ spec:
                 - bazzite
       containers:
       - name: beszel
-        image: ghcr.io/laurensbosscher/beszel:sha-997c1d4e8faecdebf28c226b0840e9c859c8a516
+        image: ghcr.io/laurensbosscher/beszel:sha-8ec171cb3996ee4237aff188015dc728a3b320ae
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
