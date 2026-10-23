@@ -209,12 +209,7 @@ data:
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/calibre-web.png
                 siteMonitor: http://shelfarr.shelfarr.svc.cluster.local:8084
 
-        - Stremio:
-            - Stremio:
-                href: https://stremio.bosscher.ch
-                description: Media center
-                icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/stremio.png
-                siteMonitor: http://stremio.stremio.svc.cluster.local:8080
+        - Streaming:
             - AIOstreams:
                 href: https://aiostreams.bosscher.ch/
                 description: Media streaming service

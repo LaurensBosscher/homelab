@@ -160,14 +160,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: stremio
-        group: media
-        url: "http://stremio.stremio.svc.cluster.local:8080"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: aiostreams
         group: media
         url: "http://aiostreams.aiostreams.svc.cluster.local:3000"
