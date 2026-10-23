@@ -8,6 +8,12 @@ beszel_agent_port: 45876
 beszel_agent_public_key: ""
 # In-cluster hub address. Empty until group_vars sets the pinned ClusterIP.
 beszel_agent_hub_url: ""
+# Optional container image. When set, the agent binary is copied out of the
+# image instead of the GitHub release tarball. Other hosts keep the release.
+beszel_agent_image: ""
+# Extra systemd Environment entries. Used for host Kubernetes credentials.
+# Do not put a service-account token here; point at a file on the host.
+beszel_agent_extra_env: {}
 # sha256 of beszel-agent_linux_{amd64,arm64}.tar.gz for beszel_agent_version.
 beszel_agent_checksums:
   x86_64: "898d67d456a4feed7d651bbac22def5eb41840d4f3d9bf058a5ed37c8c815599"

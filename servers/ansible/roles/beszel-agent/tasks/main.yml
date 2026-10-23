@@ -87,6 +87,7 @@
   tags: [beszel]
 
 - name: Download beszel-agent {{ beszel_agent_version }} release tarball
+  when: beszel_agent_image | default('') | length == 0
   ansible.builtin.get_url:
     url: >-
       https://github.com/henrygd/beszel/releases/download/v{{ beszel_agent_version }}/beszel-agent_linux_{{
@@ -101,11 +102,12 @@
   ansible.builtin.systemd:
     name: beszel-agent
     state: stopped
-  when: beszel_agent_archive.changed
+  when: beszel_agent_archive.changed | default(false)
   failed_when: false
   tags: [beszel]
 
-- name: Install beszel-agent binary
+- name: Install beszel-agent binary from the release tarball
+  when: beszel_agent_image | default('') | length == 0
   ansible.builtin.unarchive:
     src: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
     dest: /usr/local/bin
@@ -120,6 +122,25 @@
   ansible.builtin.file:
     path: "/tmp/beszel-agent-{{ beszel_agent_version }}.tar.gz"
     state: absent
+  when: beszel_agent_image | default('') | length == 0
+  tags: [beszel]
+
+- name: Install beszel-agent binary from a container image
+  when: beszel_agent_image | default('') | length > 0
+  ansible.builtin.shell: |
+    set -euo pipefail
+    tmp=$(mktemp -d)
+    trap 'rm -rf "$tmp"' EXIT
+    podman pull {{ beszel_agent_image | quote }}
+    cid=$(podman create {{ beszel_agent_image | quote }})
+    podman cp "$cid":/agent "$tmp/beszel-agent"
+    podman rm "$cid" >/dev/null
+    systemctl stop beszel-agent || true
+    install -m 0755 "$tmp/beszel-agent" /usr/local/bin/beszel-agent
+  args:
+    executable: /bin/bash
+  changed_when: true
+  notify: Restart beszel-agent
   tags: [beszel]
 
 - name: Deploy beszel-agent systemd unit

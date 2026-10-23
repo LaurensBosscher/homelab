@@ -15,3 +15,12 @@ k3s_local_path_fcontext: /mnt/data/local-path(/.*)?
 firewall_openstick_backup: true
 firewall_openstick_usb_cidr: 192.168.5.0/24
 firewall_lan_interface: enp2s0
+# Hub and agent images built from LaurensBosscher/beszel kubernetes-support.
+# The token file is created on the host from the beszel-agent ServiceAccount
+# and is not stored in git.
+beszel_agent_image: "ghcr.io/laurensbosscher/beszel-agent:sha-64f5a49baf9a03c93f3b7712562be2bb58c6058c"
+beszel_agent_extra_env:
+  NODE_NAME: bazzite
+  KUBERNETES_SERVER: https://127.0.0.1:6443
+  KUBERNETES_SERVICE_ACCOUNT_TOKEN_FILE: /var/lib/beszel-agent/k8s/token
+  KUBERNETES_CA_FILE: /var/lib/beszel-agent/k8s/ca.crt
