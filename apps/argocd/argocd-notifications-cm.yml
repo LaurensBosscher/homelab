@@ -53,6 +53,3 @@ data:
       send:
         - app-sync-status-unknown
       when: app.status.sync.status == 'Unknown'
-
-
-[You have received this identical output 3 times. Re-reading '/home/laurensarendbosscher/dev/homelab/apps/argocd/argocd-notifications-cm.yml:raw' will not change it — use a narrower selector (path:A-B), or proceed with the edit.]
