@@ -219,13 +219,24 @@ def create_access() -> Access:
         ],
         opts=resource_opts(import_id=_account_import(acct, _APP_BOOKMARKS)),
     )
+    # Stremio lists results on /stremio/*.json, then plays
+    # /api/v1/debrid/playback/*, which redirects to /api/v1/usenet/stream/*
+    # or a /static/* error video. A player cannot complete the login on
+    # *.bosscher.ch, so those paths share this IP bypass. The dashboard stays
+    # on the wildcard login policy.
+    aiostreams_destinations = [
+        "aiostreams.bosscher.ch/stremio/*.json",
+        "aiostreams.bosscher.ch/api/v1/debrid/playback/*",
+        "aiostreams.bosscher.ch/api/v1/usenet/stream/*",
+        "aiostreams.bosscher.ch/static/*",
+    ]
     applications["aiostreams"] = cloudflare.ZeroTrustAccessApplication(
         "access-app-aiostreams",
         account_id=acct,
         name="AIOStreams",
         type="self_hosted",
-        domain="aiostreams.bosscher.ch/stremio/*.json",
-        destinations=_public_destinations(["aiostreams.bosscher.ch/stremio/*.json"]),
+        domain=aiostreams_destinations[0],
+        destinations=_public_destinations(aiostreams_destinations),
         session_duration="24h",
         app_launcher_visible=False,
         auto_redirect_to_identity=False,
