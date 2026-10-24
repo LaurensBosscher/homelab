@@ -108,7 +108,6 @@ spec:
                   - listenarr
                   - mydia
                   - nzbget
-                  - playarr
                   - prowlarr
                   - qbittorrent
                   - questarr

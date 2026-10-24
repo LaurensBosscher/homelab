@@ -266,14 +266,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: playarr
-        group: media
-        url: "http://playarr.playarr.svc.cluster.local:2727"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: flaresolver
         group: cluster
         url: "http://flaresolver.flaresolver.svc.cluster.local:8191"
