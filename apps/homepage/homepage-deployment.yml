@@ -35,7 +35,7 @@ spec:
       enableServiceLinks: true
       containers:
       - name: homepage
-        image: "ghcr.io/gethomepage/homepage:v2.6.0"
+        image: "ghcr.io/gethomepage/homepage:v2.7.0"
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
