@@ -76,16 +76,12 @@ spec:
                   - aiostreams
                   - flaresolver
                   - listenarr
-                  - mydia
                   - nzbget
                   - prowlarr
                   - qbittorrent
                   - questarr
-                  - radarr
                   - rdt-client
-                  - sabnzbd
                   - shelfarr
-                  - sonarr
                   - stremio
 ---
 apiVersion: networking.k8s.io/v1
