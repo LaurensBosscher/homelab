@@ -104,8 +104,8 @@ def create_access() -> Access:
     email_laurens = require_env("ACCESS_EMAIL_LAURENS")
     email_jagoda = require_env("ACCESS_EMAIL_JAGODA")
     home_cidr = require_env("ACCESS_HOME_CIDR")
-    # Home CIDR is always included. Household extras (Jagoda) live in
-    # ACCESS_AIOSTREAMS_EXTRA_CIDRS inside secrets.enc.env.
+    # Home CIDR is always included. Household extras live in
+    # ACCESS_AIOSTREAMS_EXTRA_CIDRS. Jagoda's IPv6 entry is a /64.
     aiostreams_cidrs = env_cidrs("ACCESS_HOME_CIDR", "ACCESS_AIOSTREAMS_EXTRA_CIDRS")
     policies: dict[str, cloudflare.ZeroTrustAccessPolicy] = {}
 
@@ -221,14 +221,20 @@ def create_access() -> Access:
     )
     # Stremio lists results on /stremio/*.json, then plays
     # /api/v1/debrid/playback/*, which redirects to /api/v1/usenet/stream/*
-    # or a /static/* error video. A player cannot complete the login on
-    # *.bosscher.ch, so those paths share this IP bypass. The dashboard stays
-    # on the wildcard login policy.
+    # or a /static/* error video.
+    # Android and desktop apps ship their own UI and sign in as Jellyfin
+    # clients: /jellyfin/* (API, images, subtitle bodies, the /Videos stream
+    # redirect, and /socket) plus /party/* for the watch-party relay. mpv,
+    # ExoPlayer, and that webview do not complete the *.bosscher.ch login, so
+    # those paths share this IP bypass. Configure, the dashboard, and
+    # /api/v1/user stay on the wildcard login policy.
     aiostreams_destinations = [
         "aiostreams.bosscher.ch/stremio/*.json",
         "aiostreams.bosscher.ch/api/v1/debrid/playback/*",
         "aiostreams.bosscher.ch/api/v1/usenet/stream/*",
         "aiostreams.bosscher.ch/static/*",
+        "aiostreams.bosscher.ch/jellyfin/*",
+        "aiostreams.bosscher.ch/party/*",
     ]
     applications["aiostreams"] = cloudflare.ZeroTrustAccessApplication(
         "access-app-aiostreams",
@@ -242,7 +248,9 @@ def create_access() -> Access:
         auto_redirect_to_identity=False,
         enable_binding_cookie=False,
         http_only_cookie_attribute=False,
-        options_preflight_bypass=False,
+        # Bundled app UI calls this host cross-origin. Access would swallow
+        # the OPTIONS preflight before the IP bypass runs.
+        options_preflight_bypass=True,
         policies=[_binding(policies["aiostreams-ips"], 1)],
         opts=resource_opts(import_id=_account_import(acct, _APP_AIOSTREAMS)),
     )
