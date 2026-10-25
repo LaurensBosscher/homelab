@@ -17,6 +17,7 @@ with per-resource `import_` IDs, plus **SOPS** for the API token.
 | DNSSEC | On. `laurensbosscher.nl` stays pending until the registrar publishes the DS |
 | Precursor | `min-friction` on both zones |
 | Bot Management | AI bots blocked. Fight Mode only on `laurensbosscher.nl` (the app zone stays off) |
+| WAF | Cloudflare Free Managed Ruleset on both zones. The entrypoint executes the ruleset id with no pinned version, so emergency rules apply when Cloudflare publishes them. No custom rules and no rate limiting |
 | Tiered Cache | Smart Tiered Cache on for both zones |
 | Cache Rules | Static extensions cached. Video/HLS/DASH extensions explicitly bypassed (Free-plan ToS) |
 | DMARC Management | On for both zones. `_dmarc` TXT keeps the existing policy and adds the Cloudflare RUA |

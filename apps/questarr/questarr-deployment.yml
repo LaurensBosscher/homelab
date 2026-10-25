@@ -63,6 +63,8 @@ spec:
           volumeMounts:
             - name: questarr-data
               mountPath: /app/data
+            - name: downloads
+              mountPath: /downloads
           resources:
             requests:
               cpu: 100m
@@ -86,6 +88,10 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
       volumes:
+        - name: downloads
+          hostPath:
+            path: /mnt/data/downloads/
+            type: DirectoryOrCreate
         - name: questarr-data
           persistentVolumeClaim:
             claimName: questarr-data

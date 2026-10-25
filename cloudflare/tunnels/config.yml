@@ -28,8 +28,6 @@
   service: http://aiostreams.aiostreams.svc.cluster.local:3000
 - hostname: it-tools.bosscher.ch
   service: http://it-tools.it-tools.svc.cluster.local:8080
-- hostname: sabnzbd.bosscher.ch
-  service: http://sabnzbd.sabnzbd.svc.cluster.local:8085
 - hostname: nzbget.bosscher.ch
   service: http://nzbget.nzbget.svc.cluster.local:6789
 - hostname: prowlarr.bosscher.ch
@@ -38,12 +36,6 @@
   service: http://rdt-client.rdt-client.svc.cluster.local:6500
 - hostname: qbittorrent.bosscher.ch
   service: http://qbittorrent.qbittorrent.svc.cluster.local:8080
-- hostname: radarr.bosscher.ch
-  service: http://radarr.radarr.svc.cluster.local:7878
-- hostname: sonarr.bosscher.ch
-  service: http://sonarr.sonarr.svc.cluster.local:8989
-- hostname: mydia.bosscher.ch
-  service: http://mydia.mydia.svc.cluster.local:4000
 - hostname: kite.bosscher.ch
   service: http://kite.kube-system.svc.cluster.local:8080
 - hostname: backrest.bosscher.ch

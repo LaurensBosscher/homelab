@@ -50,6 +50,8 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: downloads
+              mountPath: /downloads
           resources:
             requests:
               cpu: 25m
@@ -72,3 +74,7 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: nzbget-config
+        - name: downloads
+          hostPath:
+            path: /mnt/data/downloads/
+            type: DirectoryOrCreate

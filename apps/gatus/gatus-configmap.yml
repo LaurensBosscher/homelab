@@ -160,38 +160,6 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
-      - name: radarr
-        group: media
-        url: "http://radarr.radarr.svc.cluster.local:7878"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
-      - name: sonarr
-        group: media
-        url: "http://sonarr.sonarr.svc.cluster.local:8989"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
-      - name: mydia
-        group: media
-        url: "http://mydia.mydia.svc.cluster.local:4000"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
-      - name: sabnzbd
-        group: media
-        url: "http://sabnzbd.sabnzbd.svc.cluster.local:8085"
-        interval: 5m
-        conditions:
-          - "[STATUS] == 200"
-          - "[RESPONSE_TIME] < 2500"
-
       - name: nzbget
         group: media
         url: "http://nzbget.nzbget.svc.cluster.local:6789"

@@ -129,11 +129,11 @@ Classify every PVC before export. Use **actual used bytes**, not requested Gi.
   - Norish (`norish-db-data`, plus app/redis as needed)
   - Wanderer (`wanderer-db-data`, search/data)
   - `your-spotify-mongo-data`
-- Core media-app configs: Audiobookshelf, Radarr, Sonarr, Prowlarr, qBittorrent, SABnzbd, RDT-Client
+- Core media-app configs: Audiobookshelf, Prowlarr, qBittorrent, NZBGet, RDT-Client
 
 ### Tier 1 — migrate if easy
 
-- listenarr, shelfarr, playarr, stremio, shiori, termix, aiostreams, nanobot, mydia, bookshelf, questarr, stacks-config, fusion
+- listenarr, shelfarr, playarr, stremio, shiori, termix, aiostreams, nanobot, bookshelf, questarr, stacks-config, fusion
 
 ### Tier 2 — recreate empty
 
