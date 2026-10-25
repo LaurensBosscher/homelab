@@ -16,6 +16,10 @@ _LAURENSBOSSCHER_NL_ZONE_ID = "80109e07e6038846aa25d17367211948"
 _BOSSCHER_CH_CACHE_RULESET_ID = "fda2d59bb8fd4865abc96a6da66ad55f"
 _BOSSCHER_CH_CACHE_RULE_ID = "94805434c1254400b0d192cd866c02ac"
 
+# Executed by id with no pinned version, so emergency rules apply when
+# Cloudflare publishes them. The catalog was present and the phase entrypoint was not.
+_FREE_MANAGED_RULESET_ID = "77454fe2d30c4220b5701f6fdfb893ba"
+
 # Request-phase cache rules can only see the URL, not the response
 # Content-Type. Bypass every video/HLS/DASH extension so a cache rule cannot
 # store video on the Free plan (Cloudflare ToS; not Cloudflare Stream).
@@ -121,6 +125,7 @@ class Zones:
     bot_management: dict[str, BotManagement]
     tiered_cache: dict[str, cloudflare.TieredCache]
     cache_rulesets: dict[str, cloudflare.Ruleset]
+    waf_rulesets: dict[str, cloudflare.Ruleset]
 
 
 def _zone_setting(
@@ -447,7 +452,34 @@ def create_zones() -> Zones:
     pulumi.export("zone_precursor_count", len(precursors))
     pulumi.export("zone_bot_management_count", len(bot_management))
     pulumi.export("zone_tiered_cache_count", len(tiered_cache))
+    # Same ruleset on every zone. No per-path skip: the rules are CVE
+    # signatures, and playback URLs do not resemble them.
+    waf_rulesets = {
+        name: cloudflare.Ruleset(
+            f"zone-waf-ruleset-{name.replace('.', '-')}",
+            zone_id=zone.id,
+            name="default",
+            description="Cloudflare Free Managed Ruleset",
+            kind="zone",
+            phase="http_request_firewall_managed",
+            rules=[
+                cloudflare.RulesetRuleArgs(
+                    action="execute",
+                    expression="true",
+                    description="Cloudflare Free Managed Ruleset",
+                    enabled=True,
+                    action_parameters=cloudflare.RulesetRuleActionParametersArgs(
+                        id=_FREE_MANAGED_RULESET_ID,
+                    ),
+                )
+            ],
+            opts=resource_opts(),
+        )
+        for name, zone in by_name.items()
+    }
+
     pulumi.export("zone_cache_ruleset_count", len(cache_rulesets))
+    pulumi.export("zone_waf_ruleset_count", len(waf_rulesets))
     return Zones(
         by_name=by_name,
         settings=settings,
@@ -456,4 +488,5 @@ def create_zones() -> Zones:
         bot_management=bot_management,
         tiered_cache=tiered_cache,
         cache_rulesets=cache_rulesets,
+        waf_rulesets=waf_rulesets,
     )
