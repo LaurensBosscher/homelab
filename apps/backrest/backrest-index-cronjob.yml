@@ -1,0 +1,53 @@
+# The restic DaemonSet creates snapshots. Backrest only sees them after an
+# index. v1.14.1 indexes once when a repo is added, then only on demand.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backrest-index-snapshots
+  labels:
+    app.kubernetes.io/name: backrest
+    app.kubernetes.io/part-of: homelab
+spec:
+  schedule: "30 6 * * *"
+  timeZone: Europe/Zurich
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: backrest
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: index
+              image: restic/restic:0.19.1
+              command:
+                - wget
+                - -qO-
+                - "--header=Content-Type: application/json"
+                - '--post-data={"repoId":"k3s-pvcs","task":"TASK_INDEX_SNAPSHOTS"}'
+                - http://backrest.backrest.svc.cluster.local:9898/v1.Backrest/DoRepoTask
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 64Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL

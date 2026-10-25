@@ -1,6 +1,7 @@
-# Phase 1 of the netpol rollout: default-deny ingress for blocky.
+# Default-deny ingress for blocky.
 # Deny + per-source allows are separate policies so later allows never touch the deny rule.
-# Allows are portless: the namespace is the trust boundary; port tightening deferred to Phase 2.
+# The Service exposes DNS on 53 and kube-proxy DNATs to the container port.
+# NetworkPolicy matches that pod port, so the allow is 1053, not 53.
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -45,6 +46,6 @@ spec:
             cidr: 85.121.120.36/32
       ports:
         - protocol: UDP
-          port: 53
+          port: 1053
         - protocol: TCP
-          port: 53
+          port: 1053

@@ -8,7 +8,8 @@ data:
   backup-loop.sh: |
     #!/bin/sh
     # Restic backup loop: init repo if needed, then back up all local PVC dirs daily.
-    # READ-ONLY on PVC data; prune runs exclusively from Backrest.
+    # READ-ONLY on PVC data. Backrest (repo k3s-pvcs) indexes, checks, and prunes.
+    # This loop does not forget or prune.
     set -eu
 
     DATA_DIR=/data
