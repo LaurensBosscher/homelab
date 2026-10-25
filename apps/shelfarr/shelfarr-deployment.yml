@@ -53,6 +53,8 @@ spec:
               mountPath: /config
             - name: books
               mountPath: /books
+            - name: downloads
+              mountPath: /downloads
           resources:
             requests:
               cpu: 100m
@@ -80,4 +82,8 @@ spec:
         - name: books
           hostPath:
             path: /mnt/data/downloads/complete/books
+            type: DirectoryOrCreate
+        - name: downloads
+          hostPath:
+            path: /mnt/data/downloads/
             type: DirectoryOrCreate
