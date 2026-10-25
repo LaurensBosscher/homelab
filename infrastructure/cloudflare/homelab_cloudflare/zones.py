@@ -9,7 +9,6 @@ from homelab_cloudflare.bot_management import BotManagement
 from homelab_cloudflare.helpers import account_id, resource_opts
 
 _BOSSCHER_CH_ZONE_ID = "e32ce9cb10fafea8ee531b713afdcc10"
-_BOSSSCHER_ORG_ZONE_ID = "981bc8749d817cd910da39e8a8aefd7f"
 _LAURENSBOSSCHER_NL_ZONE_ID = "80109e07e6038846aa25d17367211948"
 
 # Existing bosscher.ch cache rule. Kept so the import updates it in place.
@@ -184,15 +183,6 @@ def create_zones() -> Zones:
         opts=resource_opts(protect=True, import_id=_BOSSCHER_CH_ZONE_ID),
     )
 
-    by_name["bossscher.org"] = cloudflare.Zone(
-        "zone-bossscher-org",
-        account={"id": acct},
-        name="bossscher.org",
-        type="full",
-        paused=False,
-        vanity_name_servers=[],
-        opts=resource_opts(protect=True, import_id=_BOSSSCHER_ORG_ZONE_ID),
-    )
 
     by_name["laurensbosscher.nl"] = cloudflare.Zone(
         "zone-laurensbosscher-nl",
@@ -238,36 +228,6 @@ def create_zones() -> Zones:
                 value="off",
             ),
         },
-        "bossscher.org": {
-            "min_tls_version": _zone_setting(
-                slug="bossscher-org",
-                zone_id=by_name["bossscher.org"].id,
-                import_zone_id=_BOSSSCHER_ORG_ZONE_ID,
-                setting_id="min_tls_version",
-                value="1.2",
-            ),
-            "ssl": _zone_setting(
-                slug="bossscher-org",
-                zone_id=by_name["bossscher.org"].id,
-                import_zone_id=_BOSSSCHER_ORG_ZONE_ID,
-                setting_id="ssl",
-                value="full",
-            ),
-            "always_use_https": _zone_setting(
-                slug="bossscher-org",
-                zone_id=by_name["bossscher.org"].id,
-                import_zone_id=_BOSSSCHER_ORG_ZONE_ID,
-                setting_id="always_use_https",
-                value="on",
-            ),
-            "rocket_loader": _zone_setting(
-                slug="bossscher-org",
-                zone_id=by_name["bossscher.org"].id,
-                import_zone_id=_BOSSSCHER_ORG_ZONE_ID,
-                setting_id="rocket_loader",
-                value="off",
-            ),
-        },
         "laurensbosscher.nl": {
             "min_tls_version": _zone_setting(
                 slug="laurensbosscher-nl",
@@ -300,21 +260,15 @@ def create_zones() -> Zones:
         },
     }
 
-    # Signing is already on. bossscher.org and laurensbosscher.nl stay pending
-    # until the registrar publishes the DS record; status=active is the enable
-    # flag, and Cloudflare reports pending until that DS is seen.
+    # Signing is already on. laurensbosscher.nl stays pending until the registrar
+    # publishes the DS record; status=active is the enable flag, and Cloudflare
+    # reports pending until that DS is seen.
     dnssec = {
         "bosscher.ch": cloudflare.ZoneDnssec(
             "zone-dnssec-bosscher-ch",
             zone_id=by_name["bosscher.ch"].id,
             status="active",
             opts=resource_opts(import_id=_BOSSCHER_CH_ZONE_ID),
-        ),
-        "bossscher.org": cloudflare.ZoneDnssec(
-            "zone-dnssec-bossscher-org",
-            zone_id=by_name["bossscher.org"].id,
-            status="active",
-            opts=resource_opts(import_id=_BOSSSCHER_ORG_ZONE_ID),
         ),
         "laurensbosscher.nl": cloudflare.ZoneDnssec(
             "zone-dnssec-laurensbosscher-nl",
@@ -333,12 +287,6 @@ def create_zones() -> Zones:
             default_mode="min-friction",
             opts=resource_opts(import_id=_BOSSCHER_CH_ZONE_ID),
         ),
-        "bossscher.org": cloudflare.Precursor(
-            "zone-precursor-bossscher-org",
-            zone_id=by_name["bossscher.org"].id,
-            default_mode="min-friction",
-            opts=resource_opts(import_id=_BOSSSCHER_ORG_ZONE_ID),
-        ),
         "laurensbosscher.nl": cloudflare.Precursor(
             "zone-precursor-laurensbosscher-nl",
             zone_id=by_name["laurensbosscher.nl"].id,
@@ -355,17 +303,6 @@ def create_zones() -> Zones:
         "bosscher.ch": BotManagement(
             "zone-bot-management-bosscher-ch",
             zone_id=by_name["bosscher.ch"].id,
-            enable_js=False,
-            fight_mode=False,
-            ai_bots_protection="block",
-            content_bots_protection="disabled",
-            crawler_protection="disabled",
-            is_robots_txt_managed=True,
-            opts=resource_opts(),
-        ),
-        "bossscher.org": BotManagement(
-            "zone-bot-management-bossscher-org",
-            zone_id=by_name["bossscher.org"].id,
             enable_js=False,
             fight_mode=False,
             ai_bots_protection="block",
@@ -395,12 +332,6 @@ def create_zones() -> Zones:
             value="on",
             opts=resource_opts(import_id=_BOSSCHER_CH_ZONE_ID),
         ),
-        "bossscher.org": cloudflare.TieredCache(
-            "zone-tiered-cache-bossscher-org",
-            zone_id=by_name["bossscher.org"].id,
-            value="on",
-            opts=resource_opts(import_id=_BOSSSCHER_ORG_ZONE_ID),
-        ),
         "laurensbosscher.nl": cloudflare.TieredCache(
             "zone-tiered-cache-laurensbosscher-nl",
             zone_id=by_name["laurensbosscher.nl"].id,
@@ -420,15 +351,6 @@ def create_zones() -> Zones:
             opts=resource_opts(
                 import_id=f"zones/{_BOSSCHER_CH_ZONE_ID}/{_BOSSCHER_CH_CACHE_RULESET_ID}",
             ),
-        ),
-        "bossscher.org": cloudflare.Ruleset(
-            "zone-cache-ruleset-bossscher-org",
-            zone_id=by_name["bossscher.org"].id,
-            name="default",
-            kind="zone",
-            phase="http_request_cache_settings",
-            rules=_cache_rules(keep_rule_ref=None),
-            opts=resource_opts(),
         ),
         "laurensbosscher.nl": cloudflare.Ruleset(
             "zone-cache-ruleset-laurensbosscher-nl",

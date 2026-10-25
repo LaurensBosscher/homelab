@@ -148,7 +148,6 @@ def create_dmarc_management(*, zone_ids: dict[str, pulumi.Input[str]]) -> DmarcM
     # enabled=true, which is safe when the zone is already on.
     for zone_name, resource_name in (
         ("bosscher.ch", "dmarc-mgmt-bosscher-ch"),
-        ("bossscher.org", "dmarc-mgmt-bossscher-org"),
         ("laurensbosscher.nl", "dmarc-mgmt-laurensbosscher-nl"),
     ):
         by_name[zone_name] = DmarcManagement(
