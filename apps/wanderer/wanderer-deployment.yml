@@ -233,7 +233,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: wanderer
-        image: flomp/wanderer-web:v0.21.1
+        image: flomp/wanderer-web:v0.21.2
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
