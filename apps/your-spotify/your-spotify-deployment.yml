@@ -180,7 +180,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: mongo
-          image: "mongo:8.3.13"
+          image: "mongo:9.0.4"
           securityContext:
             runAsUser: 999
             runAsGroup: 999
