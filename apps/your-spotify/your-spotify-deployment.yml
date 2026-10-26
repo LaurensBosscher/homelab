@@ -175,12 +175,19 @@ spec:
                   matchLabels:
                     app.kubernetes.io/part-of: your-spotify
                 topologyKey: kubernetes.io/hostname
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: mongo
-          image: "reg.mini.dev/mongo:v8.3.13"
+          image: "mongo:8.3.13"
           securityContext:
             runAsUser: 999
             runAsGroup: 999
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - name: mongo
               containerPort: 27017
