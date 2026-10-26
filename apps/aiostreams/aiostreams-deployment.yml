@@ -61,7 +61,9 @@ spec:
               name: aiostreams-auth-secret
               key: aiostreams-auth
         - name: STREAM_CACHE_TTL
-          value: "3600"
+          value: "7200"
+        - name: PIPELINE_CACHE_TTL
+          value: "300"
         - name: LOG_FORMAT
           value: json
         volumeMounts:
@@ -70,9 +72,9 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 200Mi
+            memory: 512Mi
           limits:
-            memory: 1Gi
+            memory: 4Gi
         livenessProbe:
           httpGet:
             path: /api/v1/status
