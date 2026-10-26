@@ -15,7 +15,7 @@ class R2Buckets:
     by_name: dict[str, cloudflare.R2Bucket]
 
 
-def _bucket(name: str) -> cloudflare.R2Bucket:
+def _bucket(name: str, *, adopt: bool) -> cloudflare.R2Bucket:
     return cloudflare.R2Bucket(
         f"r2-{name}",
         account_id=account_id(),
@@ -25,7 +25,7 @@ def _bucket(name: str) -> cloudflare.R2Bucket:
         storage_class="Standard",
         opts=resource_opts(
             protect=True,
-            import_id=f"{_ACCOUNT_ID}/{name}/default",
+            import_id=f"{_ACCOUNT_ID}/{name}/default" if adopt else None,
         ),
     )
 
@@ -33,9 +33,8 @@ def _bucket(name: str) -> cloudflare.R2Bucket:
 def create_r2_buckets() -> R2Buckets:
     """Adopt live buckets. Object contents stay outside this stack."""
     by_name = {
-        "k3s-etcd": _bucket("k3s-etcd"),
-        "k3s-longhorn": _bucket("k3s-longhorn"),
-        "save-games": _bucket("save-games"),
+        "r2-explorer": _bucket("r2-explorer", adopt=False),
+        "save-games": _bucket("save-games", adopt=True),
     }
     pulumi.export("r2_bucket_names", sorted(by_name))
     return R2Buckets(by_name=by_name)
