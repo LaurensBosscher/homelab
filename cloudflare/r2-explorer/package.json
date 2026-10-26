@@ -9,6 +9,6 @@
     "r2-explorer": "1.2.0"
   },
   "devDependencies": {
-    "wrangler": "4.127.1"
+    "wrangler": "4.152.0"
   }
 }
