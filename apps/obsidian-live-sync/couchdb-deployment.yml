@@ -24,6 +24,9 @@ spec:
         runAsUser: 5984
         runAsGroup: 5984
         fsGroup: 5984
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -36,6 +39,11 @@ spec:
       containers:
         - name: access-proxy
           image: python:3.15.1-alpine
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
           command: ["python3", "-B", "/proxy/proxy.py"]
           env:
             - name: PYTHONDONTWRITEBYTECODE
@@ -79,7 +87,11 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 30
         - name: couchdb
-          image: reg.mini.dev/couchdb:v3.5.3
+          image: couchdb:3.5.3
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           # Listen on localhost only. The proxy is the pod's port 5984.
           command: ["/bin/sh", "-c"]
           args:
