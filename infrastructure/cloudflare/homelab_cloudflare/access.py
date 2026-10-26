@@ -153,6 +153,17 @@ def create_access() -> Access:
         includes=[{"email": {"email": email_laurens}}],
         opts=resource_opts(import_id=_policy_import(acct, _POLICY_WORKERS_PREVIEW)),
     )
+    # Email, not the whole @laurensbosscher.nl domain. files.bosscher.ch uses
+    # this alone so Jagoda and the homelab-agents token stay off that host.
+    policies["allow-laurens"] = cloudflare.ZeroTrustAccessPolicy(
+        "access-policy-allow-laurens",
+        account_id=acct,
+        name="Allow Laurens",
+        decision="allow",
+        session_duration="730h",
+        includes=[{"email": {"email": email_laurens}}],
+        opts=resource_opts(),
+    )
     service_token = cloudflare.ZeroTrustAccessServiceToken(
         "access-service-token-homelab-agents",
         account_id=acct,
@@ -276,6 +287,27 @@ def create_access() -> Access:
             _binding(policies["allow-laurensbosscher-nl"], 2),
         ],
         opts=resource_opts(import_id=_account_import(acct, _APP_WILDCARD)),
+    )
+    # An exact hostname wins over *.bosscher.ch and does not inherit its
+    # policies. Read-write R2 Explorer stays on this login only.
+    applications["r2-explorer"] = cloudflare.ZeroTrustAccessApplication(
+        "access-app-r2-explorer",
+        account_id=acct,
+        name="files.bosscher.ch",
+        type="self_hosted",
+        domain="files.bosscher.ch",
+        destinations=_public_destinations(["files.bosscher.ch"]),
+        session_duration="730h",
+        app_launcher_visible=True,
+        auto_redirect_to_identity=False,
+        allow_authenticate_via_warp=False,
+        allowed_idps=[identity_provider.id],
+        enable_binding_cookie=True,
+        http_only_cookie_attribute=True,
+        options_preflight_bypass=False,
+        same_site_cookie_attribute="none",
+        policies=[_binding(policies["allow-laurens"], 1)],
+        opts=resource_opts(),
     )
     for key, hostname in (
         ("kite", "kite.bosscher.ch"),
