@@ -34,7 +34,7 @@ spec:
                       - bazzite
       containers:
         - name: listenarr
-          image: ghcr.io/listenarrs/listenarr:canary-1.5.3
+          image: ghcr.io/listenarrs/listenarr:canary-1.5.4
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
