@@ -38,7 +38,7 @@ spec:
                       - bazzite
       containers:
         - name: access-proxy
-          image: python:3.15.1-alpine
+          image: python:3.15.2-alpine
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
