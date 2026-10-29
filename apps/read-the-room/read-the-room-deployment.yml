@@ -39,8 +39,8 @@ spec:
       containers:
         - name: read-the-room
           # Built by .github/workflows/container.yml in LaurensBosscher/read_the_room.
-          # Pin the sha-<commit> tag; Renovate does not track it.
-          image: ghcr.io/laurensbosscher/read-the-room:sha-7859a2c1fa6d4fe6e6d82d5c2c362ecd35d0ae26
+          # Release tags are semver, so Renovate can bump this.
+          image: ghcr.io/laurensbosscher/read-the-room:0.1.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
