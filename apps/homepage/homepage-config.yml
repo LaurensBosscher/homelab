@@ -210,6 +210,11 @@ data:
                 description: Streaming app
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/jellyfin.png
                 siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
+            - AIOStreams Dashboard:
+                href: https://aiostreams.bosscher.ch/dashboard
+                description: Instance admin dashboard
+                icon: https://cdn.jsdelivr.net/gh/selfhst/icons/png/aiostreams.png
+                siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
         - Documents:
             - IT-Tools:
                 href: https://it-tools.bosscher.ch
@@ -291,6 +296,11 @@ data:
                 description: Cloudflare challenge proxy
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/flaresolverr.png
                 siteMonitor: http://flaresolver.flaresolver.svc.cluster.local:8191
+            - Zeroclaw:
+                href: https://zeroclaw.bosscher.ch
+                description: AI agent (ZeroClaw)
+                icon: https://avatars.githubusercontent.com/u/261820148?s=48&v=4
+                siteMonitor: http://zeroclaw.zeroclaw.svc.cluster.local:42617
         - Infrastructure:
             - Homelab Repo:
                 href: https://github.com/LaurensBosscher/homelab
