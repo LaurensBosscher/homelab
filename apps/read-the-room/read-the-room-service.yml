@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: read-the-room
+  labels:
+    app.kubernetes.io/name: read-the-room
+    app.kubernetes.io/part-of: homelab
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: read-the-room

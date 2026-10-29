@@ -174,6 +174,7 @@ I'm currently running the following apps:
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client
 - [questarr](https://github.com/doezer/questarr) - Video game discovery & download manager (IGDB/Steam)
 - [RDT-Client](https://github.com/rogerfar/rdt-client) - Real-Debrid torrent client
+- [Read the Room](https://github.com/LaurensBosscher/read_the_room) - Self-hosted paywall bypasser with a reader view
 - [shelfarr](https://github.com/DerGoogler/Shelfarr) - Audiobook library manager
 - [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager
 - [Wanderer](https://github.com/Flomp/wanderer) - Self-hosted trail and route planner

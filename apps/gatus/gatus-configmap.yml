@@ -120,6 +120,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 2500"
 
+      - name: read-the-room
+        group: news
+        url: "http://read-the-room.read-the-room.svc.cluster.local:8080"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 2500"
+
       - name: wanderer
         group: productivity
         url: "http://wanderer.wanderer.svc.cluster.local:3000"

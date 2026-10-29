@@ -226,6 +226,11 @@ data:
                 description: PDF conversion tool
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bentopdf.png
                 siteMonitor: http://bentopdf.bentopdf.svc.cluster.local:8080
+            - Read the Room:
+                href: https://read-the-room.bosscher.ch
+                description: Paywall bypasser with a reader view
+                icon: https://read-the-room.bosscher.ch/icon-192.png
+                siteMonitor: http://read-the-room.read-the-room.svc.cluster.local:8080
         - Media:
             - Prowlarr:
                 href: https://prowlarr.bosscher.ch/
