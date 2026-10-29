@@ -134,11 +134,6 @@ data:
                 description: Bookmark manager
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shiori.png
                 siteMonitor: http://shiori.shiori.svc.cluster.local:8080
-            - Obsidian Live Sync:
-                href: https://obsidian-live-sync.bosscher.ch/_utils/
-                description: CouchDB for Obsidian sync
-                icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
-                siteMonitor: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
         - Personal & Dashboards:
           - Your-Spotify:
               href: https://your-spotify.bosscher.ch/

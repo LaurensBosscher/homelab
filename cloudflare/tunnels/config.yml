@@ -4,8 +4,6 @@
   service: http://fusion.fusion.svc.cluster.local:8080
 - hostname: shiori.bosscher.ch
   service: http://shiori.shiori.svc.cluster.local:8080
-- hostname: obsidian-live-sync.bosscher.ch
-  service: http://couchdb.obsidian-live-sync.svc.cluster.local:5984
 - hostname: your-spotify.bosscher.ch
   service: http://your-spotify-web.your-spotify.svc.cluster.local:3000
 - hostname: your-spotify-api.bosscher.ch
