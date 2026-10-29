@@ -303,22 +303,6 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9"] = (
-        cloudflare.DnsRecord(
-            "dns-bosscher-ch-cname-obsidian-live-sync-bosscher-ch-4155feb9",
-            zone_id=zone_ids["bosscher.ch"],
-            name="obsidian-live-sync.bosscher.ch",
-            type="CNAME",
-            ttl=CLOUDFLARE_AUTO,
-            content="74c090cd-5046-4cb3-9b9f-43f013822d1c.cfargotunnel.com",
-            proxied=True,
-            opts=resource_opts(
-                import_id="e32ce9cb10fafea8ee531b713afdcc10/4155feb9aa1fd17b9f6c0a5814de1e7f",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
     by_logical["dns-bosscher-ch-cname-prowlarr-bosscher-ch-e739992a"] = (
         cloudflare.DnsRecord(
             "dns-bosscher-ch-cname-prowlarr-bosscher-ch-e739992a",

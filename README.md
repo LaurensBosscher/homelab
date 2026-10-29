@@ -168,7 +168,6 @@ I'm currently running the following apps:
 - [Kite](https://github.com/zxh326/kite) - Kubernetes dashboard
 - [Listenarr](https://github.com/therobbiedavis/Listenarr) - Automated audiobook downloader and library manager
 - [NZBGet](https://nzbget.com/) - Usenet downloader
-- [obsidian-live-sync](https://github.com/vrtmrz/obsidian-livesync) - Live sync for Obsidian
 - [openagent](https://github.com/e2b-dev/openagent) - AI agent framework
 - [prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer manager
 - [qbittorrent](https://github.com/qbittorrent/qBittorrent) - BitTorrent client

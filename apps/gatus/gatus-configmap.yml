@@ -281,11 +281,3 @@ data:
         conditions:
           - "[CONNECTED] == true"
 
-      - name: obsidian-live-sync
-        group: productivity
-        url: "http://couchdb.obsidian-live-sync.svc.cluster.local:5984"
-        interval: 5m
-        conditions:
-          # CouchDB requires auth even on /; 401 means the service is up.
-          - "[STATUS] == 401"
-          - "[RESPONSE_TIME] < 2500"
