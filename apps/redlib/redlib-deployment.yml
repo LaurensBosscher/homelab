@@ -6,7 +6,16 @@ metadata:
     app.kubernetes.io/name: redlib
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 1
+  # PARKED 2026-10-29: Reddit is blocking redlib upstream requests cluster-wide
+  # (redlib-org/redlib#591, redlib-org/redlib-instances#121). The pod serves a
+  # 404 error page for /, so readiness+liveness probes fail and kubelet
+  # restarts it every ~3 min (333 restarts since Oct 22). Scaled to 0 until
+  # upstream adapts. Tunnel is repointed at a public instance in the meantime
+  # (cloudflare/tunnels/config.yml).
+  # To un-park: set replicas back to 1 and restore the tunnel service line to
+  # http://redlib.redlib.svc.cluster.local:8080. Consider splitting probes
+  # first: liveness -> /settings (local-only), readiness stays on /.
+  replicas: 0
   strategy:
     type: Recreate
   selector:
