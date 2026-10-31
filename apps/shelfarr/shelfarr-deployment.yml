@@ -34,7 +34,7 @@ spec:
                       - bazzite
       containers:
         - name: shelfarr
-          image: ghcr.io/calibrain/shelfmark:v1.5.1
+          image: ghcr.io/calibrain/shelfmark:v1.6.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
