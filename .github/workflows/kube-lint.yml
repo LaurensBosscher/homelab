@@ -110,7 +110,10 @@ jobs:
           echo "⚠️ Found $VIOLATIONS best practice violation(s) — warnings only"
 
       - name: Set up Ansible
-        run: pip install "ansible-core>=2.17,<2.21"
+        run: |
+          pip install "ansible-core>=2.17,<2.21"
+          # Short module names (mount, ...) resolve through these collections.
+          ansible-galaxy collection install -r servers/ansible/requirements.yml
 
       - name: Syntax-check Ansible playbooks
         working-directory: servers/ansible

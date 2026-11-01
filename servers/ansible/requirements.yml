@@ -1,0 +1,9 @@
+---
+# Collections required by site.yml / openstick.yml / s1screen.yml.
+#
+# Several tasks still use short module names (e.g. `mount:`), which resolve to
+# these collections through Ansible's routing table. Without them a bare
+# ansible-core install cannot even pass --syntax-check.
+collections:
+  - name: ansible.posix
+  - name: community.general
