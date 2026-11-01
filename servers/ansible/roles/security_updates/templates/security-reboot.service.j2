@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly reboot when security updates need a new kernel
+Documentation=https://github.com/LaurensBosscher/homelab
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/homelab-security-reboot
+TimeoutStartSec=900

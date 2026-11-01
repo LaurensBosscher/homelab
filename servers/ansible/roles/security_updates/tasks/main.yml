@@ -24,3 +24,50 @@
     state: started
   when: apply_security_updates | default(true)
   tags: [security, updates]
+
+# needs-restarting (yum-utils) is the reboot signal used by the weekly window.
+- name: Ensure needs-restarting is available
+  ansible.builtin.dnf:
+    name: yum-utils
+    state: present
+  when: security_reboot_enabled | bool
+  tags: [security, updates, reboot]
+
+- name: Deploy the weekly security reboot script
+  ansible.builtin.template:
+    src: security-reboot.sh.j2
+    dest: /usr/local/sbin/homelab-security-reboot
+    owner: root
+    group: root
+    mode: "0750"
+  when: security_reboot_enabled | bool
+  tags: [security, updates, reboot]
+
+- name: Deploy the security reboot service
+  ansible.builtin.template:
+    src: security-reboot.service.j2
+    dest: /etc/systemd/system/homelab-security-reboot.service
+    owner: root
+    group: root
+    mode: "0644"
+  when: security_reboot_enabled | bool
+  tags: [security, updates, reboot]
+
+- name: Deploy the security reboot timer
+  ansible.builtin.template:
+    src: security-reboot.timer.j2
+    dest: /etc/systemd/system/homelab-security-reboot.timer
+    owner: root
+    group: root
+    mode: "0644"
+  when: security_reboot_enabled | bool
+  tags: [security, updates, reboot]
+
+- name: Enable the weekly security reboot timer
+  ansible.builtin.systemd:
+    name: homelab-security-reboot.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: security_reboot_enabled | bool
+  tags: [security, updates, reboot]

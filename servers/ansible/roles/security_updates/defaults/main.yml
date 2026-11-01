@@ -5,3 +5,16 @@
 dnf_automatic_upgrade_type: security
 dnf_automatic_apply_updates: true
 dnf_automatic_restart_services: true
+
+# Weekly reboot window for updates that cannot be applied to a running kernel
+# or systemd. dnf-automatic still runs daily; this timer is the only thing that
+# reboots a node, and only when `needs-restarting -r` demands it.
+# Saturday 23:00 UTC = Saturday night in Europe (00:00 CET / 01:00 CEST).
+security_reboot_oncalendar: "Sat *-*-* 23:00:00 UTC"
+# Spread peers so they do not all reboot in the same second.
+security_reboot_random_delay: "20m"
+# dnf-based nodes only. Bazzite is rpm-ostree: its image updates stage on their
+# own schedule and an automatic reboot of the home node is not wanted.
+security_reboot_enabled: "{{ ansible_facts.pkg_mgr | default('') == 'dnf' }}"
+# Prune installonly kernels when /boot is at least this full before rebooting.
+boot_cleanup_threshold_percent: 80
