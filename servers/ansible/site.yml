@@ -90,6 +90,7 @@
     - { role: k3s-common }
     - { role: kubernetes-control-plane }
     - { role: k3s-cert-renewal }
+    - { role: s1screen }
 
 - name: Kubernetes agent node configuration
   hosts: kubernetes_agent

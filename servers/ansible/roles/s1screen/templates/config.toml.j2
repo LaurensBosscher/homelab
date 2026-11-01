@@ -1,0 +1,43 @@
+# Managed by Ansible role s1screen. Do not edit on the host.
+
+[screen]
+orientation = "{{ s1screen_orientation }}"
+refresh = {{ s1screen_refresh }}
+net_iface = "{{ s1screen_net_iface }}"
+disk_path = "{{ s1screen_disk_path }}"
+disk_label = "{{ s1screen_disk_label }}"
+
+[active]
+enabled = {{ s1screen_active_enabled | bool | ternary('true', 'false') }}
+start = "{{ s1screen_active_start }}"
+end = "{{ s1screen_active_end }}"
+weekend_start = "{{ s1screen_active_weekend_start }}"
+weekend_end = "{{ s1screen_active_weekend_end }}"
+
+[k8s]
+kubeconfig = "{{ s1screen_kubeconfig }}"
+refresh = {{ s1screen_k8s_refresh }}
+
+[thresholds]
+cpu = [0.70, 0.90]
+mem = [0.85, 0.95]
+swap = [0.20, 0.50]
+temp = [75, 90]
+disk = [0.80, 0.90]
+cluster_cpu = [0.70, 0.90]
+cluster_mem = [0.85, 0.95]
+
+[probe]
+enabled = false
+interval = 30
+proxy = ""
+targets = []
+
+[led]
+enabled = {{ s1screen_led_enabled | bool | ternary('true', 'false') }}
+port = "{{ s1screen_led_port }}"
+meter = "{{ s1screen_led_meter }}"
+normal = { mode = "cycle", brightness = 2, speed = 2 }
+warn = { mode = "breathing", brightness = 4, speed = 3 }
+error = { mode = "rainbow", brightness = 5, speed = 5 }
+idle = { mode = "off" }

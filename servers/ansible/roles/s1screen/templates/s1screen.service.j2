@@ -1,0 +1,16 @@
+[Unit]
+Description=SZBox S1 front panel (host + Kubernetes metrics)
+After=network-online.target k3s.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 {{ s1screen_dest }}/s1screen.py --config {{ s1screen_dest }}/config.toml run
+WorkingDirectory={{ s1screen_dest }}
+Restart=always
+RestartSec=5
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
