@@ -3,6 +3,13 @@
 # Put the zswap backing store on the writable NVMe-backed /var.
 zswap_swapfile_path: /var/swapfile
 k3s_selinux_enabled: true
+# SZBox S1 front TFT + LED (host + Kubernetes metrics).
+s1screen_enabled: true
+s1screen_led_meter: max
+s1screen_active_start: "18:00"
+s1screen_active_end: "00:00"
+s1screen_active_weekend_start: "08:00"
+s1screen_active_weekend_end: "00:00"
 # local-path PVC root. Same directory as /mnt/data/local-path (local-path-config).
 # k3s-common points /var/lib/rancher/k3s/storage at this path so restic can
 # mount one hostPath on every node.

@@ -1,0 +1,8 @@
+---
+- name: Deploy s1screen
+  hosts: kubernetes_control_plane
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - { role: s1screen }

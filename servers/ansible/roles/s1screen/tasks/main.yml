@@ -1,0 +1,72 @@
+---
+- name: Skip S1 panel on hosts without the display
+  ansible.builtin.meta: end_host
+  when: not (s1screen_enabled | bool)
+  tags: [s1screen]
+
+- name: Install S1 panel Python dependencies (layered / present)
+  ansible.builtin.command:
+    argv: ["rpm", "-q", "python3-pillow", "python3-numpy", "python3-psutil", "python3-requests", "python3-pyserial"]
+  register: s1screen_rpms
+  changed_when: false
+  failed_when: s1screen_rpms.rc != 0
+  tags: [s1screen]
+
+- name: Ensure s1screen destination exists
+  ansible.builtin.file:
+    path: "{{ s1screen_dest }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  tags: [s1screen]
+
+- name: Sync s1screen application tree
+  ansible.builtin.command:
+    argv:
+      - rsync
+      - -a
+      - --delete
+      - -e
+      - "ssh -i {{ ansible_private_key_file | default('~/.ssh/id_rsa_kubernetes') }} -o StrictHostKeyChecking=accept-new"
+      - --exclude=.git
+      - --exclude=__pycache__
+      - --exclude=*.pyc
+      - --exclude=config.toml
+      - --exclude=preview.png
+      - --exclude=docs
+      - "{{ s1screen_src }}/"
+      - "{{ ansible_user | default('root') }}@{{ ansible_host }}:{{ s1screen_dest }}/"
+  delegate_to: localhost
+  become: false
+  changed_when: true
+  notify: Restart s1screen
+  tags: [s1screen]
+
+- name: Install s1screen config
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: "{{ s1screen_dest }}/config.toml"
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart s1screen
+  tags: [s1screen, config]
+
+- name: Install s1screen systemd unit
+  ansible.builtin.template:
+    src: s1screen.service.j2
+    dest: /etc/systemd/system/s1screen.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart s1screen
+  tags: [s1screen]
+
+- name: Enable and start s1screen
+  ansible.builtin.systemd:
+    name: s1screen
+    enabled: true
+    state: started
+    daemon_reload: true
+  tags: [s1screen]

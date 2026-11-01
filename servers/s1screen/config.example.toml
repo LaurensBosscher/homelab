@@ -1,0 +1,47 @@
+# Homelab S1 panel (fork of nov30th/s1screen). Copy to config.toml on the host.
+
+[screen]
+orientation = "landscape"   # 320x170 native
+refresh = 5                 # A2 strip updates + 1s heartbeat; no long A3 busy window
+net_iface = "enp2s0"
+disk_path = "/var"          # host disk bar (/var is the NVMe fill that matters on Bazzite)
+disk_label = "VAR"
+
+[active]
+# Panel shows metrics only inside these windows; black + LED idle outside.
+enabled = true
+start = "18:00"           # Mon-Fri
+end = "00:00"
+weekend_start = "08:00"   # Sat-Sun
+weekend_end = "00:00"
+
+[k8s]
+kubeconfig = "/etc/rancher/k3s/k3s.yaml"
+# context = ""
+
+[thresholds]                # [warn, critical]
+cpu = [0.70, 0.90]
+mem = [0.85, 0.95]
+swap = [0.20, 0.50]
+temp = [75, 90]
+disk = [0.80, 0.90]
+cluster_cpu = [0.70, 0.90]
+cluster_mem = [0.85, 0.95]
+
+[probe]
+enabled = false
+interval = 30
+proxy = ""
+targets = []
+
+[led]
+enabled = true
+# This S1 reports the CH340 as removable; pin the internal path explicitly.
+port = "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0-port0"
+# Drive the strip from host load: cpu | mem | max | off
+# Firmware only has themes (breathing/cycle/rainbow) + brightness/speed 1-5.
+meter = "max"
+normal = { mode = "cycle", brightness = 2, speed = 2 }
+warn = { mode = "breathing", brightness = 4, speed = 3 }
+error = { mode = "rainbow", brightness = 5, speed = 5 }
+idle = { mode = "off" }
