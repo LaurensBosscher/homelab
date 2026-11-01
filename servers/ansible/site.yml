@@ -5,9 +5,12 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   pre_tasks:
+    # bazzite is Fedora Atomic: dnf refuses to run there (rpm-ostree only), and
+    # an unguarded pre-task aborted every site.yml run against the control plane.
     - name: Update dnf cache
       ansible.builtin.dnf:
         update_cache: yes
+      when: ansible_facts.pkg_mgr == 'dnf'
       tags: [always]
 
     # V2: Tailscale is SSH/admin only. Never bind Flannel to tailscale0

@@ -6,6 +6,10 @@ node-external-ip: {{ cluster_external_ip | default(cluster_wan_ip | default(clus
 
 prefer-bundled-bin: true
 
+# Pin the node name to the inventory name so a kubelet hostname change can never
+# register a duplicate node (see kubernetes-control-plane/templates/config.yaml.j2).
+node-name: {{ inventory_hostname }}
+
 flannel-iface: {{ cluster_network_interface }}
 
 kubelet-arg:
