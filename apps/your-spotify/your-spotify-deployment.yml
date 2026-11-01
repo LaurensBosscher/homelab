@@ -61,6 +61,15 @@ spec:
               memory: 256Mi
             limits:
               memory: 512Mi
+          # Server retries MongoDB 10x on boot (~10 min). Without a startupProbe
+          # the liveness probe killed it mid-retry (17 restarts when Mongo lost a race).
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 60
           livenessProbe:
             httpGet:
               path: /
