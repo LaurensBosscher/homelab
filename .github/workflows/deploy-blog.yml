@@ -10,6 +10,9 @@ on:
       - "cloudflare/blog/**"
       - ".github/workflows/deploy-blog.yml"
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-24.04
