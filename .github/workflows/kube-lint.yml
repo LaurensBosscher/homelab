@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+env:
+  KUBECTL_VERSION: 'v1.36.2'
+  KUBECONFORM_VERSION: 'v0.8.0'
+
 jobs:
   k8s-lint:
     name: Lint Kubernetes manifests
@@ -22,51 +26,50 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
         with:
-          version: 'v1.31.0'
+          version: ${{ env.KUBECTL_VERSION }}
 
-      - name: Install kubeval
+      - name: Install kubeconform
         run: |
-          curl -L https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
-          sudo mv kubeval /usr/local/bin
+          curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
+            | tar xz -C /tmp kubeconform
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+          kubeconform -v
 
-      - name: Find Kubernetes manifests
-        id: find-manifests
+      # Gate that mirrors Argo CD: every apps/<name> directory is one Application.
+      # Directories with a kustomization are built; the rest are applied file by
+      # file (Argo CD never concatenates them, so neither do we). This is the
+      # check that catches a stray or rotten line in a kustomization.
+      - name: Render and validate every Argo CD source path
         run: |
-          # Find all YAML files that look like Kubernetes manifests.
-          # NOTE: exclude the Ansible tree — its task files are top-level YAML
-          # *arrays* (e.g. roles/openstick/tasks/secrets.yml, which also matches
-          # the "secret" keyword below) and kubeval only decodes k8s manifests.
-          MANIFESTS=$(find . -type f \( -name "*.yaml" -o -name "*.yml" \) \
-            -not -path "./servers/ansible/*" \
-            -not -path "./.git/*" \
-            | grep -E "(deployment|service|configmap|secret|ingress|statefulset|daemonset|job|cronjob)" | tr '\n' ' ')
-          echo "manifests=$MANIFESTS" >> $GITHUB_OUTPUT
-
-          if [ -z "$MANIFESTS" ]; then
-            echo "No Kubernetes manifests found to lint"
-            exit 0
-          fi
-          
-          echo "Found manifests: $MANIFESTS"
-
-      - name: Validate manifests with kubeval
-        if: steps.find-manifests.outputs.manifests != ''
-        run: |
-          # Validate each manifest
-          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
-            echo "Validating $manifest..."
-            kubeval "$manifest" --ignore-missing-schemas || {
-              echo "❌ Validation failed for $manifest"
-              exit 1
-            }
-            echo "✅ Validation passed for $manifest"
+          set -euo pipefail
+          rc=0
+          for dir in apps/*/; do
+            dir="${dir%/}"
+            if compgen -G "${dir}/kustomization.y*ml" > /dev/null; then
+              echo "::group::kustomize build ${dir}"
+              if ! kubectl kustomize "${dir}" > /tmp/render.yaml 2> /tmp/render.err; then
+                cat /tmp/render.err
+                echo "::error::${dir} failed to render"
+                exit 1
+              fi
+              kubeconform -strict -ignore-missing-schemas -summary /tmp/render.yaml || rc=1
+              echo "::endgroup::"
+            else
+              shopt -s nullglob
+              files=("${dir}"/*.yml "${dir}"/*.yaml)
+              shopt -u nullglob
+              for file in "${files[@]}"; do
+                echo "::group::validate ${file}"
+                kubeconform -strict -ignore-missing-schemas -summary "${file}" || rc=1
+                echo "::endgroup::"
+              done
+            fi
           done
-        continue-on-error: false
+          exit "$rc"
 
       - name: Check for deprecated API versions
-        if: steps.find-manifests.outputs.manifests != ''
         run: |
-          # Check for commonly deprecated API versions
+          rc=0
           DEPRECATED_PATTERNS=(
             "apiVersion: extensions/v1beta1"
             "apiVersion: apps/v1beta1"
@@ -74,53 +77,46 @@ jobs:
             "apiVersion: batch/v1beta1"
             "apiVersion: networking.k8s.io/v1beta1"
           )
-          
-          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
+          while IFS= read -r manifest; do
             for pattern in "${DEPRECATED_PATTERNS[@]}"; do
               if grep -q "$pattern" "$manifest"; then
-                echo "❌ Found deprecated API version in $manifest: $pattern"
-                exit 1
+                echo "::error file=$manifest::deprecated API version: $pattern"
+                rc=1
               fi
             done
-          done
-          
-          echo "✅ No deprecated API versions found"
+          done < <(git ls-files 'apps/**/*.yml' 'apps/**/*.yaml' 'helm/**/*.yml' 'helm/**/*.yaml')
+          [ "$rc" -eq 0 ] && echo "✅ No deprecated API versions found"
+          exit "$rc"
 
       - name: Check for best practices
-        if: steps.find-manifests.outputs.manifests != ''
         run: |
           VIOLATIONS=0
-          
-          for manifest in ${{ steps.find-manifests.outputs.manifests }}; do
-            echo "Checking best practices for $manifest..."
-            
-            # Check for resource limits/requests
+          while IFS= read -r manifest; do
             if grep -q "kind: Deployment" "$manifest"; then
               if ! grep -q "resources:" "$manifest"; then
-                echo "⚠️ Warning: No resource limits/requests defined in $manifest"
+                echo "⚠️ $manifest: no resource limits/requests"
                 VIOLATIONS=$((VIOLATIONS + 1))
               fi
-              
-              # Check for liveness/readiness probes
               if ! grep -q "livenessProbe:" "$manifest" && ! grep -q "readinessProbe:" "$manifest"; then
-                echo "⚠️ Warning: No liveness or readiness probes defined in $manifest"
+                echo "⚠️ $manifest: no liveness or readiness probes"
                 VIOLATIONS=$((VIOLATIONS + 1))
               fi
             fi
-            
-            # Check for image tags (avoid 'latest')
             if grep -q "image:.*:latest" "$manifest"; then
-              echo "⚠️ Warning: Using 'latest' image tag in $manifest (consider using specific tags)"
+              echo "⚠️ $manifest: uses 'latest' image tag"
               VIOLATIONS=$((VIOLATIONS + 1))
             fi
-          done
-          
-          if [ $VIOLATIONS -gt 0 ]; then
-            echo "⚠️ Found $VIOLATIONS best practice violation(s)"
-            echo "These are warnings only and will not fail the check"
-          else
-            echo "✅ All best practices checks passed"
-          fi
+          done < <(git ls-files 'apps/**/*.yml' 'apps/**/*.yaml')
+          echo "⚠️ Found $VIOLATIONS best practice violation(s) — warnings only"
+
+      - name: Set up Ansible
+        run: pip install "ansible-core>=2.17,<2.21"
+
+      - name: Syntax-check Ansible playbooks
+        working-directory: servers/ansible
+        run: |
+          ansible-playbook --syntax-check -i hosts.ini site.yml
+          ansible-playbook --syntax-check -i hosts-openstick.ini openstick.yml
 
   notify-failure:
     needs: [k8s-lint]
