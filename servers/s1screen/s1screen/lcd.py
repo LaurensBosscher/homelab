@@ -137,6 +137,7 @@ class Lcd:
         self._hb_thread = None
         self._last_hb = 0.0
         self._hb_fail_logged = False
+        self._prev: np.ndarray | None = None  # last RGB565 frame for dirty tiles
 
     def open(self):
         found = find_device()
@@ -214,11 +215,17 @@ class Lcd:
                     except OSError:
                         pass
 
-    def draw(self, img):
-        """Paint via A2 tiles so the heartbeat thread can keep the session alive."""
+    def draw(self, img, force: bool = False) -> int:
+        """Paint via A2 tiles so the heartbeat thread can keep the session alive.
+
+        Returns the number of tiles actually written. Unchanged tiles are skipped
+        so steady-state refreshes cost almost nothing beyond the RGB565 convert.
+        """
         pixels = rgb565_array(img)  # shape (170, 320), dtype >u2
         if pixels.shape != (HEIGHT, WIDTH):
             raise ValueError(f"expected {HEIGHT}x{WIDTH}, got {pixels.shape}")
+        prev = None if force else self._prev
+        written = 0
         with self.lock:
             y = 0
             while y < HEIGHT:
@@ -226,11 +233,21 @@ class Lcd:
                 x = 0
                 while x < WIDTH:
                     w = min(TILE_W, WIDTH - x)
-                    tile = pixels[y : y + h, x : x + w].tobytes()
-                    self._write(partial_packet(x, y, w, h, tile), TIMEOUT_SHORT_MS)
+                    tile = pixels[y : y + h, x : x + w]
+                    if prev is not None and np.array_equal(tile, prev[y : y + h, x : x + w]):
+                        x += w
+                        continue
+                    self._write(partial_packet(x, y, w, h, tile.tobytes()), TIMEOUT_SHORT_MS)
+                    written += 1
                     x += w
                     self._maybe_heartbeat()
                 y += h
+        self._prev = pixels
+        return written
+
+    def invalidate(self):
+        """Forget the last frame so the next draw() rewrites every tile."""
+        self._prev = None
 
     def close(self):
         self._hb_stop.set()

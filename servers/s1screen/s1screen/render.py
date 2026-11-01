@@ -65,14 +65,14 @@ class Canvas:
     def __init__(self, level: int, size: tuple, s: int):
         self.s = s
         w, h = size[0] * s, size[1] * s
-        self.img = Image.new("RGBA", (w, h), BG.get(level, BG[0]) + (255,))
+        self.img = Image.new("RGB", (w, h), BG.get(level, BG[0]))
         self.d = ImageDraw.Draw(self.img)
 
     def _xy(self, *v):
         return [round(x * self.s) for x in v]
 
     def panel(self, box):
-        self.d.rounded_rectangle(self._xy(*box), 4 * self.s, fill=PANEL + (255,))
+        self.d.rounded_rectangle(self._xy(*box), 4 * self.s, fill=PANEL)
 
     def text(self, xy, txt, size, fill, bold=False, anchor=None):
         self.d.text(self._xy(*xy), txt, font=font(size * self.s, bold), fill=fill, anchor=anchor)
@@ -209,9 +209,9 @@ class Renderer:
 
     def render(self, f: Frame):
         if self.orientation == "portrait":
-            img = self.portrait(f).convert("RGB")
+            img = self.portrait(f)
             return img, img.rotate(90, expand=True)
-        img = self.landscape(f).convert("RGB")
+        img = self.landscape(f)
         return img, img
 
 

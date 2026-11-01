@@ -56,6 +56,38 @@ def evaluate(cfg: dict, host, snap: Snapshot) -> int:
     return level
 
 
+def display_key(f: Frame) -> tuple:
+    """Quantized fingerprint of what the TFT actually shows.
+
+    Skipping render/USB when this is unchanged is the steady-state CPU win;
+    float noise in psutil must not force a full redraw every cycle.
+    """
+    h, s = f.host, f.snap
+    return (
+        f.level,
+        h.name,
+        round((h.cpu or 0) * 100),
+        round((h.mem or 0) * 100),
+        round((h.swap or 0) * 100),
+        None if h.temp is None else round(h.temp),
+        None if h.power is None else round(h.power, 1),
+        None if h.freq_mhz is None else round(h.freq_mhz / 10) * 10,
+        None if h.rx is None else round(h.rx / 1024),
+        None if h.tx is None else round(h.tx / 1024),
+        None if h.disk is None else round(h.disk * 100),
+        round(h.load1, 2),
+        int(h.uptime // 60),
+        s.nodes_ready,
+        s.nodes_total,
+        s.pods_running,
+        s.pods_pending,
+        s.pods_failed,
+        None if s.cpu_usage is None else round(s.cpu_usage * 100),
+        None if s.mem_usage is None else round(s.mem_usage * 100),
+        s.error[:48] if s.error else "",
+    )
+
+
 class Collector:
     def __init__(self, cfg: dict, prober=None):
         self.cfg = cfg
@@ -94,7 +126,7 @@ class App:
         self.renderer = Renderer(cfg)
         self.prober = Prober(cfg) if cfg["probe"]["enabled"] else None
         self.collector = Collector(cfg, self.prober)
-
+        self._last_key = None
 
     def _led_preset(self, led_cfg: dict, f) -> dict:
         """Usage meter when configured; otherwise warn/error/normal presets."""
@@ -121,15 +153,17 @@ class App:
                 preset["mode"] = "cycle"
         return preset
 
-    def _draw(self, img):
+    def _draw(self, img, force: bool = False):
         try:
-            self.lcd.draw(img)
+            written = self.lcd.draw(img, force=force)
             self._draw_errors = 0
+            return written
         except OSError as e:
             self._draw_errors = getattr(self, "_draw_errors", 0) + 1
             log.warning("frame write failed (%d in a row): %s", self._draw_errors, e)
             if self._draw_errors >= 10:
                 raise
+            return 0
 
     def _active(self) -> bool:
         """True inside weekday evening or weekend daytime windows."""
@@ -156,21 +190,30 @@ class App:
             started = time.monotonic()
             active = self._active()
             if not active:
-                self._draw(black())
                 if was_idle is not True:
                     log.info("outside active hours — blanking panel")
+                    self.lcd.invalidate()
+                    self._draw(black(), force=True)
+                    self._last_key = None
                     if self.led:
                         self.led.apply(led_cfg.get("idle", led_cfg.get("night", {"mode": "off"})))
                     if self.prober:
                         self.prober.paused.set()
+                # Heartbeat thread keeps the blank page from firmware reclaim.
             else:
                 if was_idle:
                     log.info("active hours — resuming metrics")
+                    self.lcd.invalidate()
+                    self._last_key = None
                     if self.prober:
                         self.prober.paused.clear()
                 f = self.collector.frame()
-                _, device_img = self.renderer.render(f)
-                self._draw(device_img)
+                key = display_key(f)
+                if key != self._last_key:
+                    _, device_img = self.renderer.render(f)
+                    written = self._draw(device_img)
+                    log.debug("redraw tiles=%s key_changed", written)
+                    self._last_key = key
                 if self.led:
                     self.led.apply(self._led_preset(led_cfg, f))
             was_idle = not active

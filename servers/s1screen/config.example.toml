@@ -18,6 +18,7 @@ weekend_end = "00:00"
 [k8s]
 kubeconfig = "/etc/rancher/k3s/k3s.yaml"
 # context = ""
+refresh = 15                 # seconds between apiserver snapshots (host metrics still use screen.refresh)
 
 [thresholds]                # [warn, critical]
 cpu = [0.70, 0.90]

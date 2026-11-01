@@ -13,6 +13,7 @@ s1screen_active_end: "00:00"
 s1screen_active_weekend_start: "08:00"
 s1screen_active_weekend_end: "00:00"
 s1screen_kubeconfig: /etc/rancher/k3s/k3s.yaml
+s1screen_k8s_refresh: 15
 s1screen_led_enabled: true
 s1screen_led_meter: max
 s1screen_led_port: /dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0-port0
