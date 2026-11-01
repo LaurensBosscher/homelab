@@ -1,0 +1,13 @@
+name = "blog"
+account_id = "1ce5b40c4616a803216dff853ef6bc81"
+compatibility_date = "2026-11-01"
+workers_dev = false
+
+# Static AstroPaper output (Pagefind search lives under dist/pagefind).
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
+
+[[routes]]
+pattern = "blog.bosscher.ch"
+custom_domain = true
