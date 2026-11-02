@@ -215,6 +215,11 @@ data:
                 description: Instance admin dashboard
                 icon: https://cdn.jsdelivr.net/gh/selfhst/icons/png/aiostreams.png
                 siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
+            - Glasshouse:
+                href: http://192.168.1.111:8080/
+                description: LG TV dashboard & Home
+                icon: https://rorygallagher2024.github.io/glasshouse/logo/glasshouse-512.png
+                siteMonitor: http://192.168.1.111:8080/
         - Documents:
             - IT-Tools:
                 href: https://it-tools.bosscher.ch
