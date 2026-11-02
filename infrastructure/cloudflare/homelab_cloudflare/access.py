@@ -309,6 +309,25 @@ def create_access() -> Access:
         policies=[_binding(policies["allow-laurens"], 1)],
         opts=resource_opts(),
     )
+
+    # Exact hostname wins over *.bosscher.ch. Public blog — same Allow Everyone
+    # bypass pattern as the apex bosscher.ch app.
+    applications["blog"] = cloudflare.ZeroTrustAccessApplication(
+        "access-app-blog",
+        account_id=acct,
+        name="blog.bosscher.ch",
+        type="self_hosted",
+        domain="blog.bosscher.ch",
+        destinations=_public_destinations(["blog.bosscher.ch"]),
+        session_duration="24h",
+        app_launcher_visible=False,
+        auto_redirect_to_identity=False,
+        enable_binding_cookie=False,
+        http_only_cookie_attribute=False,
+        options_preflight_bypass=False,
+        policies=[_binding(policies["allow-everyone"], 1)],
+        opts=resource_opts(),
+    )
     for key, hostname in (
         ("kite", "kite.bosscher.ch"),
         ("shelfarr", "shelfarr.bosscher.ch"),
