@@ -5,3 +5,8 @@ chrony_pool: "2.almalinux.pool.ntp.org"
 chrony_extra_servers: []
 # CIDRs allowed to query this node as an NTP server (requires chrony +NTP build).
 chrony_allow_cidrs: []
+# Headless nodes have no console attached: getty units then loop on
+# "failed to get terminal attributes" and flood the journal. Enable per group.
+console_getty_headless: false
+console_getty_units:
+  - serial-getty@ttyS0.service

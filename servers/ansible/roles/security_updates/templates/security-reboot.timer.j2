@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly window for reboots required by security updates
+
+[Timer]
+OnCalendar={{ security_reboot_oncalendar }}
+RandomizedDelaySec={{ security_reboot_random_delay }}
+# Deliberately not Persistent: a missed window waits for the next Saturday
+# instead of rebooting the node right after a deploy or a long outage.
+Persistent=false
+Unit=homelab-security-reboot.service
+
+[Install]
+WantedBy=timers.target

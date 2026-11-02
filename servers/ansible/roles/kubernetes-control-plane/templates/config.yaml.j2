@@ -6,6 +6,12 @@ flannel-iface: {{ cluster_network_interface }}
 
 prefer-bundled-bin: true
 
+# nodeAffinity in every app manifest is pinned to the inventory name. Without an
+# explicit node-name, k3s derives it from the hostname: renaming the host (or a
+# hostname that picks up a ".lan" suffix) registers a second node and every
+# pinned pod becomes unschedulable.
+node-name: {{ inventory_hostname }}
+
 node-ip: {{ cluster_network_ip }}
 node-external-ip: {{ cluster_external_ip | default(cluster_wan_ip | default(cluster_network_ip)) }}
 # Advertise an address other nodes/pods can actually reach. Home LAN node-ip is

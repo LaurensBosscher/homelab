@@ -1,0 +1,5 @@
+---
+# London agents are headless VPSes administered over SSH only. No serial or
+# video console is attached, so serial-getty@ttyS0 would restart in a loop and
+# flood the journal with "failed to get terminal attributes".
+console_getty_headless: true

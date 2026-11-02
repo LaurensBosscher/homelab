@@ -128,3 +128,15 @@
     state: present
   when: k3s_selinux_enabled | default(true) | bool
   tags: [system-hardening, selinux]
+
+# VPS nodes have no serial console wired up. Left alone, agetty respawns every
+# few seconds and writes "failed to get terminal attributes" to the journal.
+- name: Disable console getty units on headless nodes
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+    masked: true
+  loop: "{{ console_getty_units }}"
+  when: console_getty_headless | bool
+  tags: [system-hardening, console]

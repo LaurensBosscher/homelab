@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Managed by Ansible (security_updates role).
+#
+# Reboots the node inside the weekly window when updates need a new kernel or
+# systemd. Deliberately not k3s-aware: k3s agents have no admin kubeconfig, so
+# there is nothing here that can cordon or drain. systemd stops k3s-agent
+# cleanly (pods get SIGTERM + grace period) and the node rejoins by itself.
+set -Eeuo pipefail
+
+log() { printf '%s homelab-security-reboot: %s\n' "$(date -Is)" "$*"; }
+
+if ! command -v needs-restarting >/dev/null 2>&1; then
+  log "needs-restarting not installed; skipping"
+  exit 0
+fi
+
+# Exit 0 means "no core library or service was updated": leave the node alone.
+if needs-restarting -r >/dev/null 2>&1; then
+  log "no reboot required"
+  exit 0
+fi
+log "reboot required: $(needs-restarting -r 2>&1 | tr '\n' ' ')"
+
+# A full /boot turns the next kernel update into a failed transaction, so prune
+# installonly kernels (dnf keeps installonly_limit of them) while we are here.
+used=$(df --output=pcent /boot | tail -n1 | tr -dc '0-9')
+if [ "${used:-0}" -ge {{ boot_cleanup_threshold_percent }} ]; then
+  log "/boot is ${used}% full; pruning old installonly kernels"
+  dnf -y remove --oldinstallonly || log "oldinstallonly prune failed; continuing"
+fi
+
+log "rebooting"
+systemctl reboot

@@ -4,6 +4,7 @@
     path: /etc/rancher/k3s
     state: directory
     mode: "0755"
+  tags: [k3s, kubelet]
 
 - name: Configure kubelet to use limited swap and resource constraints
   ansible.builtin.copy:
@@ -44,6 +45,7 @@
   notify:
     - restart k3s
     - restart k3s-agent
+  tags: [k3s, kubelet]
 
 - name: Upgrade K3s to specified version
   when: k3s_version is defined

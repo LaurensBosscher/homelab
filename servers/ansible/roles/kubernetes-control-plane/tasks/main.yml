@@ -11,6 +11,17 @@
     dest: /etc/rancher/k3s/config.yaml
     mode: "0644"
   notify: restart k3s
+  tags: [k3s, control-plane]
+
+# V1 leftover: this drop-in pointed the single SQLite server at a retired
+# k3s-amsterdam/Tailscale peer as a joining server. k3s hides its own argv, so
+# the running process looked fine while the unit file would re-join on restart.
+- name: Remove the V1 k3s systemd override
+  ansible.builtin.file:
+    path: /etc/systemd/system/k3s.service.d/override.conf
+    state: absent
+  notify: restart k3s
+  tags: [k3s, control-plane]
 
 - name: Persist CoreDNS placement for cross-region DNS availability
   ansible.builtin.template:

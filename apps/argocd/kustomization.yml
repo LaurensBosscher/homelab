@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.5.0/manifests/core-install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.5.6/manifests/core-install.yaml
   # UI + API Service (not in core-install). Required by CF tunnel + gatus.
   - argocd-server.yaml
   - argocd-notifications-controller.yaml
