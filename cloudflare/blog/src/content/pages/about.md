@@ -1,8 +1,8 @@
 ---
 title: "About"
-description: "A short note about this site."
+description: "A short note about Laurens Bosscher"
 ---
 
-Personal blog for Laurens Bosscher.
+I'm Laurens Bosscher, CTO at [Savex Capital](https://savexcapital.com/). I love tinkering with (cheap) Linux gadgets or solving interesting engineering challenges. 
 
-Built with [AstroPaper](https://github.com/satnaing/astro-paper), stored as Markdown in GitHub, and served from a Cloudflare Worker at [blog.bosscher.ch](https://blog.bosscher.ch).
+This blog is _mostly_ about hobby projects. I might throw in some work related engineering stuff!
