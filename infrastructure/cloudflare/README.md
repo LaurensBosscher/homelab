@@ -22,7 +22,7 @@ with per-resource `import_` IDs, plus **SOPS** for the API token.
 | Cache Rules | Static extensions cached. Video/HLS/DASH extensions explicitly bypassed (Free-plan ToS) |
 | DMARC Management | On for both zones. `_dmarc` TXT keeps the existing policy and adds the Cloudflare RUA |
 | R2 | `save-games`, `r2-explorer` (objects not managed). `r2-explorer` is the read-write bucket for `files.bosscher.ch` |
-| DNS | Live records for the two zones. `files.bosscher.ch` is the Worker custom domain from `cloudflare/r2-explorer`, not a Pulumi record |
+| DNS | Live records for the two zones. Worker custom domains stay out of Pulumi: `files.bosscher.ch`, `blog.bosscher.ch`, and the resume apex/`www` hosts on both zones |
 | Tunnels | `k8s-tunnel`, `openstick` objects, plus health and create/delete email alerts. Ingress stays in `cloudflare/tunnels/*.yml` + GH Actions |
 | Access | 8 reusable policies, 11 applications (self-hosted + App Launcher), the one-time PIN identity provider, and one non-expiring `homelab-agents` service token. The token policy requires `ACCESS_HOME_CIDR` and is attached to every login-protected app, including `*.bosscher.ch`. It is not on `files.bosscher.ch` (Allow Laurens only), `blog.bosscher.ch`, the public site, the AIOStreams catalog path, or the Argo CD webhook. AIOStreams bypasses `/stremio/*.json`, `/api/v1/debrid/playback/*`, `/api/v1/usenet/stream/*`, and `/static/*` only for `ACCESS_HOME_CIDR` plus optional `ACCESS_AIOSTREAMS_EXTRA_CIDRS`. The rest of that hostname stays on the login policy. The Argo CD webhook bypasses only for GitHub's published `hooks` ranges (`api.github.com/meta`), not Actions runners. No groups. Tag names with no ids are not resources |
 | Not in this stack | Entra, device posture, WARP, split tunnel, Gateway. The `alameda` Worker (D1/KV and secret bindings) stays dashboard-managed |
@@ -32,6 +32,12 @@ with per-resource `import_` IDs, plus **SOPS** for the API token.
 1. API token lives in `secrets.enc.env` (SOPS; recipients = Laurens GitHub SSH keys in repo-root `.sops.yaml`).
 2. `scripts/pulumi_run.py` decrypts via `sops -d` into process env only.
 3. Optional override: `local_secrets.env` (gitignored) wins over encrypted values.
+4. GitHub Actions environment `cloudflare update tunnels & dns` uses a **separate**
+   account token (`Github CI/CD tunnels dns workers`), not the SOPS Pulumi token.
+   The Pulumi token is home-IP-only. The CI token must stay unrestricted and
+   include Tunnel Write, DNS/Workers Routes on `bosscher.ch`, plus Workers
+   Scripts Write / Workers Editor so `deploy-blog.yml` and `deploy-resume.yml`
+   can `wrangler deploy`.
 
 ```bash
 # Edit encrypted secrets (never writes plaintext to git):
@@ -111,5 +117,6 @@ infrastructure/cloudflare/
 - Do **not** commit `credentials.env` or decrypted dotenv files.
 - `files.bosscher.ch` is deployed by hand from `cloudflare/r2-explorer` (`npx wrangler deploy`). That custom domain DNS record stays out of `dns.py`.
 - `blog.bosscher.ch` is AstroPaper under `cloudflare/blog`, deployed by GH Actions (`wrangler deploy`). Custom domain DNS stays out of `dns.py`. Access app `blog.bosscher.ch` uses Allow Everyone so it is not behind `*.bosscher.ch` login.
+- Public résumé Worker lives under `cloudflare/resume` (`deploy-resume.yml`). Custom domains: `bosscher.ch`, `www.bosscher.ch`, `laurensbosscher.nl`, `www.laurensbosscher.nl`. Those DNS records stay out of `dns.py`. Access app `bosscher.ch` uses Allow Everyone for all four hosts.
 - `bossscher.org` is still a Cloudflare Registrar domain (auto-renew off, expires 2026-08-16). Cloudflare refuses to delete that zone. Its DNS records are gone, and the zone is not in this stack.
 
