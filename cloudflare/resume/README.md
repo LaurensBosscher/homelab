@@ -7,7 +7,8 @@ Static HTML résumé served as a Cloudflare Worker with custom domains on:
 - `laurensbosscher.nl`
 - `www.laurensbosscher.nl`
 
-Source lives in `public/` (HTML, CSS, photo, PDF).
+Source lives in `public/` (HTML, CSS, photo, PDF, `404.html`).
+This tree is the canonical copy; the old `~/dev/html-resume` checkout is not deployed.
 
 ## Local
 
