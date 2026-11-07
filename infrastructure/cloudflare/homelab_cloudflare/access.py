@@ -359,7 +359,14 @@ def create_access() -> Access:
         name="bosscher.ch",
         type="self_hosted",
         domain="bosscher.ch",
-        destinations=_public_destinations(["bosscher.ch", "laurensbosscher.nl"]),
+        destinations=_public_destinations(
+            [
+                "bosscher.ch",
+                "www.bosscher.ch",
+                "laurensbosscher.nl",
+                "www.laurensbosscher.nl",
+            ]
+        ),
         session_duration="24h",
         app_launcher_visible=True,
         auto_redirect_to_identity=False,

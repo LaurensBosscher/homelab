@@ -17,35 +17,8 @@ class DnsRecords:
 def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
     install_dns_delete_workaround()
     by_logical: dict[str, cloudflare.DnsRecord] = {}
-    by_logical["dns-bosscher-ch-a-bosscher-ch-c2770f07"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-a-bosscher-ch-c2770f07",
-        zone_id=zone_ids["bosscher.ch"],
-        name="bosscher.ch",
-        type="A",
-        ttl=CLOUDFLARE_AUTO,
-        content="75.2.60.5",
-        proxied=True,
-        comment="Netifly host",
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/c2770f07e6071a878ff92c7e563d78ea",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
-    )
-
-    by_logical["dns-bosscher-ch-a-www-bosscher-ch-ae796cc2"] = cloudflare.DnsRecord(
-        "dns-bosscher-ch-a-www-bosscher-ch-ae796cc2",
-        zone_id=zone_ids["bosscher.ch"],
-        name="www.bosscher.ch",
-        type="A",
-        ttl=CLOUDFLARE_AUTO,
-        content="75.2.60.5",
-        proxied=True,
-        comment="Netifly host",
-        opts=resource_opts(
-            import_id="e32ce9cb10fafea8ee531b713afdcc10/ae796cc21c4023d19d97d8e9f0267c86",
-            ignore_changes=["tags", "meta", "proxiable"],
-        ),
-    )
+    # Apex + www for bosscher.ch are Worker custom domains from
+    # cloudflare/resume (wrangler). Keep them out of Pulumi.
 
     by_logical["dns-bosscher-ch-cname-aiostreams-bosscher-ch-eb48eed3"] = (
         cloudflare.DnsRecord(
@@ -718,37 +691,8 @@ def create_dns_records(*, zone_ids: dict[str, pulumi.Input[str]]) -> DnsRecords:
         )
     )
 
-    by_logical["dns-laurensbosscher-nl-a-laurensbosscher-nl-e02c392e"] = (
-        cloudflare.DnsRecord(
-            "dns-laurensbosscher-nl-a-laurensbosscher-nl-e02c392e",
-            zone_id=zone_ids["laurensbosscher.nl"],
-            name="laurensbosscher.nl",
-            type="A",
-            ttl=CLOUDFLARE_AUTO,
-            content="75.2.60.5",
-            proxied=True,
-            opts=resource_opts(
-                import_id="80109e07e6038846aa25d17367211948/e02c392e6182e9130962b19670dbf877",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
-
-    by_logical["dns-laurensbosscher-nl-a-www-laurensbosscher-nl-b450e8e7"] = (
-        cloudflare.DnsRecord(
-            "dns-laurensbosscher-nl-a-www-laurensbosscher-nl-b450e8e7",
-            zone_id=zone_ids["laurensbosscher.nl"],
-            name="www.laurensbosscher.nl",
-            type="A",
-            ttl=CLOUDFLARE_AUTO,
-            content="75.2.60.5",
-            proxied=True,
-            opts=resource_opts(
-                import_id="80109e07e6038846aa25d17367211948/b450e8e7c902e8c91d99bb2c1c15eb9c",
-                ignore_changes=["tags", "meta", "proxiable"],
-            ),
-        )
-    )
+    # Apex + www for laurensbosscher.nl are Worker custom domains from
+    # cloudflare/resume (wrangler). Keep them out of Pulumi.
 
     by_logical["dns-laurensbosscher-nl-mx-laurensbosscher-nl-7a467b7c"] = (
         cloudflare.DnsRecord(

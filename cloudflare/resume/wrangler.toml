@@ -1,0 +1,25 @@
+name = "resume"
+account_id = "1ce5b40c4616a803216dff853ef6bc81"
+compatibility_date = "2026-11-07"
+workers_dev = false
+
+# Static HTML resume. Keep [assets] above [[routes]] so keys stay on assets.
+[assets]
+directory = "./public"
+not_found_handling = "404-page"
+
+[[routes]]
+pattern = "bosscher.ch"
+custom_domain = true
+
+[[routes]]
+pattern = "www.bosscher.ch"
+custom_domain = true
+
+[[routes]]
+pattern = "laurensbosscher.nl"
+custom_domain = true
+
+[[routes]]
+pattern = "www.laurensbosscher.nl"
+custom_domain = true

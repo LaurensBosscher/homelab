@@ -6,7 +6,7 @@ V2 K3s homelab: `bazzite` (SQLite control-plane + data-disk `local-path` PVCs) +
 ## Repository Structure
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
 - `servers/ansible/` - Ansible playbooks/roles
-- `cloudflare/` - Tunnel ingress YAML + GH Actions sync helpers
+- `cloudflare/` - Tunnel ingress YAML + GH Actions sync helpers; Workers sites (`blog/`, `resume/`, `r2-explorer/`)
 - `infrastructure/cloudflare/` - Pulumi (zones/DNS/tunnels) + SOPS (`secrets.enc.env`: API token, home CIDR, alert/allow emails)
 - `helm/` - Helm chart wrappers
 
@@ -151,6 +151,12 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 3. Add DNS route: `cloudflare/tunnels/config.yml` (cluster) or `config-openstick.yml` (OpenStick)
 4. Add health check: `apps/gatus/gatus-configmap.yml`
 5. ArgoCD auto-deploys
+
+### Cloudflare Worker site
+1. Put static assets + `wrangler.toml` under `cloudflare/<name>/` with `custom_domain = true` routes
+2. Add `.github/workflows/deploy-<name>.yml` (same secrets/environment as `deploy-blog.yml`)
+3. Keep Worker custom-domain DNS out of Pulumi `dns.py`
+4. If the hostname would otherwise fall under `*.bosscher.ch` Access login, add an exact-host Allow Everyone app (or extend the public apex app)
 
 ### PVC Patterns
 - Pattern A: `<app>-pvc.yml` (6 apps)
