@@ -140,3 +140,34 @@
   loop: "{{ console_getty_units }}"
   when: console_getty_headless | bool
   tags: [system-hardening, console]
+
+# Bazzite (and similar) can autologin a GNOME seat that is unused for ops but
+# still accumulates compositor shared memory until the box is memory-starved.
+- name: Check for GDM custom.conf when managing autologin
+  ansible.builtin.stat:
+    path: "{{ gdm_custom_conf }}"
+  register: gdm_custom_conf_stat
+  when: gdm_manage_autologin | bool
+  tags: [system-hardening, gdm]
+
+- name: Disable GDM automatic login
+  ansible.builtin.lineinfile:
+    path: "{{ gdm_custom_conf }}"
+    regexp: '^#?\s*AutomaticLoginEnable='
+    line: 'AutomaticLoginEnable=False'
+    insertafter: '^\[daemon\]'
+  when:
+    - gdm_manage_autologin | bool
+    - gdm_custom_conf_stat.stat.exists | default(false)
+  tags: [system-hardening, gdm]
+
+- name: Disable GDM service when managing autologin
+  ansible.builtin.systemd:
+    name: gdm.service
+    enabled: false
+    state: stopped
+  when:
+    - gdm_manage_autologin | bool
+    - gdm_custom_conf_stat.stat.exists | default(false)
+  failed_when: false
+  tags: [system-hardening, gdm]

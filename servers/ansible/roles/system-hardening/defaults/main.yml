@@ -10,3 +10,7 @@ chrony_allow_cidrs: []
 console_getty_headless: false
 console_getty_units:
   - serial-getty@ttyS0.service
+# Opt-in: disable GDM autologin on hosts that run a graphical seat but should
+# not keep an idle GNOME/Wayland session (seen: ~22GiB compositor Shmem on bazzite).
+gdm_manage_autologin: false
+gdm_custom_conf: /etc/gdm/custom.conf
