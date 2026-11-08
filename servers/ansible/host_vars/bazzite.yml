@@ -7,8 +7,8 @@ k3s_selinux_enabled: true
 # org.gnome.Shell@wayland.service. s1screen is USB-serial and does not need DRM.
 gdm_manage_autologin: true
 desktop_disable: true
-# Intel Alder Lake-N iGPU unused (no /dev/dri holders, no GPU k8s claims).
-gpu_disable: true
+# Keep iGPU enabled: RAPL A/B showed ~0.1W difference vs unload (noise).
+gpu_disable: false
 # SZBox S1 front TFT + LED (host + Kubernetes metrics).
 s1screen_enabled: true
 s1screen_led_meter: max
