@@ -3,9 +3,12 @@
 # Put the zswap backing store on the writable NVMe-backed /var.
 zswap_swapfile_path: /var/swapfile
 k3s_selinux_enabled: true
-# Keep GNOME from autologin: idle Wayland sessions have charged ~22GiB Shmem
-# to org.gnome.Shell@wayland.service. s1screen does not need a desktop seat.
+# Server-only for now: no desktop seat. Idle Wayland charged ~22GiB Shmem to
+# org.gnome.Shell@wayland.service. s1screen is USB-serial and does not need DRM.
 gdm_manage_autologin: true
+desktop_disable: true
+# Intel Alder Lake-N iGPU unused (no /dev/dri holders, no GPU k8s claims).
+gpu_disable: true
 # SZBox S1 front TFT + LED (host + Kubernetes metrics).
 s1screen_enabled: true
 s1screen_led_meter: max

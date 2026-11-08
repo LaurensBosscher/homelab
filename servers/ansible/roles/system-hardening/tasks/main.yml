@@ -171,3 +171,88 @@
     - gdm_custom_conf_stat.stat.exists | default(false)
   failed_when: false
   tags: [system-hardening, gdm]
+
+# Full desktop off: SDDM (Bazzite deck) still autologins via steamos.conf even
+# when GDM is disabled. multi-user.target keeps s1screen and k3s.
+- name: Neutralize SDDM autologin for server mode
+  ansible.builtin.copy:
+    dest: "{{ desktop_sddm_override }}"
+    mode: "0644"
+    content: |
+      # Ansible managed — server mode (desktop_disable).
+      # Overrides /etc/sddm.conf.d/steamos.conf Relogin/User/Session.
+      [Autologin]
+      Relogin=false
+      User=
+      Session=
+  when: desktop_disable | bool
+  tags: [system-hardening, desktop]
+
+- name: Stop and disable display-manager stack for server mode
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+    masked: true
+  loop: "{{ desktop_disable_services }}"
+  when: desktop_disable | bool
+  failed_when: false
+  tags: [system-hardening, desktop]
+
+- name: Read current default systemd target
+  ansible.builtin.command:
+    argv: ["systemctl", "get-default"]
+  register: desktop_current_default
+  changed_when: false
+  when: desktop_disable | bool
+  tags: [system-hardening, desktop]
+
+- name: Set default target to multi-user when desktop disabled
+  ansible.builtin.command:
+    argv: ["systemctl", "set-default", "multi-user.target"]
+  when:
+    - desktop_disable | bool
+    - (desktop_current_default.stdout | default('')) != 'multi-user.target'
+  tags: [system-hardening, desktop]
+
+- name: Blacklist GPU DRM modules when unused
+  ansible.builtin.copy:
+    dest: "{{ gpu_modprobe_conf }}"
+    mode: "0644"
+    content: |
+      # Ansible managed — gpu_disable. s1screen uses USB serial, not DRM.
+      {% for mod in gpu_blacklist_modules %}
+      blacklist {{ mod }}
+      install {{ mod }} /bin/false
+      {% endfor %}
+  when: gpu_disable | bool
+  tags: [system-hardening, gpu]
+
+- name: Unbind and unload GPU modules now if idle
+  ansible.builtin.shell: |
+    set -e
+    # Drop driver from PCI devices first; rmmod alone often fails while bound.
+    for drv in {{ gpu_blacklist_modules | join(' ') }}; do
+      sys="/sys/bus/pci/drivers/$drv"
+      if [ -d "$sys" ]; then
+        for link in "$sys"/0000:*; do
+          [ -e "$link" ] || continue
+          bdf=$(basename "$link")
+          echo "$bdf" > "$sys/unbind" 2>/dev/null || true
+        done
+      fi
+    done
+    for mod in {{ gpu_blacklist_modules | join(' ') }}; do
+      if lsmod | awk '{print $1}' | grep -qx "$mod"; then
+        modprobe -r "$mod" 2>/dev/null || rmmod "$mod" 2>/dev/null || true
+      fi
+    done
+    for mod in drm_ttm_helper drm_exec drm_gpuvm drm_suballoc_helper gpu_sched amdxcp drm_panel_backlight_quirks; do
+      modprobe -r "$mod" 2>/dev/null || true
+    done
+    exit 0
+  args:
+    executable: /bin/bash
+  when: gpu_disable | bool
+  changed_when: false
+  tags: [system-hardening, gpu]

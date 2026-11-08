@@ -14,3 +14,19 @@ console_getty_units:
 # not keep an idle GNOME/Wayland session (seen: ~22GiB compositor Shmem on bazzite).
 gdm_manage_autologin: false
 gdm_custom_conf: /etc/gdm/custom.conf
+# Opt-in server mode: no display manager / autologin seat. Safe with s1screen
+# (USB serial TFT) which does not need DRM/GNOME/SDDM.
+desktop_disable: false
+desktop_disable_services:
+  - sddm.service
+  - gdm.service
+  - bazzite-autologin.service
+desktop_sddm_override: /etc/sddm.conf.d/zz-server-mode.conf
+# Opt-in: blacklist iGPU/dGPU DRM drivers when nothing needs /dev/dri.
+gpu_disable: false
+gpu_blacklist_modules:
+  - i915
+  - xe
+  - amdgpu
+  - nouveau
+gpu_modprobe_conf: /etc/modprobe.d/disable-gpu.conf
