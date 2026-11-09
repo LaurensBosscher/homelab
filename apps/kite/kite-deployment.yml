@@ -196,7 +196,7 @@ spec:
                       - bazzite
       serviceAccountName: kite
       containers:
-        - image: ghcr.io/kite-org/kite:v0.16.0
+        - image: ghcr.io/kite-org/kite:v0.17.0
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
