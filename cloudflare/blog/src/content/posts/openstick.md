@@ -50,7 +50,7 @@ AdGuard Home blocks bad domains at the DNS level: spyware, malware, and so on. T
 
 A DNS blocker cannot block all bad requests (you'll need a proper firewall for that), but it sure can block a whole lot. After adding a few blocklists, 60% of my queries are now blocked. Most seem harmless, but I'm pretty sure that some aren't.
 
-I'm running my own fork, which can handle large blocklists in an efficient manner — [the full write-up of every optimisation vs stock AdGuard Home is here](/posts/adguard-home-next-gen/). You probably shouldn't run binaries provided by random strangers, so I've also included the link to the official version below (which is totally fine if you limit yourself to smaller blocklists).
+I'm running my own fork, which can handle large blocklists in an efficient manner — [the full write-up of every optimisation vs stock AdGuard Home is here](/posts/adguard_home_next_gen/). You probably shouldn't run binaries provided by random strangers, so I've also included the link to the official version below (which is totally fine if you limit yourself to smaller blocklists).
 
 [AdGuard Home Next-Gen](https://github.com/LaurensBosscher/AdGuardHome-Next-Gen) - 40 MB (independent of the size of the blocklist)
 [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) - 40 MB (with a small (200k) blocklist)

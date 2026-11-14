@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-label="Dual-path filter update and DNS query architecture" font-family="Geist, -apple-system, system-ui, 'SF Pro Text', Inter, 'Segoe UI', Roboto, 'Noto Sans', 'DejaVu Sans', Arial, sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <text x="12" y="22" fill="var(--fg)" font-size="14" font-weight="600">Filter update</text>
+  <text x="380" y="22" fill="var(--fg)" font-size="14" font-weight="600">DNS query</text>
+
+  <rect x="12" y="36" width="160" height="36" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="92" y="58" text-anchor="middle" fill="var(--fg)">Stream each list</text>
+
+  <line x1="92" y1="72" x2="92" y2="92" stroke="var(--muted)" marker-end="url(#arrow)"/>
+
+  <rect x="12" y="92" width="160" height="44" rx="8" fill="var(--surface)" stroke="var(--accent)"/>
+  <text x="92" y="110" text-anchor="middle" fill="var(--fg)">Simple hosts /</text>
+  <text x="92" y="126" text-anchor="middle" fill="var(--fg)">||domain^ ?</text>
+
+  <path d="M92 136 L92 152 L40 152 L40 168" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="56" y="148" fill="var(--accent)" font-size="11">yes</text>
+
+  <rect x="12" y="168" width="56" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="40" y="186" text-anchor="middle" fill="var(--fg)" font-size="11">Hash</text>
+
+  <line x1="40" y1="196" x2="40" y2="212" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <rect x="12" y="212" width="56" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="40" y="228" text-anchor="middle" fill="var(--fg)" font-size="11">Batch /</text>
+  <text x="40" y="242" text-anchor="middle" fill="var(--fg)" font-size="11">runs</text>
+
+  <line x1="40" y1="248" x2="40" y2="264" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <rect x="12" y="264" width="120" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="72" y="280" text-anchor="middle" fill="var(--fg)" font-size="11">Merge →</text>
+  <text x="72" y="294" text-anchor="middle" fill="var(--fg)" font-size="11">blocklist.bin</text>
+
+  <line x1="72" y1="300" x2="72" y2="316" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <rect x="12" y="316" width="120" height="28" rx="6" fill="var(--surface)" stroke="var(--accent)"/>
+  <text x="72" y="334" text-anchor="middle" fill="var(--fg)" font-size="11">mmap Index</text>
+
+  <path d="M172 114 L210 114 L210 168" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="176" y="108" fill="var(--muted)" font-size="11">no</text>
+
+  <rect x="150" y="168" width="120" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="210" y="184" text-anchor="middle" fill="var(--fg)" font-size="11">complex-*.txt</text>
+  <text x="210" y="198" text-anchor="middle" fill="var(--fg)" font-size="11">leftovers</text>
+
+  <line x1="210" y1="204" x2="210" y2="220" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <rect x="150" y="220" width="120" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="210" y="236" text-anchor="middle" fill="var(--fg)" font-size="11">urlfilter</text>
+  <text x="210" y="250" text-anchor="middle" fill="var(--fg)" font-size="11">DNSEngine</text>
+
+  <rect x="380" y="36" width="160" height="36" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="460" y="58" text-anchor="middle" fill="var(--fg)">Allowlist urlfilter</text>
+
+  <path d="M460 72 L460 88 L400 88 L400 104" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="410" y="84" fill="var(--accent)" font-size="11">hit</text>
+  <rect x="340" y="104" width="80" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="380" y="122" text-anchor="middle" fill="var(--fg)">Allow</text>
+
+  <path d="M460 72 L460 88 L520 88 L520 104" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="470" y="84" fill="var(--muted)" font-size="11">miss</text>
+
+  <rect x="440" y="104" width="160" height="44" rx="8" fill="var(--surface)" stroke="var(--accent)"/>
+  <text x="520" y="122" text-anchor="middle" fill="var(--fg)">Any complex</text>
+  <text x="520" y="138" text-anchor="middle" fill="var(--fg)">block leftovers?</text>
+
+  <path d="M520 148 L520 164 L440 164 L440 180" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="444" y="160" fill="var(--muted)" font-size="11">no → hash only</text>
+  <rect x="380" y="180" width="120" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="440" y="198" text-anchor="middle" fill="var(--fg)" font-size="11">Hash index</text>
+
+  <path d="M600 126 L640 126 L640 180" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="604" y="118" fill="var(--accent)" font-size="11">yes</text>
+  <rect x="560" y="180" width="140" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="630" y="196" text-anchor="middle" fill="var(--fg)" font-size="11">Complex urlfilter</text>
+  <text x="630" y="210" text-anchor="middle" fill="var(--fg)" font-size="11">then hash</text>
+
+  <line x1="630" y1="216" x2="630" y2="232" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <line x1="440" y1="208" x2="440" y2="248" stroke="var(--muted)"/>
+  <line x1="440" y1="248" x2="630" y2="248" stroke="var(--muted)"/>
+  <line x1="535" y1="248" x2="535" y2="264" stroke="var(--muted)" marker-end="url(#arrow)"/>
+
+  <rect x="460" y="264" width="150" height="36" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="535" y="280" text-anchor="middle" fill="var(--fg)" font-size="11">Hash hit?</text>
+  <text x="535" y="294" text-anchor="middle" fill="var(--muted)" font-size="11">after allow / complex</text>
+
+  <path d="M535 300 L535 316 L460 316 L460 332" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="470" y="312" fill="var(--accent)" font-size="11">yes</text>
+  <rect x="400" y="332" width="120" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="460" y="350" text-anchor="middle" fill="var(--fg)" font-size="11">Block 0.0.0.0</text>
+
+  <path d="M535 300 L535 316 L610 316 L610 332" fill="none" stroke="var(--muted)" marker-end="url(#arrow)"/>
+  <text x="540" y="312" fill="var(--muted)" font-size="11">miss</text>
+  <rect x="550" y="332" width="120" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+  <text x="610" y="350" text-anchor="middle" fill="var(--fg)" font-size="11">Upstream</text>
+
+  <text x="12" y="400" fill="var(--muted)" font-size="11">Dual-path: simple domains → hash blob; complex / allow rules stay in urlfilter.</text>
+</svg>
