@@ -1,1 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="194" viewBox="0 0 720 194" role="img" aria-label="100k is best on all 4 measures. small multiples chart of urlfilter RSS, domainhash file, domainhash build, warm hit by N" font-family="Geist, -apple-system, system-ui, 'SF Pro Text', Inter, 'Segoe UI', Roboto, 'Noto Sans', 'DejaVu Sans', Arial, 'Helvetica Neue', sans-serif" font-size="13"><g transform="translate(0 12)"><text x="12" y="12.6" fill="var(--fg)" font-weight="600"><tspan fill="var(--accent)">100k</tspan> is best on all 4 measures</text><text x="215.4" y="11.8" fill="var(--muted)" font-size="11">scaled per panel</text><circle cx="578.3" cy="8" r="4" fill="var(--c1)"/><text x="586.3" y="11.8" fill="var(--muted)" font-size="11">100k</text><circle cx="631.3" cy="8" r="4" fill="var(--c2)"/><text x="639.3" y="11.8" fill="var(--muted)" font-size="11">500k</text><circle cx="684.3" cy="8" r="4" fill="var(--c3)"/><text x="692.3" y="11.8" fill="var(--muted)" font-size="11">1M</text></g><g transform="translate(0 40)"><text x="12" y="9.8" fill="var(--fg)" font-size="11" font-weight="600">urlfilter RSS</text><rect x="12" y="22" width="43.4" height="10" rx="3" fill="var(--c1)"/><text x="59.4" y="30.5" fill="var(--muted)" font-size="10">22.7 MiB</text><rect x="12" y="36" width="161.1" height="10" rx="3" fill="var(--c2)"/><text x="177.1" y="44.5" fill="var(--muted)" font-size="10">84.2 MiB</text><rect x="12" y="50" width="285.7" height="10" rx="3" fill="var(--c3)"/><text x="301.7" y="58.5" fill="var(--muted)" font-size="10">149.3 MiB</text><text x="369" y="9.8" fill="var(--fg)" font-size="11" font-weight="600">domainhash file</text><rect x="369" y="22" width="29.4" height="10" rx="3" fill="var(--c1)"/><text x="402.4" y="30.5" fill="var(--muted)" font-size="10">488 KiB</text><rect x="369" y="36" width="148.2" height="10" rx="3" fill="var(--c2)"/><text x="521.2" y="44.5" fill="var(--muted)" font-size="10">2.4 MiB</text><rect x="369" y="50" width="296.4" height="10" rx="3" fill="var(--c3)"/><text x="669.4" y="58.5" fill="var(--muted)" font-size="10">4.8 MiB</text><text x="12" y="85.8" fill="var(--fg)" font-size="11" font-weight="600">domainhash build</text><rect x="12" y="98" width="30.9" height="10" rx="3" fill="var(--c1)"/><text x="46.9" y="106.5" fill="var(--muted)" font-size="10">25 ms</text><rect x="12" y="112" width="133.3" height="10" rx="3" fill="var(--c2)"/><text x="149.3" y="120.5" fill="var(--muted)" font-size="10">108 ms</text><rect x="12" y="126" width="298.8" height="10" rx="3" fill="var(--c3)"/><text x="314.8" y="134.5" fill="var(--muted)" font-size="10">242 ms</text><text x="369" y="85.8" fill="var(--fg)" font-size="11" font-weight="600">warm hit</text><rect x="369" y="98" width="267.7" height="10" rx="3" fill="var(--c1)"/><text x="640.7" y="106.5" fill="var(--muted)" font-size="10">125 ns</text><rect x="369" y="112" width="280.6" height="10" rx="3" fill="var(--c2)"/><text x="653.6" y="120.5" fill="var(--muted)" font-size="10">131 ns</text><rect x="369" y="126" width="302" height="10" rx="3" fill="var(--c3)"/><text x="675" y="134.5" fill="var(--muted)" font-size="10">141 ns</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="194" viewBox="0 0 720 194" role="img" aria-label="100k is best on all 4 measures. small multiples chart of urlfilter RSS, domainhash file, domainhash build, warm hit by N" font-family="Geist, -apple-system, system-ui, 'SF Pro Text', Inter, 'Segoe UI', Roboto, 'Noto Sans', 'DejaVu Sans', Arial, 'Helvetica Neue', sans-serif" font-size="13">
+<defs>
+  <style type="text/css"><![CDATA[
+    /* Self-contained: <img> SVGs do not inherit page CSS variables. */
+    svg {
+      --fg: #282728;
+      --muted: #6b7280;
+      --surface: #f3f4f6;
+      --border: #d1d5db;
+      --accent: #006cac;
+      --c1: #006cac;
+      --c2: #3d8ec0;
+      --c3: #7eb0d4;
+    }
+    @media (prefers-color-scheme: dark) {
+      svg {
+        --fg: #eaedf3;
+        --muted: #afb9ca;
+        --surface: #2a3148;
+        --border: #ab4b08;
+        --accent: #ff6b01;
+        --c1: #ff6b01;
+        --c2: #ff9448;
+        --c3: #ffb87a;
+      }
+      /* Soft white halo so labels stay readable on dark page backgrounds */
+      text, tspan {
+        filter:
+          drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.95))
+          drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+      }
+    }
+  ]]></style>
+</defs>
+<g transform="translate(0 12)"><text x="12" y="12.6" fill="var(--fg)" font-weight="600"><tspan fill="var(--accent)">100k</tspan> is best on all 4 measures</text><text x="215.4" y="11.8" fill="var(--muted)" font-size="11">scaled per panel</text><circle cx="578.3" cy="8" r="4" fill="var(--c1)"/><text x="586.3" y="11.8" fill="var(--muted)" font-size="11">100k</text><circle cx="631.3" cy="8" r="4" fill="var(--c2)"/><text x="639.3" y="11.8" fill="var(--muted)" font-size="11">500k</text><circle cx="684.3" cy="8" r="4" fill="var(--c3)"/><text x="692.3" y="11.8" fill="var(--muted)" font-size="11">1M</text></g><g transform="translate(0 40)"><text x="12" y="9.8" fill="var(--fg)" font-size="11" font-weight="600">urlfilter RSS</text><rect x="12" y="22" width="43.4" height="10" rx="3" fill="var(--c1)"/><text x="59.4" y="30.5" fill="var(--muted)" font-size="10">22.7 MiB</text><rect x="12" y="36" width="161.1" height="10" rx="3" fill="var(--c2)"/><text x="177.1" y="44.5" fill="var(--muted)" font-size="10">84.2 MiB</text><rect x="12" y="50" width="285.7" height="10" rx="3" fill="var(--c3)"/><text x="301.7" y="58.5" fill="var(--muted)" font-size="10">149.3 MiB</text><text x="369" y="9.8" fill="var(--fg)" font-size="11" font-weight="600">domainhash file</text><rect x="369" y="22" width="29.4" height="10" rx="3" fill="var(--c1)"/><text x="402.4" y="30.5" fill="var(--muted)" font-size="10">488 KiB</text><rect x="369" y="36" width="148.2" height="10" rx="3" fill="var(--c2)"/><text x="521.2" y="44.5" fill="var(--muted)" font-size="10">2.4 MiB</text><rect x="369" y="50" width="296.4" height="10" rx="3" fill="var(--c3)"/><text x="669.4" y="58.5" fill="var(--muted)" font-size="10">4.8 MiB</text><text x="12" y="85.8" fill="var(--fg)" font-size="11" font-weight="600">domainhash build</text><rect x="12" y="98" width="30.9" height="10" rx="3" fill="var(--c1)"/><text x="46.9" y="106.5" fill="var(--muted)" font-size="10">25 ms</text><rect x="12" y="112" width="133.3" height="10" rx="3" fill="var(--c2)"/><text x="149.3" y="120.5" fill="var(--muted)" font-size="10">108 ms</text><rect x="12" y="126" width="298.8" height="10" rx="3" fill="var(--c3)"/><text x="314.8" y="134.5" fill="var(--muted)" font-size="10">242 ms</text><text x="369" y="85.8" fill="var(--fg)" font-size="11" font-weight="600">warm hit</text><rect x="369" y="98" width="267.7" height="10" rx="3" fill="var(--c1)"/><text x="640.7" y="106.5" fill="var(--muted)" font-size="10">125 ns</text><rect x="369" y="112" width="280.6" height="10" rx="3" fill="var(--c2)"/><text x="653.6" y="120.5" fill="var(--muted)" font-size="10">131 ns</text><rect x="369" y="126" width="302" height="10" rx="3" fill="var(--c3)"/><text x="675" y="134.5" fill="var(--muted)" font-size="10">141 ns</text></g></svg>

@@ -1,5 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-label="Dual-path filter update and DNS query architecture" font-family="Geist, -apple-system, system-ui, 'SF Pro Text', Inter, 'Segoe UI', Roboto, 'Noto Sans', 'DejaVu Sans', Arial, sans-serif" font-size="12">
   <defs>
+  <style type="text/css"><![CDATA[
+    /* Self-contained: <img> SVGs do not inherit page CSS variables. */
+    svg {
+      --fg: #282728;
+      --muted: #6b7280;
+      --surface: #f3f4f6;
+      --border: #d1d5db;
+      --accent: #006cac;
+      --c1: #006cac;
+      --c2: #3d8ec0;
+      --c3: #7eb0d4;
+    }
+    @media (prefers-color-scheme: dark) {
+      svg {
+        --fg: #eaedf3;
+        --muted: #afb9ca;
+        --surface: #2a3148;
+        --border: #ab4b08;
+        --accent: #ff6b01;
+        --c1: #ff6b01;
+        --c2: #ff9448;
+        --c3: #ffb87a;
+      }
+      /* Soft white halo so labels stay readable on dark page backgrounds */
+      text, tspan {
+        filter:
+          drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.95))
+          drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+      }
+    }
+  ]]></style>
+
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/>
     </marker>

@@ -119,6 +119,16 @@
     @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
   }
 
+  /*
+    Markdown SVGs are rendered as <img>, so page theme tokens do not inherit.
+    Keep a white halo in dark mode so black/fallback label fills stay readable
+    when prefers-color-scheme and data-theme disagree.
+  */
+  html[data-theme="dark"] #article img[src*=".svg"] {
+    filter: drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.95))
+      drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  }
+
   /* Styles for Shiki transformers */
   /* https://shiki.style/packages/transformers */
   .astro-code {
