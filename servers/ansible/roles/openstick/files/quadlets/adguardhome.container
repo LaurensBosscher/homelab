@@ -1,10 +1,11 @@
 [Container]
-Image=docker.io/adguard/adguardhome:latest
-AutoUpdate=registry
-# DHCP uses broadcasts on wlan0. The podman bridge never receives them.
+Image=docker.io/adguard/adguardhome:v1.0.0-b.1
+# Next-Gen: stock image for libs/busybox healthcheck; our binary replaces the
+# upstream AdGuardHome entrypoint binary via bind-mount.
 Network=host
 AddCapability=NET_RAW
 AddCapability=NET_ADMIN
+Volume=/opt/stack/adguardhome/AdGuardHome.nextgen:/opt/adguardhome/AdGuardHome:ro
 Volume=/opt/stack/adguardhome/work:/opt/adguardhome/work
 Volume=/opt/stack/adguardhome/conf:/opt/adguardhome/conf
 Volume=/opt/stack/adguardhome/dhcpcd.conf:/etc/dhcpcd.conf:ro
