@@ -23,11 +23,9 @@
         --c2: #ff9448;
         --c3: #ffb87a;
       }
-      /* Soft white halo so labels stay readable on dark page backgrounds */
+      /* Thin white halo only — keep glyph fill crisp above it */
       text, tspan {
-        filter:
-          drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.95))
-          drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+        filter: drop-shadow(0 0 0.45px rgba(255, 255, 255, 0.55));
       }
     }
   ]]></style>
