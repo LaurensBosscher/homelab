@@ -224,10 +224,18 @@ Experimental, homelab-grade — not for anything life-critical. Here be dragons.
 
 I considered the following alternatives and have listed how they compare to our fork:
 
-| | Stock AdGuard Home | AGH Next-Gen | Pi-hole (FTL) | dnsmasq |
-|---|---|---|---|---|
-| Representation | NetworkRule (~296 B) + ShortcutIndex | Truncated FNV hash (5–8 B) in sorted `blocklist.bin` | Full domain string in SQLite `gravity.db`, B-tree index (~32 B/domain in the index, plus the string in the table) | Full hostname in dnsmasq’s in-process hash table |
-| Lookup | 5-gram shortcut → candidates → full `Match()` | Binary search on hashes (+ parent suffixes) | `WHERE domain = ?` on indexed B-tree (+ group/carray) | Hash of hostname → entry |
-| Scaling | ~O(windows × bucket) then full match; RSS scales with objects | O(log N), RSS ≈ file size | O(log N) B-tree; Dominik cites ~&lt;5 ms even at ~3M on a Pi when warm | O(1) average hash, but RAM scales linearly with N |
-| Adblock / regex / `$client` | Yes (full) | Only leftovers in urlfilter | Exact + separate regex; groups/clients; not full AGH NetworkRules | No (hosts / `address=` / `local=` only) |
-| Resources | Up to GBs | ~40 MB | ~80 MB (estimate) | ~100 MB (estimate) |
+| | Stock AdGuard Home | AGH Next-Gen | Pi-hole (FTL) | dnsmasq | Blocky | esp32-c3-adblock |
+|---|---|---|---|---|---|---|
+| Memory Usage | 200–300 MB | ~40 MB | ~80 MB (estimate) | ~100 MB (estimate) | tens of MB (scales with lists) | ~50 KB RAM |
+| Rebuild | Up to GBs | ~60 MB | ~200 MB (SQLite index rebuild) | N/A | list reload in-process | flash / OTA `blocklist.bin` |
+| Representation | NetworkRule (~296 B) + ShortcutIndex | Truncated FNV hash (5–8 B) in sorted `blocklist.bin` | Full domain string in SQLite `gravity.db`, B-tree index (~32 B/domain in the index, plus the string in the table) | Full hostname in dnsmasq’s in-process hash table | In-memory allow/deny sets (+ regex) | Truncated FNV hash (40-bit) in flash |
+| Lookup | 5-gram shortcut → candidates → full `Match()` | Binary search on hashes (+ parent suffixes) | `WHERE domain = ?` on indexed B-tree (+ group/carray) | Hash of hostname → entry | Hash / set membership (+ regex) | Binary search on hashes (+ parent suffixes) |
+| Scaling | ~O(windows × bucket) then full match; RSS scales with objects | O(log N), RSS ≈ file size | O(log N) B-tree; Dominik cites ~&lt;5 ms even at ~3M on a Pi when warm | O(1) average hash, but RAM scales linearly with N | O(1)-ish sets; RAM grows with list size | O(log N); flash-bound (~250k–537k domains) |
+| Adblock / regex / `$client` | Yes | Yes | Limited | No | Yes (groups + regex; not full AGH NetworkRules) | Simple domains only |
+| DHCP | Yes | Yes | Yes (optional) | Yes | No | No (planned) |
+| WebUI | Yes | Yes | Yes | No | No (3rd-party UIs only) | Yes |
+| Encrypted DNS | Yes (DoH / DoT) | Yes (DoH / DoT) | Yes (DoH / DoT in recent FTL) | No | Yes (DoH / DoT / DoQ) | No |
+
+Stock AdGuard Home delivers the most flexibility when it comes to blocking but has an upper limit. Pi-hole delivers less functionality but scales better. dnsmasq is not optimized for blocking but is incredibly reliable and battle tested.
+
+Our fork 
