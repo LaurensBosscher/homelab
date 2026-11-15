@@ -13,25 +13,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+
 # environment variables
 .env
 .env.production
 
 # macOS-specific files
 .DS_Store
-
-# jetbrains setting folder
-.idea/
-
-# pagefind
-public/pagefind
-
-# pnpm
-.pnpm-store
-
-# docker compose
-compose.override.yaml
-
-# wrangler
-.wrangler/
-.dev.vars
