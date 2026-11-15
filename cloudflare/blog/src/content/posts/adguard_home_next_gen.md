@@ -18,7 +18,7 @@ AdGuard Home is a fantastic piece of software. It has a large community, is batt
 
 At this point we have a few options:
 
-1. Use a different solution, perhaps something like [dnsmasq](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html), [pi-hole](https://github.com/pi-hole/pi-hole), [blocky](https://github.com/0xERR0R/blocky) or [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock). See [Alternatives](#alternatives)
+1. Use a different solution, perhaps something like [dnsmasq](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html), [pi-hole](https://github.com/pi-hole/pi-hole), [blocky](https://github.com/0xERR0R/blocky) or [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock). See [Alternatives + Comparison](#alternatives--comparison)
 2. Use more powerful hardware (we do have an almost empty Kubernetes cluster after all)
 3. Spend an evening looking into AdGuard Home, learn some Go, and see if we can find a good solution
 
@@ -126,11 +126,19 @@ The solution that I eventually ended up with is as follows:
 
 Simple hosts / `||domain^` rules are hashed into a sorted on-disk blob (`blocklist.bin`) and mmap'd for lookup. Everything a hash table cannot express: `@@` exceptions, `$`-modifiers, regex, path rules, and awkward list formats, stay in a compact urlfilter engine.
 
+## So what's next?
+
 As you can see, none of these optimisations come for free. While we greatly reduce the memory usage and lookup time (in most scenarios), we do so at the cost of effectively implementing a whole secondary (although quite simple) blocking engine.
 
-This means twice the surface for bugs, crashes, and security issues. That's less of an issue for a homelab, more of an issue for an open-source project where the maintainers take responsibility for what they ship. Even more so for AdGuard Home, whose maintainers also have a business to run. Bugs and issues in their open-source project would reflect poorly on their commercial offering.
+This means twice the surface for bugs, crashes, and security issues. That's less of an issue for a homelab, more of an issue for an open-source project where the maintainers take responsibility for what they ship. Even more so for AdGuard Home, whose maintainers also have a business to run. Bugs and issues in their open-source project could reflect poorly on their commercial offering.
 
-Despite this approach clearly having many benefits and being more efficient, I have thus decided to keep the fork separate from the upstream project for now. I would be delighted to see this merged eventually with the upstream project but I understand the trade-offs, adding complexity to a project to optimise for **my** use case does not seem fair.
+Despite this approach clearly having benefits and being more efficient, I have thus decided to keep the fork separate from the upstream project (for now). I would be delighted to see this merged eventually with the upstream project but I understand the trade-offs, adding complexity to a project to optimise for **my** use case does not seem fair.
+
+## Adguard Home - Next Generation
+
+A new fork, needs a new name. I settled on "Adguard Home - Next Gen". Generation should be read in a similar vein as Pokemon. It's all the stuff from the previous generation + a bunch of new stuff. Just like in Pokemon however some of the new stuff might be of the "bug" type.
+
+It also sounds cool, that seems important in a name.  
 
 ## Results
 
@@ -212,7 +220,7 @@ Technically we could race some of these on multi-core machines, but the expected
 
 Since we experiment a lot and deploy new builds to test, process restarts are common. A cold DNS cache means every client waits on upstream RTT again. Next-Gen can periodically dump the live dnsproxy cache to disk (`data/dns_cache.bin`) and reload it on start. It will skip expired entries so the stick comes back warm after a redeploy.
 
-## Try it
+## Try it!
 
 - Fork: [AdGuardHome-Next-Gen](https://github.com/LaurensBosscher/AdGuardHome-Next-Gen)
 - Design notes: [docs/NEXTGEN.md](https://github.com/LaurensBosscher/AdGuardHome-Next-Gen/blob/master/docs/NEXTGEN.md)
@@ -220,22 +228,19 @@ Since we experiment a lot and deploy new builds to test, process restarts are co
 
 Experimental, homelab-grade — not for anything life-critical. Here be dragons.
 
-## Alternatives
+## Alternatives + Comparison
 
 I considered the following alternatives and have listed how they compare to our fork:
 
 | | Stock AdGuard Home | AGH Next-Gen | Pi-hole (FTL) | dnsmasq | Blocky | esp32-c3-adblock |
 |---|---|---|---|---|---|---|
+| Assessment | Delivers the most flexibility when it comes to blocking but has an upper limit. | AGH Features + improved efficiency | Elegant implementation, less functionality than Adguard | Not optimised for blocking. Strength: very reliable + battle tested | Efficient and elegant, limited feature set | Very elegant but limited to the ESP32-C3 hardware
+| Encrypted DNS | Yes (DoH / DoT) | Yes (DoH / DoT) | Yes (DoH / DoT in recent FTL) | No | Yes (DoH / DoT / DoQ) | No |
+| Adblock / regex / `$client` | Yes | Yes | Limited | No | Limited | No |
 | Memory Usage | 200–300 MB | ~40 MB | ~80 MB (estimate) | ~100 MB (estimate) | tens of MB (scales with lists) | ~50 KB RAM |
 | Rebuild | Up to GBs | ~60 MB | ~200 MB (SQLite index rebuild) | N/A | list reload in-process | flash / OTA `blocklist.bin` |
+| DHCP | Yes | Yes | Yes (optional) | Yes | No | No (planned) |
+| WebUI | Yes | Yes | Yes | No | No (3rd-party UIs only) | Yes |
 | Representation | NetworkRule (~296 B) + ShortcutIndex | Truncated FNV hash (5–8 B) in sorted `blocklist.bin` | Full domain string in SQLite `gravity.db`, B-tree index (~32 B/domain in the index, plus the string in the table) | Full hostname in dnsmasq’s in-process hash table | In-memory allow/deny sets (+ regex) | Truncated FNV hash (40-bit) in flash |
 | Lookup | 5-gram shortcut → candidates → full `Match()` | Binary search on hashes (+ parent suffixes) | `WHERE domain = ?` on indexed B-tree (+ group/carray) | Hash of hostname → entry | Hash / set membership (+ regex) | Binary search on hashes (+ parent suffixes) |
 | Scaling | ~O(windows × bucket) then full match; RSS scales with objects | O(log N), RSS ≈ file size | O(log N) B-tree; Dominik cites ~&lt;5 ms even at ~3M on a Pi when warm | O(1) average hash, but RAM scales linearly with N | O(1)-ish sets; RAM grows with list size | O(log N); flash-bound (~250k–537k domains) |
-| Adblock / regex / `$client` | Yes | Yes | Limited | No | Yes (groups + regex; not full AGH NetworkRules) | Simple domains only |
-| DHCP | Yes | Yes | Yes (optional) | Yes | No | No (planned) |
-| WebUI | Yes | Yes | Yes | No | No (3rd-party UIs only) | Yes |
-| Encrypted DNS | Yes (DoH / DoT) | Yes (DoH / DoT) | Yes (DoH / DoT in recent FTL) | No | Yes (DoH / DoT / DoQ) | No |
-
-Stock AdGuard Home delivers the most flexibility when it comes to blocking but has an upper limit. Pi-hole delivers less functionality but scales better. dnsmasq is not optimized for blocking but is incredibly reliable and battle tested.
-
-Our fork 
