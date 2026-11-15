@@ -14,7 +14,7 @@ tags:
 description: How a dual-path hash index (inspired by esp32-c3-adblock) lets AdGuard Home run million-entry blocklists on a ~465 MiB OpenStick without triggering OOM.
 ---
 
-AdGuard Home is a fantastic piece of software. It has a large community, is battle-tested, easy to run, and easy to configure and it has a pretty web interface. I installed it on my mighty [OpenStick](/posts/openstick/) and since the internet is a big, bad place I figured I would enable the [HaGeZi Threat Intelligence](https://github.com/hagezi/dns-blocklists) feeds (**~2 million** domains depending on which lists you stack) and… it crashed!
+AdGuard Home is a fantastic piece of software. It has a large community, is battle-tested, easy to run, easy to configure and it has a pretty web interface. I installed it on my mighty [OpenStick](/posts/openstick/) and since the internet is a big, bad place I figured I would enable the [HaGeZi Threat Intelligence](https://github.com/hagezi/dns-blocklists) feeds (**~2 million** domains depending on which lists you stack) and… it crashed!
 
 At this point we have a few options:
 
@@ -53,7 +53,7 @@ There's a second challenge with the AdGuard Home implementation in that a rebuil
 
 The worst-case scenario is thus not 296 bytes alone. As a rough estimate ~296 B per `NetworkRule`, plus shortcut-index overhead (see below), then ~2–3× during a rebuild while the old engine stays alive and Go's GC catches up gives us **~1 KB of peak pressure per filter line**. That makes for easy math: ~2.3 million entries → on the order of **~2.3 GB** peak. That's about five times as much RAM as we have on the stick.
 
-This matches our real-world observations (crash when enabling the blocklists, runs fine with a smaller blocklist) and matches what people report in the [GitHub Issue - High memory and CPU usage](https://github.com/AdguardTeam/AdGuardHome/issues/8297)
+This matches our real-world observations (crash when enabling the blocklists, runs fine with a smaller blocklist) and matches what people report in the [GitHub Issue - High memory and CPU usage](https://github.com/AdguardTeam/AdGuardHome/issues/8297).
 
 ## So how do we solve this?
 
@@ -75,7 +75,7 @@ Most of the complex rules come from [Phishing Army](https://github.com/drego85/P
 
 ![Breakdown of complex leftover rules by source list](../../assets/images/adguard_home_next_gen/complex_rules_break_down.svg)
 
-Besides that [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock) already implements this and is an excellent piece of software. Simply replacing the existing implementation would give us a different variant of [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock) instead of an interesting engineering problem to solve. Remember that we're optimising for _fun_ and _learning_, having an efficient DNS blocker is a welcome side-effect.
+Besides that [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock) already implements this and is an excellent piece of software. Simply replacing the existing implementation would give us a different variant of [esp32-c3-adblock](https://github.com/M-Abozaid/esp32-c3-adblock), however what if we could combine the best of both worlds? That seems like an idea worth exploring so let's dive a bit deeper.
 
 ## Best- and worst-case DNS blocking paths
 
