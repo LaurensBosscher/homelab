@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: restic
-          image: restic/restic:0.19.1
+          image: restic/restic:0.20.0
           command: ["/bin/sh", "/scripts/backup-loop.sh"]
           env:
             - name: TZ
