@@ -8,3 +8,4 @@ resources:
   - restic-daemonset.yml
   - restic-configmap.yml
   - backrest-restic-secrets-sealed.yml
+  - backrest-netpol.yml

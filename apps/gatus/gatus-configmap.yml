@@ -173,7 +173,9 @@ data:
         url: "http://nzbget.nzbget.svc.cluster.local:6789"
         interval: 5m
         conditions:
-          - "[STATUS] == 200"
+          # Auth-enabled NZBGet answers 401 unauthicated; that still proves the
+          # web server is up.
+          - "[STATUS] == 401"
           - "[RESPONSE_TIME] < 2500"
 
       - name: prowlarr

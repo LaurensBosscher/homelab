@@ -6,3 +6,4 @@ resources:
   - zeroclaw-pvcs.yml
   - zeroclaw-service.yml
   - zeroclaw-secrets-sealed.yml
+  - zeroclaw-netpol.yml

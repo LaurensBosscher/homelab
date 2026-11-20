@@ -42,6 +42,9 @@ spec:
           capabilities:
             drop:
               - ALL
+            # cloudflare-icmp (icmp://1.1.1.1) needs a raw socket.
+            add:
+              - NET_RAW
         env:
         - name: TZ
           value: Europe/Zurich
