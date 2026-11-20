@@ -178,6 +178,11 @@ data:
                 description: E-book library
                 icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/calibre-web.png
                 siteMonitor: http://calibre-web.books.svc.cluster.local:8083
+                widgets:
+                  - type: calibreweb
+                    url: http://calibre-web.books.svc.cluster.local:8083
+                    username: {{HOMEPAGE_VAR_CALIBREWEB_USER}}
+                    password: {{HOMEPAGE_VAR_CALIBREWEB_PASSWORD}}
             - Bookshelf:
                 href: https://bookshelf.bosscher.ch
                 description: Book library manager
@@ -188,6 +193,10 @@ data:
                 description: Audiobook server
                 icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/audiobookshelf.png
                 siteMonitor: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
+                widgets:
+                  - type: audiobookshelf
+                    url: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
+                    key: {{HOMEPAGE_VAR_AUDIOBOOKSHELF_TOKEN}}
             - Listenarr:
                 href: https://listenarr.bosscher.ch
                 description: Automated audiobook downloader
@@ -298,6 +307,9 @@ data:
                 widgets:
                   - type: argocd
                     url: http://argocd-server.argocd.svc.cluster.local
+                widgets:
+                  - type: argocd
+                    url: https://argocd-server.argocd.svc.cluster.local
                     key: {{HOMEPAGE_VAR_ARGOCD_TOKEN}}
             - Gatus:
                 href: https://gatus.bosscher.ch
@@ -312,6 +324,12 @@ data:
                 description: Lightweight server monitoring
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/beszel.png
                 siteMonitor: http://beszel.beszel.svc.cluster.local:8090
+                widgets:
+                  - type: beszel
+                    url: http://beszel.beszel.svc.cluster.local:8090
+                    username: {{HOMEPAGE_VAR_BESZEL_USER}}
+                    password: {{HOMEPAGE_VAR_BESZEL_PASSWORD}}
+                    version: 2
             - FlareSolverr:
                 href: https://flaresolver.bosscher.ch
                 description: Cloudflare challenge proxy
@@ -352,6 +370,11 @@ data:
                 href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
                 description: Cloudflare Zero Trust & Tunnels
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
+                widgets:
+                  - type: cloudflared
+                    accountid: 1ce5b40c4616a803216dff853ef6bc81
+                    tunnelid: 968270dc-5b16-408e-9b06-a81a113315a7
+                    key: {{HOMEPAGE_VAR_CLOUDFLARE_KEY}}
             - Crowdsec:
                 href: https://app.crowdsec.net/
                 description: CrowdSec Security Console

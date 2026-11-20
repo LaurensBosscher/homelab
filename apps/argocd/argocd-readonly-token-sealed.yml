@@ -1,0 +1,20 @@
+# API token for the read-only ArgoCD account used by the homepage widget.
+# Token id/expiry live in argocd-secret (accounts.readonly.tokens); this patches
+# that key in, the same way argocd-github-webhook-sealed.yml patches the webhook.
+# Regenerate by minting a new HS256 token with server.secretkey and sealing the
+# matching {"id","iat","exp"} entry.
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: argocd-readonly-token
+  namespace: argocd
+spec:
+  encryptedData:
+    accounts.readonly.tokens: AgBam32m1qs19szp0/v3w68Y1jksqekzvhj8KcI2peORZ4VeZ8QUvHn6wKxCCftzy1NF+b0JesCGX1dQjzUr3FC0pJ8kolT4nPauGJDaBHaH8nSBSU/sRsOcMegounuOjhIbiWS6OhZpx7PF6KhU4Yrz6zWCXZY33hIY1TNZzJQB3hiA3vN2JvF9U4J7dGD7x68nDuqgy2KFa58ZOqeDAXn1foLV0MVqdYVai053wwtqynh01p4IQGROAhx6Bl23p/s/de7a19RTLrBalkiKBVGgfcS4tzXuCsi7AiqAsemL7qbBIOSX4W0TwNPgwzWLFe259BKJxAdTfTtUZgvTbTozXt39VJGJZEOF5oi53J474GMauzA+tB5BxPdGQL3iclzK1jbMOQ8jitiib6rxbMKnJmk5DVae0MLFI8u4cNoPnHVOuC5/JkTWt7xQQTOACgVCR0OLIdEMkea4W6OfvH4UgI+LjtFPL/t63jDQ/YRipG6O1CZ4btf7umqrIv75p9ZubvBqAgaRfcsb/Hhb8HuCAg9NpSgE9+Cce5z8471LTNe0ZSIUIqZq8F2CirSXw4M5yQp0ueXOIZ2pFqbmq/ppHo9vYT9Iiwmy9TpboNAw3lfpa5vr5571jhaPJ/UlkltD2841HUL22bKI1ivJ9Q9YUmfcQgJprbtSYzW1wuz+CE8vZdca2HR+VLU+NtoOBbABZA+UiAiE3OHNP1Lz/9aiz2DNpSmbcVQh4C0Gsqa8eGfVK1ByoSobUaUaAnQbBZkXK4YVOTJcv9KFZAFhDYpEIx9Se2BqOIZSgDeWQFGPX80=
+  template:
+    metadata:
+      name: argocd-secret
+      namespace: argocd
+      annotations:
+        sealedsecrets.bitnami.com/patch: "true"
+    type: Opaque

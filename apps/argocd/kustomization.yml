@@ -15,6 +15,7 @@ resources:
   - argocd-notifications-cm.yml
   - argocd-notifications-secret-sealed.yml
   - argocd-github-webhook-sealed.yml
+  - argocd-readonly-token-sealed.yml
 
 patches:
   # Upstream core-install ships an empty notifications secret; SealedSecret owns it.
