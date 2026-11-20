@@ -34,7 +34,7 @@ spec:
                       - bazzite
       initContainers:
         # Native sidecar: owns the pod network namespace (kill-switch + VPN).
-        # Privado WireGuard is custom-only in Gluetun; we use the native OpenVPN provider.
+        # Privado WireGuard is custom-only in Gluetun (native privado = OpenVPN).
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
           restartPolicy: Always
@@ -52,21 +52,9 @@ spec:
                   - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
           env:
             - name: VPN_SERVICE_PROVIDER
-              value: "privado"
+              value: "custom"
             - name: VPN_TYPE
-              value: "openvpn"
-            - name: OPENVPN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: gluetun-secrets
-                  key: openvpn-user
-            - name: OPENVPN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: gluetun-secrets
-                  key: openvpn-password
-            - name: SERVER_COUNTRIES
-              value: "Switzerland"
+              value: "wireguard"
             - name: FIREWALL
               value: "on"
             # WebUI from cloudflared / in-cluster clients.
@@ -81,6 +69,9 @@ spec:
             - name: TZ
               value: "Europe/Zurich"
           volumeMounts:
+            - name: gluetun-wg
+              mountPath: /gluetun/wireguard
+              readOnly: true
             - name: tun
               mountPath: /dev/net/tun
           ports:
@@ -101,10 +92,10 @@ spec:
       containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.3.0
+          # linuxserver/s6 must start as root then drop to PUID/PGID.
+          # Do not set runAsUser here — it breaks /run permissions.
           securityContext:
             allowPrivilegeEscalation: false
-            runAsUser: 1000
-            runAsGroup: 1000
           env:
             - name: PUID
               value: "1000"
@@ -149,6 +140,13 @@ spec:
           hostPath:
             path: /mnt/data/downloads/
             type: DirectoryOrCreate
+        # Secret key must be `wg0.conf` (Privado WireGuard ini).
+        - name: gluetun-wg
+          secret:
+            secretName: gluetun-secrets
+            items:
+              - key: wg0.conf
+                path: wg0.conf
         - name: tun
           hostPath:
             path: /dev/net/tun
