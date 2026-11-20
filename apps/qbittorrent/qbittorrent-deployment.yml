@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: qbittorrent
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -33,6 +33,8 @@ spec:
                     values:
                       - bazzite
       initContainers:
+        # Native sidecar: owns the pod network namespace (kill-switch + VPN).
+        # Privado WireGuard is custom-only in Gluetun; we use the native OpenVPN provider.
         - name: gluetun
           image: qmcgaw/gluetun:v3.41
           restartPolicy: Always
@@ -41,35 +43,46 @@ spec:
             capabilities:
               add: ["NET_ADMIN"]
             allowPrivilegeEscalation: true
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
           env:
             - name: VPN_SERVICE_PROVIDER
-              value: "custom"
+              value: "privado"
             - name: VPN_TYPE
-              value: "wireguard"
-            - name: WIREGUARD_PRIVATE_KEY
+              value: "openvpn"
+            - name: OPENVPN_USER
               valueFrom:
                 secretKeyRef:
                   name: gluetun-secrets
-                  key: wireguard-private-key
-            - name: WIREGUARD_ADDRESSES
+                  key: openvpn-user
+            - name: OPENVPN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: gluetun-secrets
-                  key: wireguard-addresses
-            - name: WIREGUARD_PUBLIC_KEY
-              value: "KgTUh3KLijVluDvNpzDCJJfrJ7EyLzYLmdHCksG4sRg="
-            - name: WIREGUARD_ENDPOINT_IP
-              value: "91.148.244.80"
-            - name: WIREGUARD_ENDPOINT_PORT
-              value: "51820"
+                  key: openvpn-password
+            - name: SERVER_COUNTRIES
+              value: "Switzerland"
             - name: FIREWALL
               value: "on"
+            # WebUI from cloudflared / in-cluster clients.
             - name: FIREWALL_INPUT_PORTS
               value: "8080"
+            # Let qBittorrent reach cluster DNS/Services (prowlarr, etc.) off-VPN.
+            # k3s defaults: pods 10.42.0.0/16, services 10.43.0.0/16.
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.42.0.0/16,10.43.0.0/16"
             - name: VPN_PORT_FORWARDING
               value: "off"
             - name: TZ
               value: "Europe/Zurich"
+          volumeMounts:
+            - name: tun
+              mountPath: /dev/net/tun
           ports:
             - containerPort: 8080
               name: webui
@@ -101,9 +114,6 @@ spec:
               value: "Europe/Zurich"
             - name: WEBUI_PORT
               value: "8080"
-          ports:
-            - containerPort: 8080
-              name: webui
           volumeMounts:
             - name: config
               mountPath: /config
@@ -115,20 +125,22 @@ spec:
               memory: 256Mi
             limits:
               memory: 2Gi
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8080
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8080
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 60
-          #   timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 5
       volumes:
         - name: config
           persistentVolumeClaim:
@@ -137,3 +149,7 @@ spec:
           hostPath:
             path: /mnt/data/downloads/
             type: DirectoryOrCreate
+        - name: tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
