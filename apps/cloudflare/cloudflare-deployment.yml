@@ -3,7 +3,15 @@ kind: Deployment
 metadata:
   name: cloudflared
 spec:
-  replicas: 1
+  replicas: 2
+  # One connector at home, one in London: London-hosted apps keep their ingress
+  # when the home uplink is down. maxSurge 0 frees a node before rescheduling,
+  # so a rollout cannot strand both connectors in London.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       pod: cloudflared
@@ -21,6 +29,22 @@ spec:
                     operator: In
                     values:
                       - bazzite
+                      - k3s-london-1
+                      - k3s-london-2
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - bazzite
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  pod: cloudflared
+              topologyKey: kubernetes.io/hostname
       securityContext:
         sysctls:
           # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.

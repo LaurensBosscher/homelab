@@ -20,7 +20,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-2
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -107,7 +107,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-2
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -156,6 +156,7 @@ kind: Deployment
 metadata:
   name: your-spotify-mongo
 spec:
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -175,7 +176,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-2
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100

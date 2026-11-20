@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: read-the-room
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -35,7 +35,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-1
       containers:
         - name: read-the-room
           # Built by .github/workflows/container.yml in LaurensBosscher/read_the_room.

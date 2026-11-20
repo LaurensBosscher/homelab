@@ -166,8 +166,10 @@ iifname "eth0" tcp dport 30000-32767 accept comment "NodePorts"
 ### V2 Placement
 - Stateful apps: keep scheduling on `bazzite` unless the manifest says otherwise
 - Stateless: London agents OK
+- Latency-insensitive stateful apps (bookmarks, dashboards, background pollers) may run on London with a single-replica pin: `k3s-london-1` or `k3s-london-2`. Never split a multi-pod app (app + db) across nodes; its local-path volumes are node-bound.
+- Never move the download chain (`audiobookshelf`, `listenarr`, `nzbget`, `qbittorrent`, `questarr`, `rdt-client`, `shelfarr`, `calibre-web`, `bookshelf`, `prowlarr`) or playback-path apps (`aiostreams`): they mount `/mnt/data/downloads` on bazzite or add latency the user feels.
 - Storage: `local-path` on every node. Bazzite data disk is `/var/mnt/data/local-path` (same directory as `/mnt/data/local-path`). London uses `/var/lib/rancher/k3s/storage`, created by Ansible. Restic mounts that k3s path on every node; on bazzite Ansible symlinks it to the data disk.
-- Tunnels: single cluster Cloudflare tunnel (`cloudflare/tunnels/config.yml`); GH Actions syncs DNS/config
+- Tunnels: single cluster Cloudflare tunnel (`cloudflare/tunnels/config.yml`); GH Actions syncs DNS/config. `cloudflared` runs 2 replicas, one preferred on `bazzite` and one on a London node (required hostname anti-affinity, `maxSurge: 0`), so London apps keep ingress when the home uplink drops.
 
 ## Testing Philosophy
 - Runtime health = primary test (probes + Gatus monitoring)

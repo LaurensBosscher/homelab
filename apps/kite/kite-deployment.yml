@@ -170,7 +170,7 @@ metadata:
   name: kite
   namespace: kube-system
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: kite
@@ -193,7 +193,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-1
       serviceAccountName: kite
       containers:
         - image: ghcr.io/kite-org/kite:v0.18.0

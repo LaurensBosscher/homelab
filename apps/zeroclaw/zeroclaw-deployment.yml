@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: zeroclaw
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -35,7 +35,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - bazzite
+                      - k3s-london-1
       containers:
         - name: zeroclaw
           # Built by .github/workflows/build-zeroclaw.yml. Bump with the workflow tag.
@@ -106,7 +106,9 @@ spec:
               cpu: 100m
               memory: 512Mi
             limits:
-              memory: 6Gi
+              # Node has 4.8 GiB total; observed usage is ~700 MiB. A 6Gi ceiling
+              # would let one agent process pressure london-1 and its co-tenants.
+              memory: 3Gi
           startupProbe:
             exec:
               command:

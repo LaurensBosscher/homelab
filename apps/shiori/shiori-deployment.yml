@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: shiori
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: shiori
@@ -29,7 +29,7 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - bazzite
+                - k3s-london-1
       containers:
       - name: shiori
         image: ghcr.io/go-shiori/shiori:v1.8.0
