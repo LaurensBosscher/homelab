@@ -242,6 +242,10 @@ data:
                 description: Indexer manager for *arr apps
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
                 siteMonitor: http://prowlarr.prowlarr.svc.cluster.local:9696
+                widgets:
+                  - type: prowlarr
+                    url: http://prowlarr.prowlarr.svc.cluster.local:9696
+                    key: {{HOMEPAGE_VAR_PROWLARR_KEY}}
             - Questarr:
                 href: https://questarr.bosscher.ch
                 description: Video game discovery & wishlist
@@ -253,6 +257,11 @@ data:
               description: Usenet downloader
               icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nzbget.png
               siteMonitor: http://nzbget.nzbget.svc.cluster.local:6789
+              widgets:
+                - type: nzbget
+                  url: http://nzbget.nzbget.svc.cluster.local:6789
+                  username: {{HOMEPAGE_VAR_NZBGET_USER}}
+                  password: {{HOMEPAGE_VAR_NZBGET_PASSWORD}}
           - RDT-Client:
               href: https://rdt-client.bosscher.ch/
               description: Real-Debrid torrent client
@@ -286,11 +295,18 @@ data:
                 description: GitOps continuous delivery
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/argo-cd.svg
                 siteMonitor: https://argocd-server.argocd.svc.cluster.local
+                widgets:
+                  - type: argocd
+                    url: http://argocd-server.argocd.svc.cluster.local
+                    key: {{HOMEPAGE_VAR_ARGOCD_TOKEN}}
             - Gatus:
                 href: https://gatus.bosscher.ch
                 description: Synthetic uptime monitoring
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png
                 siteMonitor: http://gatus.gatus.svc.cluster.local:8080
+                widgets:
+                  - type: gatus
+                    url: http://gatus.gatus.svc.cluster.local:8080
             - Beszel:
                 href: https://beszel.bosscher.ch
                 description: Lightweight server monitoring
@@ -321,6 +337,9 @@ data:
                 description: Restic backup UI
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/backrest.png
                 siteMonitor: http://backrest.backrest.svc.cluster.local:9898
+                widgets:
+                  - type: backrest
+                    url: http://backrest.backrest.svc.cluster.local:9898
             - Backblaze B2 Backups:
                 href: https://secure.backblaze.com/b2_buckets.htm
                 description: Backblaze B2 Cloud Storage

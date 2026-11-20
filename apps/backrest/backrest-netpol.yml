@@ -57,6 +57,22 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: monitoring
 ---
+# Homepage renders the Backrest widget from the same API as the UI.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-homepage
+  namespace: backrest
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: homepage
+---
 # The backrest-index-snapshots CronJob POSTs to backrest.backrest.svc:9898.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

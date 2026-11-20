@@ -45,6 +45,11 @@ spec:
         env:
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: home.bosscher.ch
+        # Widget credentials, templated in services.yaml as {{HOMEPAGE_VAR_*}}.
+        # Secret is created out-of-band (like cloudflared-token / kite-secrets).
+        envFrom:
+        - secretRef:
+            name: homepage-vars
         ports:
         - name: http
           containerPort: 3000

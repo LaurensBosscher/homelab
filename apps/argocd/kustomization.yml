@@ -72,3 +72,19 @@ patches:
         timeout.hard.reconciliation: 600s
         # https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/
         webhook.github.secret: $argocd-secret:webhook.github.secret
+        # Read-only account that can hold API tokens (used by the homepage
+        # ArgoCD widget, which sends a bearer token).
+        accounts.readonly: apiKey
+  # RBAC for the homepage widget's API token: read-only across the cluster.
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: argocd-rbac-cm
+    patch: |-
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-rbac-cm
+      data:
+        policy.csv: |
+          g, readonly, role:readonly
