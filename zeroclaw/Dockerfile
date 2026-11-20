@@ -19,6 +19,15 @@ COPY --from=zeroclaw /usr/share/zeroclawlabs /usr/share/zeroclawlabs
 # OpenClaw installs @googleworkspace/cli as `gog`. ZeroClaw looks up `gws`.
 RUN ln -sf /usr/local/bin/gog /usr/local/bin/gws
 
+# kubeseal for offline SealedSecret sealing, version-matched to the
+# sealed-secrets-controller 0.41.2 (apps/default/sealed-secret.yml).
+# The pod has no SA token, so seal with --cert against the repo-root
+# sealed-secrets-public.crt instead of fetching from the cluster.
+ARG KUBESEAL_VERSION=0.41.2
+RUN curl -fsSL "https://github.com/bitnami/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" \
+    | tar -xz -C /usr/local/bin kubeseal \
+    && chmod 755 /usr/local/bin/kubeseal
+
 COPY entrypoint.sh /usr/local/bin/zeroclaw-entrypoint
 RUN chmod 755 /usr/local/bin/zeroclaw /usr/local/bin/zerocode /usr/local/bin/zeroclaw-entrypoint
 
