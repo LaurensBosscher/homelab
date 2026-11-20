@@ -42,8 +42,6 @@ spec:
             cidr: 46.33.10.93/32
         - ipBlock:
             cidr: 46.33.10.90/32
-        - ipBlock:
-            cidr: 85.121.120.36/32
       ports:
         - protocol: UDP
           port: 1053

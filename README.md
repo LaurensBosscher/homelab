@@ -8,10 +8,10 @@ Public showcase + working GitOps config for my hobby [Kubernetes](https://kubern
 
 | | **V1** (retired) | **V2** (current, 2026-10) |
 |---|---|---|
-| Nodes | 7 nodes / 4 regions (CA ×2, London ×3, Amsterdam, Zurich/home) | 4 nodes: home `bazzite` + London agents ×3 |
+| Nodes | 7 nodes / 4 regions (CA ×2, London ×3, Amsterdam, Zurich/home) | 3 nodes: home `bazzite` + London agents ×2 |
 | Control plane | Multi-server embedded **etcd** HA | Single K3s server on **bazzite** with **SQLite** |
 | Storage | [Longhorn](https://longhorn.io/) + geo storage classes | K3s **`local-path`**: bazzite data disk, `/var/lib/rancher/k3s/storage` on London |
-| Workload placement | Geo affinity (`europe` / `us` / `zurich`) | Stateful → bazzite; stateless can schedule on London |
+| Workload placement | Geo affinity (`europe` / `us` / `zurich`) | Media/download + latency-sensitive → bazzite; latency-insensitive apps on London |
 | Pod overlay | Flannel `wireguard-native` (multi-region mesh) | Same CNI, peers on **public WAN** + tight nftables allowlist |
 | Admin access | Tailscale | Tailscale for SSH/admin **only** (not CNI underlay) |
 | Ingress | Cloudflare Tunnel(s) | Single Cloudflare Tunnel on bazzite |
@@ -103,7 +103,7 @@ Critical services are protected against OOM (Out of Memory) kills:
 
 ### Mandatory Access Control (SELinux)
 - **SELinux Enforcing**: SELinux is configured in enforcing mode with targeted policy on supported nodes
-- **Per-Node Exception Support**: Hosts with known compatibility issues can opt out via inventory variable (currently used for `k3s-london-3`)
+- **Per-Node Exception Support**: Hosts with known compatibility issues can opt out via inventory variable (no node currently opts out)
 
 ## Kubernetes Security
 
@@ -139,9 +139,8 @@ CoreDNS still answers `cluster.local` and node names. Names it does not know are
 | Zurich   | 32GB | 4c (Intel N97)     | NVMe    | control plane  | Home `bazzite`; all PVCs     | $0     |
 | London   | 5GB  | 2c (Xeon Gold 6148)| NVMe    | agent          | `k3s-london-1`               | ~$20   |
 | London   | 5GB  | 2c (Xeon Gold 6148)| NVMe    | agent          | `k3s-london-2`               | ~$20   |
-| London   | 8GB  | 4c (AMD EPYC 7542) | NVMe    | agent          | `k3s-london-3`               | ~$35   |
 
-~50 GB RAM / 12 cores. Stateful apps + media live on the home node; London nodes take overflow/stateless load.
+~42 GB RAM / 8 cores. Media, downloads and latency-sensitive apps live on the home node; London carries the latency-insensitive apps (monitoring, dashboards, background pollers) and stateless load.
 
 ## V1 (retired — multi-region experiment)
 

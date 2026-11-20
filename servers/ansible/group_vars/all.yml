@@ -73,4 +73,3 @@ chrony_allow_cidrs:
 # Fallback NTP servers over Tailscale (london control-plane / workers with public NTP).
 chrony_extra_servers:
   - 100.79.162.75
-  - 100.106.134.105

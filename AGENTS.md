@@ -1,7 +1,7 @@
 # AGENTS.md - Codebase Guide
 
 ## Project Overview
-V2 K3s homelab: `bazzite` (SQLite control-plane + data-disk `local-path` PVCs) + 3 London agents (`local-path` at `/var/lib/rancher/k3s/storage`). GitOps CD via ArgoCD on branch `main`. IaC with Ansible + Pulumi/SOPS for Cloudflare (`infrastructure/cloudflare`). V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
+V2 K3s homelab: `bazzite` (SQLite control-plane + data-disk `local-path` PVCs) + 2 London agents (`local-path` at `/var/lib/rancher/k3s/storage`). GitOps CD via ArgoCD on branch `main`. IaC with Ansible + Pulumi/SOPS for Cloudflare (`infrastructure/cloudflare`). V1 was a 7-node / 4-region Longhorn+etcd mesh (retired).
 
 ## Repository Structure
 - `apps/<app-name>/` - Kubernetes manifests (auto-deployed)
