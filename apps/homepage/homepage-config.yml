@@ -181,8 +181,8 @@ data:
                 widgets:
                   - type: calibreweb
                     url: http://calibre-web.books.svc.cluster.local:8083
-                    username: {{HOMEPAGE_VAR_CALIBREWEB_USER}}
-                    password: {{HOMEPAGE_VAR_CALIBREWEB_PASSWORD}}
+                    username: "{{HOMEPAGE_VAR_CALIBREWEB_USER}}"
+                    password: "{{HOMEPAGE_VAR_CALIBREWEB_PASSWORD}}"
             - Bookshelf:
                 href: https://bookshelf.bosscher.ch
                 description: Book library manager
@@ -196,7 +196,7 @@ data:
                 widgets:
                   - type: audiobookshelf
                     url: http://audiobookshelf.audiobookshelf.svc.cluster.local:80
-                    key: {{HOMEPAGE_VAR_AUDIOBOOKSHELF_TOKEN}}
+                    key: "{{HOMEPAGE_VAR_AUDIOBOOKSHELF_TOKEN}}"
             - Listenarr:
                 href: https://listenarr.bosscher.ch
                 description: Automated audiobook downloader
@@ -254,7 +254,7 @@ data:
                 widgets:
                   - type: prowlarr
                     url: http://prowlarr.prowlarr.svc.cluster.local:9696
-                    key: {{HOMEPAGE_VAR_PROWLARR_KEY}}
+                    key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
             - Questarr:
                 href: https://questarr.bosscher.ch
                 description: Video game discovery & wishlist
@@ -269,8 +269,8 @@ data:
               widgets:
                 - type: nzbget
                   url: http://nzbget.nzbget.svc.cluster.local:6789
-                  username: {{HOMEPAGE_VAR_NZBGET_USER}}
-                  password: {{HOMEPAGE_VAR_NZBGET_PASSWORD}}
+                  username: "{{HOMEPAGE_VAR_NZBGET_USER}}"
+                  password: "{{HOMEPAGE_VAR_NZBGET_PASSWORD}}"
           - RDT-Client:
               href: https://rdt-client.bosscher.ch/
               description: Real-Debrid torrent client
@@ -307,7 +307,7 @@ data:
                 widgets:
                   - type: argocd
                     url: https://argocd-server.argocd.svc.cluster.local
-                    key: {{HOMEPAGE_VAR_ARGOCD_TOKEN}}
+                    key: "{{HOMEPAGE_VAR_ARGOCD_TOKEN}}"
             - Gatus:
                 href: https://gatus.bosscher.ch
                 description: Synthetic uptime monitoring
@@ -324,8 +324,8 @@ data:
                 widgets:
                   - type: beszel
                     url: http://beszel.beszel.svc.cluster.local:8090
-                    username: {{HOMEPAGE_VAR_BESZEL_USER}}
-                    password: {{HOMEPAGE_VAR_BESZEL_PASSWORD}}
+                    username: "{{HOMEPAGE_VAR_BESZEL_USER}}"
+                    password: "{{HOMEPAGE_VAR_BESZEL_PASSWORD}}"
                     version: 2
             - FlareSolverr:
                 href: https://flaresolver.bosscher.ch
@@ -353,8 +353,22 @@ data:
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/backrest.png
                 siteMonitor: http://backrest.backrest.svc.cluster.local:9898
                 widgets:
-                  - type: backrest
-                    url: http://backrest.backrest.svc.cluster.local:9898
+                  # Homepage's backrest widget reads `planSummaries`, which
+                  # Backrest 1.14 no longer returns (it returns repoSummaries),
+                  # and backups here run from the restic DaemonSet, not Backrest
+                  # plans. Map the real response instead.
+                  - type: customapi
+                    url: http://backrest.backrest.svc.cluster.local:9898/v1.Backrest/GetSummaryDashboard
+                    method: POST
+                    headers:
+                      content-type: application/json
+                    requestBody: "{}"
+                    mappings:
+                      - field: repoSummaries.0.id
+                        label: Repo
+                      - field: repoSummaries.0.historyLast30days
+                        label: Backup days (30d)
+                        format: size
             - Backblaze B2 Backups:
                 href: https://secure.backblaze.com/b2_buckets.htm
                 description: Backblaze B2 Cloud Storage
@@ -371,7 +385,7 @@ data:
                   - type: cloudflared
                     accountid: 1ce5b40c4616a803216dff853ef6bc81
                     tunnelid: 968270dc-5b16-408e-9b06-a81a113315a7
-                    key: {{HOMEPAGE_VAR_CLOUDFLARE_KEY}}
+                    key: "{{HOMEPAGE_VAR_CLOUDFLARE_KEY}}"
             - Crowdsec:
                 href: https://app.crowdsec.net/
                 description: CrowdSec Security Console
