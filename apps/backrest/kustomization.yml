@@ -5,6 +5,7 @@ resources:
   - backrest-pvcs.yml
   - backrest-service.yml
   - backrest-index-cronjob.yml
+  - k3s-control-plane-backup-cronjob.yml
   - restic-daemonset.yml
   - restic-configmap.yml
   - backrest-restic-secrets-sealed.yml
