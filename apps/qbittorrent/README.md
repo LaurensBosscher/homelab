@@ -1,11 +1,34 @@
 # qbittorrent (+ Privado WireGuard via Gluetun)
 
 Gluetun sidecar uses **custom WireGuard** with a mounted Privado `wg0.conf`.
-(Gluetun’s native `privado` provider is OpenVPN-only; account OpenVPN auth failed with `AUTH_FAILED`.)
+
+## Why WireGuard (not OpenVPN)
+
+Account is Newshosting-bundled PrivadoVPN (`nhwfrjwgmyjr`). Support recommended:
+
+1. OpenVPN TCP port 443 (+ Scramble if available)
+2. Else OpenVPN UDP port 8080
+3. Zurich / try Frankfurt or Paris
+
+Retested in-cluster with Gluetun `VPN_SERVICE_PROVIDER=privado` (2026-11-20):
+
+| Attempt | Result |
+|---|---|
+| TCP/443 + Switzerland (or any country) | Gluetun server DB has **no Privado TCP endpoints** → `no server found` |
+| UDP/8080 → `zrh-010.vpn.privado.io` | Peer connects, then **`AUTH_FAILED`** |
+| UDP/1194 (Gluetun default) | Same **`AUTH_FAILED`** after peer connect |
+| Scramble | Not supported by Gluetun |
+
+Website username/password confirmed; WireGuard `wg0.conf` from the Privado dashboard works (exit IP in Privado pool). Keep OpenVPN offline until Privado issues working OpenVPN credentials or a TCP `.ovpn` we can mount as custom config.
 
 ## Secret
 
-Cluster secret `qbittorrent/gluetun-secrets` (not in git), key `wg0.conf`:
+Cluster secret `qbittorrent/gluetun-secrets` (not in git):
+
+| Key | Purpose |
+|---|---|
+| `wg0.conf` | Active WireGuard config (required) |
+| `openvpn-user` / `openvpn-password` | Kept for retries; unused by current Deployment |
 
 ```bash
 kubectl -n qbittorrent create secret generic gluetun-secrets \
@@ -13,7 +36,7 @@ kubectl -n qbittorrent create secret generic gluetun-secrets \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-Generate the file in the Privado dashboard  
+Generate WireGuard in the Privado dashboard  
 ([manual setup KB](https://support.privadovpn.com/kb/article/1130-how-to-generate-a-wireguard-or-openvpn-configuration-file-for-manual-setups/)).
 
 Expected shape:
@@ -30,7 +53,7 @@ AllowedIPs = 0.0.0.0/0
 Endpoint = <server-ip>:51820
 ```
 
-## Why it failed before
+## Why WireGuard failed before
 
 `gluetun-secrets` had the **server** peer values stuffed into the client fields:
 
@@ -45,3 +68,4 @@ Also: do not set `runAsUser: 1000` on the linuxserver qBittorrent container — 
 
 - `FIREWALL_OUTBOUND_SUBNETS` keeps cluster pod/service CIDRs (`10.42.0.0/16`,`10.43.0.0/16`) reachable for Prowlarr while the kill-switch is on.
 - Privado does not support port forwarding → `VPN_PORT_FORWARDING=off`.
+- WebUI credentials: secret `qbittorrent-webui` (`admin` + password).
