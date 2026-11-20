@@ -281,6 +281,11 @@ data:
               description: Torrent client
               icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
               siteMonitor: http://qbittorrent.qbittorrent.svc.cluster.local:8080
+              widgets:
+                - type: qbittorrent
+                  url: http://qbittorrent.qbittorrent.svc.cluster.local:8080
+                  username: "{{HOMEPAGE_VAR_QBITTORRENT_USER}}"
+                  password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
           - Real-Debrid:
               href: https://real-debrid.com/torrents
               description: Torrent downloader
