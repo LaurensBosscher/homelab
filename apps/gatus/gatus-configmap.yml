@@ -67,7 +67,7 @@ data:
 
       - name: kite
         group: cluster
-        url: "http://kite.kube-system.svc.cluster.local:8080"
+        url: "http://kite.kite.svc.cluster.local:8080"
         interval: 5m
         conditions:
           - "[STATUS] == 200"

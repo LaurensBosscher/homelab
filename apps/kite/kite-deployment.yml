@@ -136,7 +136,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: kite
-    namespace: kube-system
+    namespace: kite
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -145,7 +145,7 @@ metadata:
     app: kite
     app.kubernetes.io/name: kite
   name: kite
-  namespace: kube-system
+  namespace: kite
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -154,7 +154,7 @@ metadata:
     app: kite
     app.kubernetes.io/name: kite
   name: kite-config
-  namespace: kube-system
+  namespace: kite
 data:
   config.yaml: |
     superUser:
@@ -168,9 +168,9 @@ metadata:
     app: kite
     app.kubernetes.io/name: kite
   name: kite
-  namespace: kube-system
+  namespace: kite
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: kite

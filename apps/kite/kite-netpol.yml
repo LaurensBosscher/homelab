@@ -1,31 +1,24 @@
-# kube-system also runs coredns, sealed-secrets and local-path-provisioner, so the
-# deny is scoped to kite's own pods instead of the whole namespace (unlike the
-# app namespaces, where default-deny-ingress uses podSelector: {}).
-#
-# Kite is reached by: cloudflared (public ingress), zeroclaw (agent tool),
-# gatus and homepage (both health/site monitors).
+# Kite lives in its own namespace, so the deny can cover the whole namespace.
+# Reached by: cloudflared (public ingress), zeroclaw (agent tool), gatus and
+# homepage (health/site monitors).
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kite-default-deny-ingress
-  namespace: kube-system
+  name: default-deny-ingress
+  namespace: kite
 spec:
-  podSelector:
-    matchLabels:
-      app: kite
+  podSelector: {}
   policyTypes:
     - Ingress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kite-allow-ingress-cloudflared
-  namespace: kube-system
+  name: allow-ingress-cloudflared
+  namespace: kite
 spec:
-  podSelector:
-    matchLabels:
-      app: kite
+  podSelector: {}
   policyTypes:
     - Ingress
   ingress:
@@ -37,12 +30,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kite-allow-ingress-zeroclaw
-  namespace: kube-system
+  name: allow-ingress-zeroclaw
+  namespace: kite
 spec:
-  podSelector:
-    matchLabels:
-      app: kite
+  podSelector: {}
   policyTypes:
     - Ingress
   ingress:
@@ -54,12 +45,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kite-allow-ingress-gatus
-  namespace: kube-system
+  name: allow-ingress-gatus
+  namespace: kite
 spec:
-  podSelector:
-    matchLabels:
-      app: kite
+  podSelector: {}
   policyTypes:
     - Ingress
   ingress:
@@ -71,12 +60,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kite-allow-ingress-homepage
-  namespace: kube-system
+  name: allow-ingress-homepage
+  namespace: kite
 spec:
-  podSelector:
-    matchLabels:
-      app: kite
+  podSelector: {}
   policyTypes:
     - Ingress
   ingress:

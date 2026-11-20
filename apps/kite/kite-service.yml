@@ -4,7 +4,7 @@ metadata:
   labels:
     app: kite
   name: kite
-  namespace: kube-system
+  namespace: kite
 spec:
   ports:
     - name: http
