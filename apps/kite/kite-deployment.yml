@@ -170,7 +170,7 @@ metadata:
   name: kite
   namespace: kite
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: kite
