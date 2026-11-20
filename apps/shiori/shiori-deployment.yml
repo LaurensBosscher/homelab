@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: shiori
     app.kubernetes.io/part-of: homelab
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: shiori

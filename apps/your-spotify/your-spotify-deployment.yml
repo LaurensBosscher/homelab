@@ -156,7 +156,7 @@ kind: Deployment
 metadata:
   name: your-spotify-mongo
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
