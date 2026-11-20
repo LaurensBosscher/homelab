@@ -417,7 +417,6 @@ def create_access() -> Access:
             [
                 "wanderer.bosscher.ch",
                 "norish.bosscher.ch",
-                "stacks.bosscher.ch",
                 "calibre-web.bosscher.ch",
             ]
         ),
