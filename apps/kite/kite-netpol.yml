@@ -1,0 +1,86 @@
+# kube-system also runs coredns, sealed-secrets and local-path-provisioner, so the
+# deny is scoped to kite's own pods instead of the whole namespace (unlike the
+# app namespaces, where default-deny-ingress uses podSelector: {}).
+#
+# Kite is reached by: cloudflared (public ingress), zeroclaw (agent tool),
+# gatus and homepage (both health/site monitors).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kite-default-deny-ingress
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app: kite
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kite-allow-ingress-cloudflared
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app: kite
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cloudflare
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kite-allow-ingress-zeroclaw
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app: kite
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: zeroclaw
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kite-allow-ingress-gatus
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app: kite
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: gatus
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kite-allow-ingress-homepage
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app: kite
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: homepage

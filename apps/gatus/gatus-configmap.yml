@@ -73,6 +73,14 @@ data:
           - "[STATUS] == 200"
           - "[RESPONSE_TIME] < 1000"
 
+      - name: zeroclaw
+        group: cluster
+        url: "http://zeroclaw.zeroclaw.svc.cluster.local:42617"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
+          - "[RESPONSE_TIME] < 1000"
+
       - name: blocky
         group: cluster
         url: "10.43.0.53"
