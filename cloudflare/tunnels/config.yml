@@ -56,14 +56,7 @@
   service: http://zeroclaw.zeroclaw.svc.cluster.local:42617
 - hostname: read-the-room.bosscher.ch
   service: http://read-the-room.read-the-room.svc.cluster.local:8080
-# PARKED 2026-10-29: redlib deployment scaled to 0 (Reddit blocking wave,
-# redlib-org/redlib#591). Tunnel temporarily proxies redlib.bosscher.ch to the
-# only public instance still fully serving content when tested 2026-10-29
-# (7 of 8 instances listed as "working" on Oct 27 were already 403/429/bot-walled).
-# httpHostHeader keeps the upstream vhost happy; redlib itself ignores Host.
-# To un-park: restore service to http://redlib.redlib.svc.cluster.local:8080
-# and bump apps/redlib/redlib-deployment.yml replicas back to 1.
+# Back on self-hosted redlib 2026-11-05: deployment un-parked on the nachtalb
+# fork (browser-like TLS via wreq + reddit session cookie in a SealedSecret).
 - hostname: redlib.bosscher.ch
-  service: https://redlib.utilibre.org
-  originRequest:
-    httpHostHeader: redlib.utilibre.org
+  service: http://redlib.redlib.svc.cluster.local:8080

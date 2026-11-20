@@ -6,16 +6,14 @@ metadata:
     app.kubernetes.io/name: redlib
     app.kubernetes.io/part-of: homelab
 spec:
-  # PARKED 2026-10-29: Reddit is blocking redlib upstream requests cluster-wide
-  # (redlib-org/redlib#591, redlib-org/redlib-instances#121). The pod serves a
-  # 404 error page for /, so readiness+liveness probes fail and kubelet
-  # restarts it every ~3 min (333 restarts since Oct 22). Scaled to 0 until
-  # upstream adapts. Tunnel is repointed at a public instance in the meantime
-  # (cloudflare/tunnels/config.yml).
-  # To un-park: set replicas back to 1 and restore the tunnel service line to
-  # http://redlib.redlib.svc.cluster.local:8080. Consider splitting probes
-  # first: liveness -> /settings (local-only), readiness stays on /.
-  replicas: 0
+  # Un-parked 2026-11-05: switched to the nachtalb fork of redlib. It talks to
+  # Reddit through wreq (BoringSSL, browser-like TLS fingerprint) and can use
+  # logged-in reddit_session cookies (REDLIB_REDDIT_COOKIE, sealed in
+  # redlib-session-sealed.yml) for its cookied-json backend -- what upstream
+  # lacked when the Oct 2026 blocking wave killed this deployment
+  # (redlib-org/redlib#591, see git history for the parked version).
+  # NOTE: the reddit_session cookie lasts ~6 months; re-seal when it expires.
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -44,7 +42,7 @@ spec:
                       - bazzite
       containers:
         - name: redlib
-          image: quay.io/redlib/redlib:sha-ba116c1 # v0.40.0 (2026-10-22)
+          image: ghcr.io/nachtalb/redlib:sha-150cb84 # main @ 150cb84 (2026-11-04), incl. cookied-json session rate-limit fixes
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -58,6 +56,11 @@ spec:
               value: Europe/Zurich
             - name: REDLIB_ROBOTS_DISABLE_INDEXING
               value: "on"
+            - name: REDLIB_REDDIT_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: redlib-session
+                  key: REDLIB_REDDIT_COOKIE
           resources:
             requests:
               cpu: 25m
@@ -66,7 +69,9 @@ spec:
               memory: 128Mi
           livenessProbe:
             httpGet:
-              path: /
+              # /settings is served locally, no Reddit round-trip: the pod must
+              # not get restarted just because Reddit blocks again.
+              path: /settings
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 60
