@@ -306,9 +306,6 @@ data:
                 siteMonitor: https://argocd-server.argocd.svc.cluster.local
                 widgets:
                   - type: argocd
-                    url: http://argocd-server.argocd.svc.cluster.local
-                widgets:
-                  - type: argocd
                     url: https://argocd-server.argocd.svc.cluster.local
                     key: {{HOMEPAGE_VAR_ARGOCD_TOKEN}}
             - Gatus:
