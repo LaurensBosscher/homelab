@@ -73,6 +73,7 @@
     - { role: k9s }
     - { role: optimizations }
     - { role: network-optimizations }
+    - { role: root-fstab-uuid }
     - { role: tailscale }
     - { role: kubecolor }
     - { role: zswap }

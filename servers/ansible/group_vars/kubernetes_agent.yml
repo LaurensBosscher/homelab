@@ -3,3 +3,6 @@
 # video console is attached, so serial-getty@ttyS0 would restart in a loop and
 # flood the journal with "failed to get terminal attributes".
 console_getty_headless: true
+# Cloned Alma images used /dev/vda4 in fstab; after virtio/scsi rename the root
+# remount fails RO and k3s-agent cannot write. Pin / to the live UUID.
+root_fstab_uuid_enable: true

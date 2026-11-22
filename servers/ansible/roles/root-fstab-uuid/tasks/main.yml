@@ -1,0 +1,149 @@
+---
+# Ensure /etc/fstab mounts root by UUID, not a virtio/scsi device node that can
+# rename across boots/images. 2026-11-22: k3s-london-1 stayed NotReady ~11h
+# because fstab still said /dev/vda4 while the disk was /dev/sda4; remount-fs
+# failed and the agent could not write certs.
+- name: Read root filesystem UUID and type
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, "UUID,FSTYPE", /]
+  register: root_fstab_uuid_findmnt
+  changed_when: false
+  check_mode: false
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Parse root UUID and fstype
+  ansible.builtin.set_fact:
+    root_fstab_uuid_value: "{{ root_fstab_uuid_findmnt.stdout.split()[0] | trim }}"
+    root_fstab_uuid_detected_fstype: "{{ root_fstab_uuid_findmnt.stdout.split()[1] | default('') | trim }}"
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Fail when root UUID is missing
+  ansible.builtin.assert:
+    that:
+      - root_fstab_uuid_value | length > 0
+    fail_msg: findmnt returned no UUID for /. Refusing to rewrite fstab.
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Choose fstype for rewritten root line
+  ansible.builtin.set_fact:
+    root_fstab_uuid_fstype_effective: >-
+      {{
+        (root_fstab_uuid_fstype | default('') | length > 0)
+        | ternary(root_fstab_uuid_fstype, root_fstab_uuid_detected_fstype)
+      }}
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Fail when root fstype is missing
+  ansible.builtin.assert:
+    that:
+      - root_fstab_uuid_fstype_effective | length > 0
+    fail_msg: No fstype for /. Set root_fstab_uuid_fstype or ensure findmnt works.
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Read current fstab root line
+  ansible.builtin.shell: |
+    set -euo pipefail
+    awk '$1 !~ /^#/ && $2 == "/" { print; exit }' /etc/fstab
+  args:
+    executable: /bin/bash
+  register: root_fstab_uuid_current
+  changed_when: false
+  check_mode: false
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Fail when fstab has no root mount
+  ansible.builtin.assert:
+    that:
+      - root_fstab_uuid_current.stdout | length > 0
+    fail_msg: /etc/fstab has no non-comment mount for /. Refusing to invent one.
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Build desired root fstab line
+  ansible.builtin.set_fact:
+    root_fstab_uuid_desired: >-
+      UUID={{ root_fstab_uuid_value }} / {{ root_fstab_uuid_fstype_effective }} {{ root_fstab_uuid_options }} 0 0
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Rewrite root fstab entry to UUID
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    # Match the live root mount line only (field 2 is /).
+    regexp: '^\s*[^#\s]\S*\s+/\s+'
+    line: "{{ root_fstab_uuid_desired | trim }}"
+    backup: true
+  register: root_fstab_uuid_rewrite
+  when:
+    - root_fstab_uuid_enable | default(false)
+    - (root_fstab_uuid_current.stdout | trim) != (root_fstab_uuid_desired | trim)
+  tags: [root-fstab-uuid]
+
+# Manual edits (and some editors) leave fstab as user_tmp_t; confined
+# systemd-remount-fs then gets Permission denied at boot. Force etc_t + 0644.
+- name: Ensure /etc/fstab mode and SELinux type
+  ansible.builtin.file:
+    path: /etc/fstab
+    owner: root
+    group: root
+    mode: "0644"
+    setype: etc_t
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Read root mount options
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, OPTIONS, /]
+  register: root_fstab_uuid_opts_before
+  changed_when: false
+  check_mode: false
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Remount root read-write when currently RO
+  ansible.builtin.command:
+    argv: [mount, -o, remount,rw, /]
+  when:
+    - root_fstab_uuid_enable | default(false)
+    - "'rw' not in (root_fstab_uuid_opts_before.stdout | default('')).split(',')"
+  tags: [root-fstab-uuid]
+
+# Boot oneshot; restarting after boot often fails under SELinux even with a
+# correct fstab. Clear a stale failed state once context is fixed so the next
+# reboot path is clean.
+- name: Reset failed systemd-remount-fs state
+  ansible.builtin.command:
+    argv: [systemctl, reset-failed, systemd-remount-fs.service]
+  changed_when: false
+  failed_when: false
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Verify root is mounted read-write
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, OPTIONS, /]
+  register: root_fstab_uuid_opts
+  changed_when: false
+  failed_when: "'rw' not in root_fstab_uuid_opts.stdout.split(',')"
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]
+
+- name: Verify fstab root line uses UUID
+  ansible.builtin.shell: |
+    set -euo pipefail
+    line=$(awk '$1 !~ /^#/ && $2 == "/" { print; exit }' /etc/fstab)
+    case "$line" in
+      UUID=*) ;;
+      *) echo "root fstab line is not UUID-based: $line" >&2; exit 1 ;;
+    esac
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when: root_fstab_uuid_enable | default(false)
+  tags: [root-fstab-uuid]

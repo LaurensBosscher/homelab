@@ -1,0 +1,8 @@
+---
+# Opt-in: London VPS agents enable this (cloned disks historically used /dev/vda4
+# in fstab while the live disk is /dev/sda4, leaving root RO after boot).
+root_fstab_uuid_enable: false
+# Filesystem type for the rewritten root line. Detected at runtime when empty.
+root_fstab_uuid_fstype: ""
+# Mount options for the rewritten root line.
+root_fstab_uuid_options: defaults,noatime
