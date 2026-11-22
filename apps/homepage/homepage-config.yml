@@ -225,9 +225,8 @@ data:
                 siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
             - Glasshouse:
                 href: http://192.168.1.111:8080/
-                description: LG TV dashboard & Home (HTTP offline; ping only)
+                description: LG TV dashboard & Home (HTTP offline on :8080)
                 icon: https://rorygallagher2024.github.io/glasshouse/logo/glasshouse-512.png
-                ping: 192.168.1.111
         - Documents:
             - IT-Tools:
                 href: https://it-tools.bosscher.ch
