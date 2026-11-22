@@ -113,9 +113,8 @@ data:
               siteMonitor: http://fusion.fusion.svc.cluster.local:8080
           - Redlib:
               href: https://redlib.bosscher.ch
-              description: Private Reddit frontend
+              description: Private Reddit frontend (scaled to 0)
               icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redlib.png
-              siteMonitor: http://redlib.redlib.svc.cluster.local:8080
           - X:
               href: https://x.com
               description: X (Formerly Twitter)
@@ -201,7 +200,7 @@ data:
                 href: https://listenarr.bosscher.ch
                 description: Automated audiobook downloader
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/headphones.png
-                siteMonitor: http://listenarr.listenarr.svc.cluster.local:5000
+                siteMonitor: http://listenarr.listenarr.svc.cluster.local:4545
             - Shelfarr:
                 href: https://shelfarr.bosscher.ch
                 description: Book collection manager
@@ -226,9 +225,9 @@ data:
                 siteMonitor: http://aiostreams.aiostreams.svc.cluster.local:3000
             - Glasshouse:
                 href: http://192.168.1.111:8080/
-                description: LG TV dashboard & Home
+                description: LG TV dashboard & Home (HTTP offline; ping only)
                 icon: https://rorygallagher2024.github.io/glasshouse/logo/glasshouse-512.png
-                siteMonitor: http://192.168.1.111:8080/
+                ping: 192.168.1.111
         - Documents:
             - IT-Tools:
                 href: https://it-tools.bosscher.ch
@@ -383,13 +382,13 @@ data:
                 description: Cloudflare R2 file browser
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cloudflare.png
             - Cloudflare Tunnels:
-                href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/968270dc-5b16-408e-9b06-a81a113315a7/edit?tab=publicHostname
+                href: https://one.dash.cloudflare.com/1ce5b40c4616a803216dff853ef6bc81/networks/tunnels/cfd_tunnel/74c090cd-5046-4cb3-9b9f-43f013822d1c/edit?tab=publicHostname
                 description: Cloudflare Zero Trust & Tunnels
                 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg
                 widgets:
                   - type: cloudflared
                     accountid: 1ce5b40c4616a803216dff853ef6bc81
-                    tunnelid: 968270dc-5b16-408e-9b06-a81a113315a7
+                    tunnelid: 74c090cd-5046-4cb3-9b9f-43f013822d1c
                     key: "{{HOMEPAGE_VAR_CLOUDFLARE_KEY}}"
             - Crowdsec:
                 href: https://app.crowdsec.net/

@@ -97,3 +97,18 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: zeroclaw
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-homepage
+  namespace: flaresolver
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: homepage
