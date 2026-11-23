@@ -35,7 +35,7 @@
 - hostname: qbittorrent.bosscher.ch
   service: http://qbittorrent.qbittorrent.svc.cluster.local:8080
 - hostname: kite.bosscher.ch
-  service: http://kite.kube-system.svc.cluster.local:8080
+  service: http://kite.kite.svc.cluster.local:8080
 - hostname: backrest.bosscher.ch
   service: http://backrest.backrest.svc.cluster.local:9898
 - hostname: flaresolver.bosscher.ch
