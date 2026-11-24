@@ -91,7 +91,7 @@ spec:
               memory: 512Mi
       containers:
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:5.3.0
+          image: lscr.io/linuxserver/qbittorrent:5.3.1
           # linuxserver/s6 must start as root then drop to PUID/PGID.
           # Do not set runAsUser here — it breaks /run permissions.
           securityContext:
